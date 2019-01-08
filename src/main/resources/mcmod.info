@@ -1,0 +1,14 @@
+[
+{
+  "modid": "jmcae",
+  "name": "James090500's MinecraftCape & Elytra Mod Mod",
+  "description": "Custom Cape and Elytra textures",
+  "url": "www.MinecraftCapes.co.uk",
+  "updateUrl": "",
+  "authorList": ["james090500"],
+  "credits": "james090500 - Coding the mod | Tahg - Managing Support | ZombieSlayer for helping in general | Vos3464 Nothing, go away Vos",
+  "logoFile": "/logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
