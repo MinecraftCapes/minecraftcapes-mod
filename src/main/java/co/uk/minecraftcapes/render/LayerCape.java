@@ -1,6 +1,6 @@
 package co.uk.minecraftcapes.render;
 
-import co.uk.minecraftcapes.player.PlayerInfo;
+import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -23,7 +23,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
         
     public void render(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-    	ResourceLocation rl = PlayerInfo.getCapeResourceLocation(entitylivingbaseIn);
+    	ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(entitylivingbaseIn);
 
         if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && rl != null)
         {

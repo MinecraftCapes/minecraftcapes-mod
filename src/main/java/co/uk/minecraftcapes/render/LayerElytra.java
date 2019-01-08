@@ -1,6 +1,6 @@
 package co.uk.minecraftcapes.render;
 
-import co.uk.minecraftcapes.player.PlayerInfo;
+import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
@@ -12,9 +12,11 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
 public class LayerElytra implements LayerRenderer<EntityLivingBase>
 {
-    private static final ResourceLocation DEFAULT_TEXTURE_ELYTRA = new ResourceLocation("jmcm", "elytra.png");
+    private static final ResourceLocation DEFAULT_TEXTURE_ELYTRA = new ResourceLocation(MODID, "elytra.png");
     protected final RenderLivingBase<?> renderPlayer;
     private final ModelElytra modelElytra = new ModelElytra();
 
@@ -26,7 +28,7 @@ public class LayerElytra implements LayerRenderer<EntityLivingBase>
     public void render(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-        ResourceLocation rl = PlayerInfo.getCapeResourceLocation(entitylivingbaseIn);
+        ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(entitylivingbaseIn);
         
         if (itemstack.getItem() == Items.ELYTRA)
         {

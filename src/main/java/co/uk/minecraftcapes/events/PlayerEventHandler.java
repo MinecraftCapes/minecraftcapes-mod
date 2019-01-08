@@ -1,4 +1,4 @@
-package co.uk.minecraftcapes.player;
+package co.uk.minecraftcapes.events;
 
 import java.util.HashMap;
 
@@ -11,7 +11,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class PlayerInfo {
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
+public class PlayerEventHandler {
 	
 	private static boolean resetElytra = false;
 	public static HashMap<String, Boolean> playersCape = new HashMap<String, Boolean>();
@@ -47,13 +49,13 @@ public class PlayerInfo {
 	
 	public static ResourceLocation getCapeResourceLocation(EntityLivingBase entitylivingbaseIn) {
 	    String playerUUID = entitylivingbaseIn.getUniqueID().toString().replace("-", "");
-	    ResourceLocation resourceLocation = new ResourceLocation("capes/" + playerUUID);
+	    ResourceLocation resourceLocation = new ResourceLocation(MODID, "capes/" + playerUUID);
 	    return hasCape(playerUUID) ? resourceLocation : null;
 	}
 	
 	public static ResourceLocation getEarResourceLocation(EntityLivingBase entitylivingbaseIn) {
 	    String playerUUID = entitylivingbaseIn.getUniqueID().toString().replace("-", "");
-	    ResourceLocation resourceLocation = new ResourceLocation("ears/" + playerUUID);
+	    ResourceLocation resourceLocation = new ResourceLocation(MODID, "ears/" + playerUUID);
 	    return hasEar(playerUUID) ? resourceLocation : null;
 	}
 

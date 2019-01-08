@@ -1,6 +1,6 @@
 package co.uk.minecraftcapes.render;
 
-import co.uk.minecraftcapes.player.PlayerInfo;
+import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -18,7 +18,7 @@ public class Deadmau5 implements LayerRenderer<AbstractClientPlayer>
 
     public void render(AbstractClientPlayer entitylivingbaseIn, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale)
     {
-    	ResourceLocation rl = PlayerInfo.getEarResourceLocation(entitylivingbaseIn);
+    	ResourceLocation rl = PlayerEventHandler.getEarResourceLocation(entitylivingbaseIn);
     	if(!entitylivingbaseIn.isInvisible() && rl != null) {
     
     		this.playerRenderer.bindTexture(rl);

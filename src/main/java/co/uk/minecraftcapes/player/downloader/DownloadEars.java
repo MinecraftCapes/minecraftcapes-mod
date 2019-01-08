@@ -1,6 +1,7 @@
 package co.uk.minecraftcapes.player.downloader;
 
-import co.uk.minecraftcapes.player.PlayerInfo;
+import co.uk.minecraftcapes.events.PlayerEventHandler;
+import co.uk.minecraftcapes.helpers.Downloader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.NativeImage;
@@ -26,7 +27,7 @@ public class DownloadEars {
 				public void skinAvailable() {}
 	    	};
 	    	
-	    	ImageDownloader textureEars = new ImageDownloader(url, null, iib);		    	
+	    	Downloader textureEars = new Downloader(url, null, iib);
 	    	textureManager.loadTexture(rl, textureEars);			    	
 		}
 	}
@@ -42,7 +43,7 @@ public class DownloadEars {
 	    imgNew.copyImageData(img);
         img.close();
 	    
-	    PlayerInfo.playersEar.put(uuid, true);
+	    PlayerEventHandler.playersEar.put(uuid, true);
 	    
 	    return imgNew;
     }

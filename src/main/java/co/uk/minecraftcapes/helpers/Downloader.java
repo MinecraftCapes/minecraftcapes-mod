@@ -1,4 +1,4 @@
-package co.uk.minecraftcapes.player.downloader;
+package co.uk.minecraftcapes.helpers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
-public class ImageDownloader extends SimpleTexture
+public class Downloader extends SimpleTexture
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final AtomicInteger TEXTURE_DOWNLOADER_THREAD_ID = new AtomicInteger(0);
@@ -31,7 +31,7 @@ public class ImageDownloader extends SimpleTexture
     private Thread imageThread;
     private boolean textureUploaded;
     
-    public ImageDownloader(String imageUrlIn, ResourceLocation textureResourceLocation, IImageBuffer imageBufferIn)
+    public Downloader(String imageUrlIn, ResourceLocation textureResourceLocation, IImageBuffer imageBufferIn)
     {
         super(textureResourceLocation);
         this.imageUrl = imageUrlIn;
@@ -88,7 +88,7 @@ public class ImageDownloader extends SimpleTexture
     protected void loadTextureFromServer()
     {
     	
-    	if(ImageDownloader.this.imageUrl == null) {
+    	if(Downloader.this.imageUrl == null) {
     		return;
     	}
     	
@@ -97,11 +97,11 @@ public class ImageDownloader extends SimpleTexture
             public void run()
             {
                 HttpURLConnection httpurlconnection = null;
-                ImageDownloader.LOGGER.info("Downloading http texture from {}", ImageDownloader.this.imageUrl);
+                Downloader.LOGGER.info("Downloading http texture from {}", Downloader.this.imageUrl);
 
                 try
                 {
-                    httpurlconnection = (HttpURLConnection)(new URL(ImageDownloader.this.imageUrl)).openConnection(Minecraft.getInstance().getProxy());
+                    httpurlconnection = (HttpURLConnection)(new URL(Downloader.this.imageUrl)).openConnection(Minecraft.getInstance().getProxy());
                     httpurlconnection.setDoInput(true);
                     httpurlconnection.setDoOutput(false);
                     httpurlconnection.connect();
@@ -110,25 +110,25 @@ public class ImageDownloader extends SimpleTexture
                     {
                         NativeImage nativeImage;
                         nativeImage = NativeImage.read(httpurlconnection.getInputStream());
-                        nativeImage = ImageDownloader.this.imageBuffer.parseUserSkin(nativeImage);
+                        nativeImage = Downloader.this.imageBuffer.parseUserSkin(nativeImage);
 
-                        ImageDownloader.this.setNativeImage(nativeImage);
+                        Downloader.this.setNativeImage(nativeImage);
                         
-                        ImageDownloader.LOGGER.info("Downloading complete. Image loaded in {}", nativeImage);
+                        Downloader.LOGGER.info("Downloading complete. Image loaded in {}", nativeImage);
                         
                         return;
                     }
                 }
                 catch (Exception exception)
                 {
-                    ImageDownloader.LOGGER.error("Couldn't download http texture", (Throwable)exception);
+                    Downloader.LOGGER.error("Couldn't download http texture", (Throwable)exception);
                     return;
                 }
                 finally
                 {
                     if (httpurlconnection != null)
                     {
-                    	ImageDownloader.LOGGER.info("Disconnected from {}", httpurlconnection.getURL().toString());
+                    	Downloader.LOGGER.info("Disconnected from {}", httpurlconnection.getURL().toString());
                         httpurlconnection.disconnect();
                     }
                 }

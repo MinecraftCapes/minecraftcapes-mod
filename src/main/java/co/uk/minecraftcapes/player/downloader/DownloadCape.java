@@ -1,12 +1,15 @@
 package co.uk.minecraftcapes.player.downloader;
 
-import co.uk.minecraftcapes.player.PlayerInfo;
+import co.uk.minecraftcapes.events.PlayerEventHandler;
+import co.uk.minecraftcapes.helpers.Downloader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+
+import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 public class DownloadCape {
 	
@@ -16,7 +19,7 @@ public class DownloadCape {
 
 	    	String url = "https://www.MinecraftCapes.co.uk/getCape.php?uuid=" + uuid;
 	    	
-		    ResourceLocation rl = new ResourceLocation("capes/" + uuid);
+		    ResourceLocation rl = new ResourceLocation(MODID, "capes/" + uuid);
 		    TextureManager textureManager = Minecraft.getInstance().getTextureManager();
 		                
 		    IImageBuffer iib = new IImageBuffer() {	    		
@@ -27,7 +30,7 @@ public class DownloadCape {
 				public void skinAvailable() {}
 		    };
 		                		    		  
-            ImageDownloader textureCape = new ImageDownloader(url, null, iib);
+            Downloader textureCape = new Downloader(url, null, iib);
             textureManager.loadTexture(rl, (ITextureObject) textureCape);
 		}
 	}
@@ -43,7 +46,7 @@ public class DownloadCape {
         imgNew.copyImageData(img);
         img.close();
         
-        PlayerInfo.playersCape.put(uuid, true);
+        PlayerEventHandler.playersCape.put(uuid, true);
         
         return imgNew;
 	}
