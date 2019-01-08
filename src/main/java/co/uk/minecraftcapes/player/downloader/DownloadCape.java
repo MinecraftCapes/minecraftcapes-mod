@@ -32,7 +32,7 @@ public class DownloadCape {
 		    };
 		                		    		  
             Downloader textureCape = new Downloader(url, null, iib);
-            textureManager.loadTexture(rl, (ITextureObject) textureCape);
+            textureManager.loadTexture(rl, textureCape);
 		}
 	}
 		  

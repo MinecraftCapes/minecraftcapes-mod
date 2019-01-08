@@ -2,6 +2,7 @@ package co.uk.minecraftcapes.events;
 
 import java.util.HashMap;
 
+import co.uk.minecraftcapes.helpers.Loader;
 import co.uk.minecraftcapes.player.downloader.DeleteElytra;
 import co.uk.minecraftcapes.player.downloader.DownloadCape;
 import co.uk.minecraftcapes.player.downloader.DownloadEars;
@@ -25,8 +26,8 @@ public class PlayerEventHandler {
 			if(event.getEntity() instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) event.getEntity();				
 				String uuid = player.getUniqueID().toString().replace("-", "");
-				DownloadCape.download(uuid);
-				DownloadEars.download(uuid);
+				Loader.download(uuid, "Cape", 64, 32);
+				Loader.download(uuid, "Ears", 64, 64);
 		    	if(!resetElytra) {
 		    		DeleteElytra.delete();
 		    		resetElytra = true;
@@ -49,7 +50,7 @@ public class PlayerEventHandler {
 	
 	public static ResourceLocation getCapeResourceLocation(EntityLivingBase entitylivingbaseIn) {
 	    String playerUUID = entitylivingbaseIn.getUniqueID().toString().replace("-", "");
-	    ResourceLocation resourceLocation = new ResourceLocation(MODID, "capes/" + playerUUID);
+	    ResourceLocation resourceLocation = new ResourceLocation(MODID, "cape/" + playerUUID);
 	    return hasCape(playerUUID) ? resourceLocation : null;
 	}
 	
