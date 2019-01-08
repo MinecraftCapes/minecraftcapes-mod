@@ -8,15 +8,18 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
 public class DownloadEars {
  
 	public static void download(final String uuid) {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 	    	    	
-	    	String url = "https://www.minecraftcapes.co.uk/getEars.php?uuid=" + uuid;
+	    	//String url = "https://www.minecraftcapes.co.uk/getEars.php?uuid=" + uuid;
+	    	String url = "https://www.minecraftcapes.co.uk/getEars.php?uuid=ba4161c03a42496c8ae07d13372f3371";
 	    	
-	    	ResourceLocation rl = new ResourceLocation("ears/" + uuid);
+	    	ResourceLocation rl = new ResourceLocation(MODID, "ears/" + uuid);
 	    	TextureManager textureManager = Minecraft.getInstance().getTextureManager();
 	    			           			      		   		     
 	    	IImageBuffer iib = new IImageBuffer() {	    				    		

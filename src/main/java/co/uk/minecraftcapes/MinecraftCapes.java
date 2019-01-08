@@ -1,5 +1,7 @@
 package co.uk.minecraftcapes;
 
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
 import co.uk.minecraftcapes.events.PlayerEventHandler;
 import co.uk.minecraftcapes.render.Deadmau5;
 import co.uk.minecraftcapes.render.LayerCape;
@@ -15,8 +17,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
-
-import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 
 @Mod(MODID)
@@ -35,7 +35,7 @@ public class MinecraftCapes {
 		
 		for(RenderPlayer render : Minecraft.getInstance().getRenderManager().getSkinMap().values()) { //Get Skin Types
 			render.addLayer(new LayerCape(render)); //Add Cape to ALL skins
-			//render.addLayer(new Deadmau5(render)); //Assign ears to ALL skins
+			render.addLayer(new Deadmau5(render)); //Assign ears to ALL skins
 			render.addLayer(new LayerElytra(render)); //Assign elyra
 		}	
 
