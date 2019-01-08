@@ -1,0 +1,50 @@
+package co.uk.minecraftcapes.player.downloader;
+
+import co.uk.minecraftcapes.player.PlayerInfo;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IImageBuffer;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
+
+public class DownloadCape {
+	
+	public static void download(final String uuid) {
+		
+	    if ((uuid != null) && (!uuid.isEmpty())) {
+
+	    	String url = "https://www.MinecraftCapes.co.uk/getCape.php?uuid=" + uuid;
+	    	
+		    ResourceLocation rl = new ResourceLocation("capes/" + uuid);
+		    TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+		                
+		    IImageBuffer iib = new IImageBuffer() {	    		
+				public NativeImage parseUserSkin(NativeImage img) {
+	    			return parseCape(img, uuid);
+				}
+
+				public void skinAvailable() {}
+		    };
+		                		    		  
+            ImageDownloader textureCape = new ImageDownloader(url, null, iib);
+            textureManager.loadTexture(rl, (ITextureObject) textureCape);
+		}
+	}
+		  
+	public static NativeImage parseCape(NativeImage img, String uuid) {		
+        int imageWidth = 64;
+        int imageHeight = 32;
+        
+        for (int srcWidth = img.getWidth(), srcHeight = img.getHeight(); imageWidth < srcWidth || imageHeight < srcHeight; imageWidth *= 2, imageHeight *= 2) {}
+        
+        final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
+        
+        imgNew.copyImageData(img);
+        img.close();
+        
+        PlayerInfo.playersCape.put(uuid, true);
+        
+        return imgNew;
+	}
+}
