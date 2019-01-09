@@ -1,8 +1,9 @@
 package co.uk.minecraftcapes.events;
 
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
 import java.util.HashMap;
 
-import co.uk.minecraftcapes.helpers.Loader;
 import co.uk.minecraftcapes.player.downloader.DeleteElytra;
 import co.uk.minecraftcapes.player.downloader.DownloadCape;
 import co.uk.minecraftcapes.player.downloader.DownloadEars;
@@ -11,8 +12,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 public class PlayerEventHandler {
 	
@@ -26,8 +25,8 @@ public class PlayerEventHandler {
 			if(event.getEntity() instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) event.getEntity();				
 				String uuid = player.getUniqueID().toString().replace("-", "");
-				Loader.download(uuid, "Cape", 64, 32);
-				Loader.download(uuid, "Ears", 64, 64);
+				DownloadCape.download(uuid);
+				DownloadEars.download(uuid);
 		    	if(!resetElytra) {
 		    		DeleteElytra.delete();
 		    		resetElytra = true;

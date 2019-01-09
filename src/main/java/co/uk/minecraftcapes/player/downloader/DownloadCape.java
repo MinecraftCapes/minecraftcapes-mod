@@ -4,7 +4,6 @@ import co.uk.minecraftcapes.events.PlayerEventHandler;
 import co.uk.minecraftcapes.helpers.Downloader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
