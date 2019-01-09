@@ -22,7 +22,7 @@ import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 @Mod(MODID)
 public class MinecraftCapes {
 
-	public MinecraftCapes() {
+	public MinecraftCapes() {		
 		FMLModLoadingContext.get().getModEventBus().addListener(this::postInit);
 
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
@@ -39,6 +39,7 @@ public class MinecraftCapes {
 			render.addLayer(new LayerElytra(render)); //Assign elyra
 		}	
 
+		//Adds the default elytra to biped mobs
 		for(Render<?> render : Minecraft.getInstance().getRenderManager().entityRenderMap.values()) {
 			if(render instanceof RenderBiped) {
 				RenderLiving<?> rl = (RenderLiving<?>) render;

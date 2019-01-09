@@ -49,7 +49,7 @@ public class PlayerEventHandler {
 	
 	public static ResourceLocation getCapeResourceLocation(EntityLivingBase entitylivingbaseIn) {
 	    String playerUUID = entitylivingbaseIn.getUniqueID().toString().replace("-", "");
-	    ResourceLocation resourceLocation = new ResourceLocation(MODID, "cape/" + playerUUID);
+	    ResourceLocation resourceLocation = new ResourceLocation(MODID, "capes/" + playerUUID);
 	    return hasCape(playerUUID) ? resourceLocation : null;
 	}
 	

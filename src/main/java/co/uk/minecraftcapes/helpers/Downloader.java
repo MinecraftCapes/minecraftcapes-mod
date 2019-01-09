@@ -1,5 +1,6 @@
 package co.uk.minecraftcapes.helpers;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -109,7 +110,7 @@ public class Downloader extends SimpleTexture
                     if (httpurlconnection.getResponseCode() / 100 == 2)
                     {
                         NativeImage nativeImage;
-                        nativeImage = NativeImage.read(httpurlconnection.getInputStream());
+                        nativeImage = NativeImage.read(httpurlconnection.getInputStream());                        
                         nativeImage = Downloader.this.imageBuffer.parseUserSkin(nativeImage);
 
                         Downloader.this.setNativeImage(nativeImage);

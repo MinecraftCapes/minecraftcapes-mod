@@ -1,5 +1,7 @@
 package co.uk.minecraftcapes.player.downloader;
 
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
 import co.uk.minecraftcapes.events.PlayerEventHandler;
 import co.uk.minecraftcapes.helpers.Downloader;
 import net.minecraft.client.Minecraft;
@@ -7,8 +9,6 @@ import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
-
-import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 public class DownloadEars {
  
@@ -35,17 +35,15 @@ public class DownloadEars {
 		}
 	}
 	
-	public static NativeImage parseEars(NativeImage img, String uuid) {
-		int imageWidth = 64;
-	    int imageHeight = 64;
+	public static NativeImage parseEars(NativeImage img, String uuid) {		
+	    NativeImage imgNew = new NativeImage(64, 64, true);
 	    
-	    for (int srcWidth = img.getWidth(), srcHeight = img.getHeight(); imageWidth < srcWidth || imageHeight < srcHeight; imageWidth *= 2, imageHeight *= 2) {}
-		
-	    final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
-	    	    
-	    imgNew.copyImageData(img);
-        img.close();
-	    
+	    for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
+	    	for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {	    		
+	    		imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
+	    	}
+	    }			  
+	    img.close();
 	    PlayerEventHandler.playersEar.put(uuid, true);
 	    
 	    return imgNew;
