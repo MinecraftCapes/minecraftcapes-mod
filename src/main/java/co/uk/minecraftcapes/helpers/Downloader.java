@@ -1,6 +1,5 @@
 package co.uk.minecraftcapes.helpers;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -98,7 +97,7 @@ public class Downloader extends SimpleTexture
             public void run()
             {
                 HttpURLConnection httpurlconnection = null;
-                Downloader.LOGGER.info("Downloading http texture from {}", Downloader.this.imageUrl);
+                Downloader.LOGGER.debug("Downloading http texture from {}", Downloader.this.imageUrl);
 
                 try
                 {
@@ -115,7 +114,7 @@ public class Downloader extends SimpleTexture
 
                         Downloader.this.setNativeImage(nativeImage);
                         
-                        Downloader.LOGGER.info("Downloading complete. Image loaded in {}", nativeImage);
+                        Downloader.LOGGER.debug("Downloading complete. Image loaded in {}", nativeImage);
                         
                         return;
                     }
@@ -129,7 +128,7 @@ public class Downloader extends SimpleTexture
                 {
                     if (httpurlconnection != null)
                     {
-                    	Downloader.LOGGER.info("Disconnected from {}", httpurlconnection.getURL().toString());
+                    	Downloader.LOGGER.debug("Disconnected from {}", httpurlconnection.getURL().toString());
                         httpurlconnection.disconnect();
                     }
                 }
