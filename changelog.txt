@@ -1,3 +1,30 @@
+Build: 70 - 1.13-24.0.66-1.13-pre - Fri Jan 11 19:55:04 GMT 2019
+	williewillus: Make Block.Builder methods accessible. Closes #5310 (#5313)
+=====
+Build: 69 - 1.13-24.0.65-1.13-pre - Fri Jan 11 19:47:44 GMT 2019
+	williewillus: Fix exception mismatch for entity types (#5344)
+=====
+Build: 68 - 1.13-24.0.64-1.13-pre - Thu Jan 10 05:07:15 GMT 2019
+	williewillus: Fix datapack walking not working for mod datapacks. Closes #5334 (#5335)
+=====
+Build: 67 - 1.13-24.0.63-1.13-pre - Thu Jan 10 04:58:43 GMT 2019
+	williewillus: Add missing setSeed calls to ForgeBlockModelRenderer (#5338)
+	lex: Reimplement @ObjectHolder scanning, and expose system for others to add
+=====
+Build: 65 - 1.13-24.0.61-1.13-pre - Tue Jan 08 23:37:14 GMT 2019
+=====
+Build: 64 - 1.13-24.0.61-1.13-pre - Tue Jan 08 23:03:23 GMT 2019
+=====
+Build: 63 - 1.13-24.0.61-1.13-pre - Tue Jan 08 22:03:51 GMT 2019
+=====
+Build: 62 - 1.13-24.0.61-1.13-pre - Tue Jan 08 21:48:08 GMT 2019
+=====
+Build: 61 - 1.13-24.0.61-1.13-pre - Tue Jan 08 13:52:46 GMT 2019
+	lex: Fix reference to IForgeDimension.SleepResult being through Dimension,
+=====
+Build: 60 - 1.13-24.0.60-1.13-pre - Tue Jan 08 08:29:54 GMT 2019
+	lex: Update userdev and runconfigs for ForgeGradle changes.
+=====
 Build: 59 - 1.13-24.0.59-1.13-pre - Mon Jan 07 02:02:24 GMT 2019
 	cpw: Fix some translation strings. Will pull a big string update from crowdin
 =====
