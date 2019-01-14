@@ -1,3 +1,22 @@
+Build: 74 - 1.13-24.0.77-1.13-pre - Mon Jan 14 05:40:53 GMT 2019
+	cpw: Update a bunch of libs, rename some of the mod events to more meaningful
+=====
+Build: 73 - 1.13-24.0.76-1.13-pre - Sat Jan 12 07:01:41 GMT 2019
+	lex: Add list support to ForgeConfigSpec. Fix incorrect Supplier used in
+=====
+Build: 72 - 1.13-24.0.75-1.13-pre - Fri Jan 11 23:33:04 GMT 2019
+	tterrag1098: Fix MC-136995 - Chunk loading and unloading issue with entities placed
+	mezz: Update github stale so issues can be Assigned
+	bs2609: Patch PotionHelper to use registry delegates (#5142)
+	4258783+dargonforce: Fix Mesa biome entry tags in the BiomeDictionary (#5177)
+	XCompWiz: Allow providing a BufferedImage for banner render generation (#5041)
+	admin: Add CreativeTabs#getLabelColor
+	tterrag1098: Add list of so-far skipped 1.12 commits
+=====
+Build: 71 - 1.13-24.0.68-1.13-pre - Fri Jan 11 22:52:37 GMT 2019
+	lex: Move @EventBusSubscriber application to just after construction instead
+	gigaherz: Fix blockstate id map calculation. (#5279)
+=====
 Build: 70 - 1.13-24.0.66-1.13-pre - Fri Jan 11 19:55:04 GMT 2019
 	williewillus: Make Block.Builder methods accessible. Closes #5310 (#5313)
 =====

@@ -15,9 +15,8 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostResourceLoadEvent;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
-
 
 @Mod(MODID)
 public class MinecraftCapes {
@@ -30,7 +29,7 @@ public class MinecraftCapes {
 	
 	//PostInitialisation
 	@SubscribeEvent
-	public void postInit(FMLPostInitializationEvent event) {			
+	public void postInit(FMLPostResourceLoadEvent event) {			
 		Minecraft.getInstance().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);			
 		
 		for(RenderPlayer render : Minecraft.getInstance().getRenderManager().getSkinMap().values()) { //Get Skin Types
