@@ -1,3 +1,37 @@
+Build: 87 - 1.13-24.0.89-1.13-pre - Sun Jan 20 05:33:09 GMT 2019
+	cpw: Fix case error in AutomaticEventSubscriber
+=====
+Build: 86 - 1.13-24.0.88-1.13-pre - Sun Jan 20 04:35:45 GMT 2019
+	cpw: Tell travis to skip 1.13 builds - they don't work there.
+=====
+Build: 85 - 1.13-24.0.87-1.13-pre - Sun Jan 20 04:27:38 GMT 2019
+	cpw: Move Registry Events to the mod event bus. Add infrastructure to allow
+=====
+Build: 84 - 1.13-24.0.86-1.13-pre - Sat Jan 19 02:10:30 GMT 2019
+	tterrag1098: Greatly improve DeferredWorkQueue API (#5357)
+=====
+Build: 83 - 1.13-24.0.85-1.13-pre - Thu Jan 17 23:41:08 GMT 2019
+	tterrag1098: Add utilities that RuntimeEnumExtender expects to exist
+=====
+Build: 82 - 1.13-24.0.84-1.13-pre - Wed Jan 16 20:28:49 GMT 2019
+	lex: Re-introduce patch for injecting registry mappings during world loading.
+=====
+Build: 81 - 1.13-24.0.83-1.13-pre - Wed Jan 16 04:57:31 GMT 2019
+	tterrag1098: Implement ConfigValue as a wrapper around ForgeConfigSpec results
+=====
+Build: 79 - 1.13-24.0.82-1.13-pre - Wed Jan 16 03:14:41 GMT 2019
+	cpw: Fix exploded directory locator to actually scan all paths for a file.
+=====
+Build: 78 - 1.13-24.0.81-1.13-pre - Tue Jan 15 03:43:27 GMT 2019
+	cpw: Fix up event naming, move them to sensible packages and document
+	cpw: Update MDK for new naming scheme
+=====
+Build: 77 - 1.13-24.0.79-1.13-pre - Tue Jan 15 03:23:43 GMT 2019
+	williewillus: [1.13] Expand tag deserializer to add optional values and remove values
+=====
+Build: 76 - 1.13-24.0.78-1.13-pre - Mon Jan 14 22:10:37 GMT 2019
+	mezz: Fix mod lifecycle event names
+=====
 Build: 74 - 1.13-24.0.77-1.13-pre - Mon Jan 14 05:40:53 GMT 2019
 	cpw: Update a bunch of libs, rename some of the mod events to more meaningful
 =====

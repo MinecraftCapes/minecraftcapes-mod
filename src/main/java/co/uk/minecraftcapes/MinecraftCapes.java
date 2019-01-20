@@ -15,21 +15,21 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostResourceLoadEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 
 @Mod(MODID)
 public class MinecraftCapes {
 
 	public MinecraftCapes() {		
-		FMLModLoadingContext.get().getModEventBus().addListener(this::postInit);
+		FMLModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
 	}
 	
 	//PostInitialisation
 	@SubscribeEvent
-	public void postInit(FMLPostResourceLoadEvent event) {			
+	public void enqueueIMC(InterModEnqueueEvent event) {			
 		Minecraft.getInstance().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);			
 		
 		for(RenderPlayer render : Minecraft.getInstance().getRenderManager().getSkinMap().values()) { //Get Skin Types
