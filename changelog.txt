@@ -1,3 +1,14 @@
+Build: 91 - 1.13-24.0.94-1.13-pre - Sun Jan 20 17:39:43 GMT 2019
+	bonzoweb: Use the reply logical side when enqueing work
+=====
+Build: 90 - 1.13-24.0.93-1.13-pre - Sun Jan 20 17:30:13 GMT 2019
+	tobias.hotz: Validate mod ids
+	tobias.hotz: Use minecraft's util class to open files
+=====
+Build: 89 - 1.13-24.0.91-1.13-pre - Sun Jan 20 17:20:42 GMT 2019
+	cpw: Fix classcast in autoeventsubscriber, also actually make progression
+	traincrazyb: Fix recipe constants being overridden by a blank map. Closes #5380
+=====
 Build: 87 - 1.13-24.0.89-1.13-pre - Sun Jan 20 05:33:09 GMT 2019
 	cpw: Fix case error in AutomaticEventSubscriber
 =====
