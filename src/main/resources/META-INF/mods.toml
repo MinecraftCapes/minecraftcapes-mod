@@ -24,7 +24,7 @@ authors="james090500, Siriuo" #optional
 # The modid of the mod
 modId="minecraftcapes" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="9.3" #mandatory
+version="${file.jarVersion}" #mandatory
  # A display name for the mod
 displayName="James090500's MinecraftCapes Mod" #mandatory
 # The description text for the mod (multi line!) (#mandatory)

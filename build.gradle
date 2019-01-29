@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 
-version = '9.2'
+version = '9.3'
 group = 'co.uk.minecraftcapes' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'minecraftcapes'
 
@@ -33,11 +33,20 @@ minecraft {
     // these can be tweaked, removed, or duplicated as needed.
     runs {
         client = {
+            // recommended logging data for a userdev environment
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            // recommended logging level for the console
+            properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
             source sourceSets.main
         }
         server = {
+            // recommended logging data for a userdev environment
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            // recommended logging level for the console
+            properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
         }
     }
 }
@@ -46,7 +55,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge.test:forge:1.13-24.0.94-1.13-pre'
+    minecraft 'net.minecraftforge.test:forge:1.13-24.0.144-1.13-pre'
 
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -69,21 +78,15 @@ dependencies {
 
 }
 
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', '1.13'
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META_INF/mods.toml'
-
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion': '1.13'
-    }
-
-    // copy everything else except the mods.toml
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META_INF/mods.toml'
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    manifest {
+        attributes(["Specification-Title": "minecraftcapes",
+                    "Specification-Vendor": "minecraftcapes",
+                    "Specification-Version": "24.0", // We are version 1 of the modlauncher specification
+                    "Implementation-Title": project.name,
+                    "Implementation-Version": "${version}",
+                    "Implementation-Vendor" :"minecraftcapes",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
 }
