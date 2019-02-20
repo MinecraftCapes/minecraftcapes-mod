@@ -16,7 +16,7 @@ public class DownloadEars {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 	    	    	
-	    	String url = "https://MinecraftCapes.co.uk/getEars.php?uuid=" + uuid;
+	    	String url = "https://MinecraftCapes.co.uk/getEars/" + uuid;
 	    	
 	    	ResourceLocation rl = new ResourceLocation(MODID, "ears/" + uuid);
 	    	TextureManager textureManager = Minecraft.getInstance().getTextureManager();
