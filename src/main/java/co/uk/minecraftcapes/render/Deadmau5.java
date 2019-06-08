@@ -15,17 +15,16 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
       super(p_i50950_1_);
    }
 
-    public void func_212842_a_(AbstractClientPlayerEntity entitylivingbaseIn, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale)
-    {
+   public void func_212842_a_(AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {    
     	ResourceLocation rl = PlayerEventHandler.getEarResourceLocation(entitylivingbaseIn);
     	if(!entitylivingbaseIn.isInvisible() && rl != null) {
-    
+        		
     		this.func_215333_a(rl);
 	            
 	    	for (int i = 0; i < 2; ++i)
 	        {
 	    		float d = 0F;
-	            if (entitylivingbaseIn.isSneaking()) {
+	            if (entitylivingbaseIn.func_213287_bg()) {
 	            	d = 0.25F;
 	            }
 	            

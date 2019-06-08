@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mojang.blaze3d.platform.TextureUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.NativeImage;
@@ -27,13 +29,38 @@ public class Downloader extends SimpleTexture
     @Nullable
     private NativeImage nativeImage;
     @Nullable
-    private Thread imageThread;    
+    private Thread imageThread;
+    private boolean textureUploaded;
     
     public Downloader(String imageUrlIn, ResourceLocation textureResourceLocation, IImageBuffer imageBufferIn)
     {
         super(textureResourceLocation);
         this.imageUrl = imageUrlIn;
         this.imageBuffer = imageBufferIn;
+    }
+
+    
+    private void checkTextureUploaded()
+    {
+        if (!this.textureUploaded)
+        {
+            if (this.nativeImage != null)
+            {
+                if (this.textureLocation != null)
+                {
+                    this.deleteGlTexture();
+                }
+
+                TextureUtil.prepareImage(super.getGlTextureId(), this.nativeImage.getWidth(), this.nativeImage.getHeight());
+                this.nativeImage.uploadTextureSub(0, 0, 0, false);
+                this.textureUploaded = true;
+            }
+        }
+    }
+        
+    public int getGlTextureId() {
+    	this.checkTextureUploaded();
+    	return super.getGlTextureId();
     }
     
     public void setNativeImage(NativeImage nativeImageIn)

@@ -16,7 +16,7 @@ public class DownloadEars {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 	    	    	
-	    	String url = "https://MinecraftCapes.co.uk/getEars/" + uuid;
+	    	String url = "https://MinecraftCapes.co.uk/getEars/" + uuid;	    	
 	    	
 	    	ResourceLocation rl = new ResourceLocation(MODID, "ears/" + uuid);
 	    	TextureManager textureManager = Minecraft.getInstance().getTextureManager();
@@ -28,13 +28,13 @@ public class DownloadEars {
 				
 				public void skinAvailable() {}
 	    	};
-	    	
+	    		    	
 	    	Downloader textureEars = new Downloader(url, null, iib);
 	    	textureManager.loadTexture(rl, textureEars);			    	
 		}
 	}
 	
-	public static NativeImage parseEars(NativeImage img, String uuid) {		
+	public static NativeImage parseEars(NativeImage img, String uuid) {
 	    NativeImage imgNew = new NativeImage(64, 64, true);
 	    
 	    for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {

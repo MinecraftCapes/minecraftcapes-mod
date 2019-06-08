@@ -1,5 +1,7 @@
 package co.uk.minecraftcapes.player.downloader;
 
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
 import co.uk.minecraftcapes.events.PlayerEventHandler;
 import co.uk.minecraftcapes.helpers.Downloader;
 import net.minecraft.client.Minecraft;
@@ -8,15 +10,13 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
-import static co.uk.minecraftcapes.reference.Reference.MODID;
-
 public class DownloadCape {
 	
 	public static void download(final String uuid) {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 
-	    	String url = "https://MinecraftCapes.co.uk/getCape/" + uuid;
+	    	String url = "https://MinecraftCapes.co.uk/getCape/" + uuid;	    	
 	    	
 		    ResourceLocation rl = new ResourceLocation(MODID, "capes/" + uuid);
 		    TextureManager textureManager = Minecraft.getInstance().getTextureManager();
@@ -28,8 +28,8 @@ public class DownloadCape {
 
 				public void skinAvailable() {}
 		    };
-		                		    		  
-            Downloader textureCape = new Downloader(url, null, iib);
+		                		    		  		    
+		    Downloader textureCape = new Downloader(url, null, iib);
             textureManager.loadTexture(rl, textureCape);
 		}
 	}

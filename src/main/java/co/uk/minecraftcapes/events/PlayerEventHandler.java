@@ -4,35 +4,23 @@ import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 import java.util.HashMap;
 
-import co.uk.minecraftcapes.player.downloader.DeleteElytra;
 import co.uk.minecraftcapes.player.downloader.DownloadCape;
 import co.uk.minecraftcapes.player.downloader.DownloadEars;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class PlayerEventHandler {
-	
-	private static boolean resetElytra = false;
+		
 	public static HashMap<String, Boolean> playersCape = new HashMap<String, Boolean>();
 	public static HashMap<String, Boolean> playersEar = new HashMap<String, Boolean>();
 	
 	@SubscribeEvent
-	public void onPlayerJoin(EntityJoinWorldEvent event) {
-		if(event.getWorld().isRemote) {
-			if(event.getEntity() instanceof PlayerEntity) {
-				PlayerEntity player = (PlayerEntity) event.getEntity();				
-				String uuid = player.getUniqueID().toString().replace("-", "");
-				DownloadCape.download(uuid);
-				DownloadEars.download(uuid);
-		    	if(!resetElytra) {
-		    		DeleteElytra.delete();
-		    		resetElytra = true;
-		    	}
-			}
-		}
+	public void onPlayerJoin(PlayerLoggedInEvent event) {										
+		String uuid = event.getPlayer().getUniqueID().toString().replace("-", "");
+		DownloadCape.download(uuid);
+		DownloadEars.download(uuid);	
 	}
 	
 	private static Boolean hasCape(String uuid) {
