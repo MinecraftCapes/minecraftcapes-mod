@@ -2,7 +2,9 @@ package co.uk.minecraftcapes;
 
 import static co.uk.minecraftcapes.reference.Reference.MODID;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import co.uk.minecraftcapes.events.PlayerEventHandler;
 import co.uk.minecraftcapes.render.CapeLayer;
@@ -40,13 +42,16 @@ public class MinecraftCapes {
 			
 			//This removes the Elytra layer from the skinmaps
 			try {
-				List<LayerRenderer<?, ?>> layerRenderers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, render, "layerRenderers");							
-				for(LayerRenderer<?, ?> layer : layerRenderers) {
-					if(layer instanceof net.minecraft.client.renderer.entity.layers.ElytraLayer) {
-						layerRenderers.remove(layer);
+				List<LayerRenderer<?, ?>> layerRenderers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, render, "field_177097_h");				
+
+				ListIterator<LayerRenderer<?, ?>> it = layerRenderers.listIterator();
+				while(it.hasNext()) {					
+					if(it.next() instanceof net.minecraft.client.renderer.entity.layers.ElytraLayer) {
+						it.remove();
 					}
 				}
-				ObfuscationReflectionHelper.setPrivateValue(LivingRenderer.class, render, layerRenderers, "layerRenderers");
+				
+				ObfuscationReflectionHelper.setPrivateValue(LivingRenderer.class, render, layerRenderers, "field_177097_h");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
