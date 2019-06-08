@@ -4,5 +4,4 @@ public class Reference {
 
     public static final String MODID = "minecraftcapes";
 
-
 }

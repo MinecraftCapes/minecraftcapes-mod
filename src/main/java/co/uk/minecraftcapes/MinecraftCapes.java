@@ -2,7 +2,6 @@ package co.uk.minecraftcapes;
 
 import static co.uk.minecraftcapes.reference.Reference.MODID;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
