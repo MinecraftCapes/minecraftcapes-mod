@@ -15,16 +15,16 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
       super(p_i50950_1_);
    }
 
-   public void func_212842_a_(AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {    
+   public void render(AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {    
     	ResourceLocation rl = PlayerEventHandler.getEarResourceLocation(entitylivingbaseIn);
     	if(!entitylivingbaseIn.isInvisible() && rl != null) {
         		
-    		this.func_215333_a(rl);
+    		this.bindTexture(rl);
 	            
 	    	for (int i = 0; i < 2; ++i)
 	        {
 	    		float d = 0F;
-	            if (entitylivingbaseIn.func_213287_bg()) {
+	            if (entitylivingbaseIn.shouldRenderSneaking()) {
 	            	d = 0.25F;
 	            }
 	            
@@ -40,7 +40,7 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
                 GlStateManager.rotatef(-f, 0.0F, 1.0F, 0.0F);
                 float f2 = 1.3333334F;
                 GlStateManager.scalef(f2, f2, f2);
-                this.func_215332_c().renderDeadmau5Head(0.0625F);
+                this.getEntityModel().renderDeadmau5Head(0.0625F);
                 GlStateManager.popMatrix();
 	        }
 	    } 

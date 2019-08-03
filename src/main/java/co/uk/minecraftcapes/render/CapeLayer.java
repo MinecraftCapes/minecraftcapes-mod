@@ -23,7 +23,7 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
       super(p_i50950_1_);
    }
 
-   public void func_212842_a_(AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {	   
+   public void render(AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {	   
 	  ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(entitylivingbaseIn);	  
       if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(PlayerModelPart.CAPE) && rl != null) {
          ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
@@ -32,7 +32,7 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
         	float capeFloat = 0.125F;
         	float capeHeight = 0.0F;            	
      	
-        	if (entitylivingbaseIn.func_213287_bg()) {                	
+        	if (entitylivingbaseIn.shouldRenderSneaking()) {                	
         		if(entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof ArmorItem) {                		
         			capeFloat -= 0.1F;
         			capeHeight -= 0.05F;
@@ -43,12 +43,12 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
         	}
         	 
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-			this.func_215333_a(rl);
+			this.bindTexture(rl);
 			GlStateManager.pushMatrix();
 			GlStateManager.translatef(0.0F, capeHeight, capeFloat);
-			double d0 = MathHelper.func_219803_d((double)partialTicks, entitylivingbaseIn.prevChasingPosX, entitylivingbaseIn.chasingPosX) - MathHelper.func_219803_d((double)partialTicks, entitylivingbaseIn.prevPosX, entitylivingbaseIn.posX);
-			double d1 = MathHelper.func_219803_d((double)partialTicks, entitylivingbaseIn.prevChasingPosY, entitylivingbaseIn.chasingPosY) - MathHelper.func_219803_d((double)partialTicks, entitylivingbaseIn.prevPosY, entitylivingbaseIn.posY);
-			double d2 = MathHelper.func_219803_d((double)partialTicks, entitylivingbaseIn.prevChasingPosZ, entitylivingbaseIn.chasingPosZ) - MathHelper.func_219803_d((double)partialTicks, entitylivingbaseIn.prevPosZ, entitylivingbaseIn.posZ);
+			double d0 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevChasingPosX, entitylivingbaseIn.chasingPosX) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevPosX, entitylivingbaseIn.posX);
+			double d1 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevChasingPosY, entitylivingbaseIn.chasingPosY) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevPosY, entitylivingbaseIn.posY);
+			double d2 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevChasingPosZ, entitylivingbaseIn.chasingPosZ) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevPosZ, entitylivingbaseIn.posZ);
 			float f = entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset);
 			double d3 = (double)MathHelper.sin(f * ((float)Math.PI / 180F));
 			double d4 = (double)(-MathHelper.cos(f * ((float)Math.PI / 180F)));
@@ -62,9 +62,9 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
 			   f2 = 0.0F;
 			}
 			
-			float f4 = MathHelper.func_219799_g(partialTicks, entitylivingbaseIn.prevCameraYaw, entitylivingbaseIn.cameraYaw);
-			f1 = f1 + MathHelper.sin(MathHelper.func_219799_g(partialTicks, entitylivingbaseIn.prevDistanceWalkedModified, entitylivingbaseIn.distanceWalkedModified) * 6.0F) * 32.0F * f4;
-			if (entitylivingbaseIn.func_213287_bg()) {
+			float f4 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCameraYaw, entitylivingbaseIn.cameraYaw);
+			f1 = f1 + MathHelper.sin(MathHelper.lerp(partialTicks, entitylivingbaseIn.prevDistanceWalkedModified, entitylivingbaseIn.distanceWalkedModified) * 6.0F) * 32.0F * f4;
+			if (entitylivingbaseIn.shouldRenderSneaking()) {
 			   f1 += 25.0F;
 			}
 			
@@ -72,7 +72,7 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
 			GlStateManager.rotatef(f3 / 2.0F, 0.0F, 0.0F, 1.0F);
 			GlStateManager.rotatef(-f3 / 2.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-			this.func_215332_c().renderCape(0.0625F);
+			this.getEntityModel().renderCape(0.0625F);
 			GlStateManager.popMatrix();
          }
       }

@@ -30,7 +30,7 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
       super(p_i50942_1_);
    }
 
-   public void func_212842_a_(T p_212842_1_, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
+   public void render(T p_212842_1_, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
       ItemStack itemstack = p_212842_1_.getItemStackFromSlot(EquipmentSlotType.CHEST);      
       if (itemstack.getItem() == Items.ELYTRA) {
          GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -40,20 +40,20 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
             AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity)p_212842_1_;
             ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(abstractclientplayerentity);
             if (rl != null) {
-               this.func_215333_a(rl);            
+               this.bindTexture(rl);            
             } else {
-               this.func_215333_a(TEXTURE_ELYTRA);
+               this.bindTexture(TEXTURE_ELYTRA);
             }
          } else {
-            this.func_215333_a(TEXTURE_ELYTRA);
+            this.bindTexture(TEXTURE_ELYTRA);
          }
 
          GlStateManager.pushMatrix();
          GlStateManager.translatef(0.0F, 0.0F, 0.125F);
-         this.modelElytra.func_212844_a_(p_212842_1_, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
+         this.modelElytra.setRotationAngles(p_212842_1_, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
          this.modelElytra.render(p_212842_1_, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
          if (itemstack.isEnchanted()) {
-            ArmorLayer.func_215338_a(this::func_215333_a, p_212842_1_, this.modelElytra, p_212842_2_, p_212842_3_, p_212842_4_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
+            ArmorLayer.func_215338_a(this::bindTexture, p_212842_1_, this.modelElytra, p_212842_2_, p_212842_3_, p_212842_4_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
          }
 
          GlStateManager.disableBlend();
