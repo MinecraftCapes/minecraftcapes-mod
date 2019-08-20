@@ -33,7 +33,7 @@ public class DownloadCape {
             textureManager.loadTexture(rl, textureCape);
 		}
 	}
-		  
+	
 	public static NativeImage parseCape(NativeImage img, String uuid) {		
         int imageWidth = 64;
         int imageHeight = 32;
@@ -42,9 +42,13 @@ public class DownloadCape {
         
         final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
         
-        imgNew.copyImageData(img);
-        img.close();
-        
+	    for(int x = 0; x < img.getWidth(); x++) {
+	    	for(int y = 0; y < img.getHeight(); y++) {	    		
+	    		imgNew.setPixelRGBA(x, y, img.getPixelRGBA(x, y));
+	    	}
+	    }
+	    
+        img.close();        
         PlayerEventHandler.playersCape.put(uuid, true);
         
         return imgNew;
