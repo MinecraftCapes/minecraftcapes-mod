@@ -1,6 +1,7 @@
 package co.uk.minecraftcapes.render;
 
 import co.uk.minecraftcapes.events.PlayerEventHandler;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
@@ -12,11 +13,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import static co.uk.minecraftcapes.reference.Reference.MODID;
-
 public class LayerElytra implements LayerRenderer<EntityLivingBase>
 {
-    private static final ResourceLocation DEFAULT_TEXTURE_ELYTRA = new ResourceLocation(MODID, "elytra.png");
+    private static final ResourceLocation DEFAULT_TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
     protected final RenderLivingBase<?> renderPlayer;
     private final ModelElytra modelElytra = new ModelElytra();
 
@@ -24,11 +23,10 @@ public class LayerElytra implements LayerRenderer<EntityLivingBase>
     {
         this.renderPlayer = p_i47185_1_;
     }
-
+    
     public void render(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
-    {
-        ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-        ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(entitylivingbaseIn);
+    {    	
+        ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);        
         
         if (itemstack.getItem() == Items.ELYTRA)
         {
@@ -36,12 +34,14 @@ public class LayerElytra implements LayerRenderer<EntityLivingBase>
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-            if (rl != null)
-            {                
-                this.renderPlayer.bindTexture(rl);                
-            }
-            else
-            {
+            if (entitylivingbaseIn instanceof AbstractClientPlayer) {
+            	ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(entitylivingbaseIn);
+	            if (rl != null) {	            	
+	                this.renderPlayer.bindTexture(rl);                
+	            } else {
+	                this.renderPlayer.bindTexture(DEFAULT_TEXTURE_ELYTRA);
+	            }
+            } else {
                 this.renderPlayer.bindTexture(DEFAULT_TEXTURE_ELYTRA);
             }
 
@@ -58,7 +58,7 @@ public class LayerElytra implements LayerRenderer<EntityLivingBase>
             GlStateManager.disableBlend();
             GlStateManager.popMatrix();
         }
-    }
+    }    
 
     public boolean shouldCombineTextures()
     {

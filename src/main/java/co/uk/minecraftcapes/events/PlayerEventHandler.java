@@ -4,7 +4,6 @@ import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 import java.util.HashMap;
 
-import co.uk.minecraftcapes.player.downloader.DeleteElytra;
 import co.uk.minecraftcapes.player.downloader.DownloadCape;
 import co.uk.minecraftcapes.player.downloader.DownloadEars;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,7 +14,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PlayerEventHandler {
 	
-	private static boolean resetElytra = false;
 	public static HashMap<String, Boolean> playersCape = new HashMap<String, Boolean>();
 	public static HashMap<String, Boolean> playersEar = new HashMap<String, Boolean>();
 	
@@ -27,10 +25,6 @@ public class PlayerEventHandler {
 				String uuid = player.getUniqueID().toString().replace("-", "");
 				DownloadCape.download(uuid);
 				DownloadEars.download(uuid);
-		    	if(!resetElytra) {
-		    		DeleteElytra.delete();
-		    		resetElytra = true;
-		    	}
 			}
 		}
 	}
