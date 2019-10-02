@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,8 +29,9 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
         	float capeHeight = 0.0F;            	
         	
             if (entitylivingbaseIn.isSneaking())
-            {                	
-            	if(entitylivingbaseIn.inventory.armorItemInSlot(2).getItem() instanceof ItemArmor) {                		
+            {        
+            	ItemStack itemstack = entitylivingbaseIn.inventory.armorItemInSlot(2);
+            	if(itemstack != null && entitylivingbaseIn.inventory.armorItemInSlot(2).getItem() instanceof ItemArmor) {                		
             		capeFloat -= 0.1F;
             		capeHeight -= 0.05F;
             	} else {                		
