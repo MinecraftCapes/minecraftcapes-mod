@@ -1,7 +1,5 @@
 package co.uk.minecraftcapes.render;
 
-import java.io.File;
-
 import co.uk.minecraftcapes.player.PlayerInfo;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
