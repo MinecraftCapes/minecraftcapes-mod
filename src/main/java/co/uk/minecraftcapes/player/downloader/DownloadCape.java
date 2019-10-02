@@ -22,7 +22,7 @@ public class DownloadCape {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 	    	    	
-	    	String url = "https://www.MinecraftCapes.co.uk/getCape.php?uuid=" + uuid;
+	    	String url = "https://minecraftcapes.co.uk/getCape/" + uuid;
 		    ResourceLocation rl = new ResourceLocation("capes/" + uuid);
 		    TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();		   
 		    
