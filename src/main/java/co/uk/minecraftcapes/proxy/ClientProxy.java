@@ -17,9 +17,9 @@ public class ClientProxy implements CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new PlayerInfo());		
 		Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
 		
-		for(RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) { //Get Skin Types			
+		for(RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) { //Get Skin Types
 			render.addLayer(new LayerCape(render)); //Add Cape to ALL skins
-			render.addLayer(new Deadmau5(render)); //Assign ears to ALL skins			
+			render.addLayer(new Deadmau5(render)); //Assign ears to ALL skins							
 		}	
 	}
 }
