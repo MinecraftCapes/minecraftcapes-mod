@@ -6,7 +6,7 @@ public class Reference {
 	//Name of Mod
 	public static final String NAME = "James090500's MinecraftCapes Mod";
 	//Version of mod
-	public static final String VERSION = "9.1";
+	public static final String VERSION = "9.5";
 	//MC Version running for
 	public static final String MC_VERSION = "[1.9,1.9.4]";
 	

@@ -1,7 +1,5 @@
 package co.uk.minecraftcapes.render;
 
-import java.io.File;
-
 import co.uk.minecraftcapes.player.PlayerInfo;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -37,8 +35,8 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
             	float capeHeight = 0.0F;            	
             	
                 if (entitylivingbaseIn.isSneaking())
-                {                	
-                	if(entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ItemArmor) {                		
+                {                      	
+                	if(itemstack != null && itemstack.getItem() instanceof ItemArmor) {                		
                 		capeFloat -= 0.1F;
                 		capeHeight -= 0.05F;
                 	} else {                		

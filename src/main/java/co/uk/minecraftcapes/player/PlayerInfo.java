@@ -2,7 +2,6 @@ package co.uk.minecraftcapes.player;
 
 import java.util.HashMap;
 
-import co.uk.minecraftcapes.UpdateManager;
 import co.uk.minecraftcapes.player.downloader.DownloadCape;
 import co.uk.minecraftcapes.player.downloader.DownloadEars;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,8 +20,7 @@ public class PlayerInfo {
 	  public void onPlayerJoin(EntityJoinWorldEvent event) {
 	    if(event.getWorld().isRemote) {
 	      if(event.getEntity() instanceof EntityPlayer) {
-	        EntityPlayer player = (EntityPlayer) event.getEntity();
-	        UpdateManager.getUpdate();
+	        EntityPlayer player = (EntityPlayer) event.getEntity();	        
 	        String uuid = player.getUniqueID().toString().replace("-", "");
 	        DownloadCape.download(uuid);
 	        DownloadEars.download(uuid);
