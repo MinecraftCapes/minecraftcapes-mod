@@ -4,17 +4,12 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
-import co.uk.minecraftcapes.Reference;
 import co.uk.minecraftcapes.player.PlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 public class DownloadCape {
@@ -23,14 +18,12 @@ public class DownloadCape {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 	    	    	
-	    	String url = "https://www.MinecraftCapes.co.uk/getCape.php?uuid=" + uuid;	    		    	
+	    	String url = "https://minecraftcapes.co.uk/getCape/" + uuid;	    		    	
 		    ResourceLocation rl = new ResourceLocation("capes/" + uuid);
 		    TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();		   
 		    
 		    if(!resourceExists(rl)) {		    				    		    	
 		    	IImageBuffer iib = new IImageBuffer() {
-		    		ImageBufferDownload ibd = new ImageBufferDownload();
-			        
 			        public BufferedImage parseUserSkin(BufferedImage var1) {
 			        	return parseCape(var1, uuid);
 			        }

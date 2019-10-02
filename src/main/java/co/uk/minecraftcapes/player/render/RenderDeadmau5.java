@@ -23,12 +23,7 @@ public class RenderDeadmau5 extends RenderPlayer {
     		
     		float f2; 
 	    	for (int i = 0; i < 2; ++i)
-	        {           
-	    		float d = 0.5F;
-	            if (entitylivingbaseIn.isSneaking()) {
-	            	d = 0.4F;
-	            }
-	    		
+	        {           	    		
                 float f9 = entitylivingbaseIn.prevRotationYaw + (entitylivingbaseIn.rotationYaw - entitylivingbaseIn.prevRotationYaw) * partialTicks - (entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset) * partialTicks);
                 float f10 = entitylivingbaseIn.prevRotationPitch + (entitylivingbaseIn.rotationPitch - entitylivingbaseIn.prevRotationPitch) * partialTicks;
                 GL11.glPushMatrix();

@@ -1,14 +1,11 @@
 package co.uk.minecraftcapes.player.render;
 
-import org.ietf.jgss.GSSManager;
 import org.lwjgl.opengl.GL11;
 
 import co.uk.minecraftcapes.player.PlayerInfo;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;

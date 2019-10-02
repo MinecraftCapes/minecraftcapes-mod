@@ -8,7 +8,6 @@ import java.io.IOException;
 import co.uk.minecraftcapes.player.PlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IResource;
@@ -20,14 +19,12 @@ public class DownloadEars {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 	    	    	
-	    	String url = "https://www.minecraftcapes.co.uk/getEars.php?uuid=" + uuid;	    	
+	    	String url = "https://www.minecraftcapes.co.uk/getEars/" + uuid;	    	
 	    	ResourceLocation rl = new ResourceLocation("ears/" + uuid);
 	    	TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 	    			       
 		    if(!resourceExists(rl)) {		    		    			      		   		     
 		    	IImageBuffer iib = new IImageBuffer() {
-		    		ImageBufferDownload ibd = new ImageBufferDownload();
-		    		
 		    		public BufferedImage parseUserSkin(BufferedImage var1) {
 		    			return parseEars(var1, uuid);
 		    		}
