@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "co.uk.minecraftcapes.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "MixinPlayerEntityRenderer",
+    "MixinPlayerJoinWorld"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
