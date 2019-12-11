@@ -16,8 +16,8 @@ public class DownloadEars {
 		
 	    if ((uuid != null) && (!uuid.isEmpty())) {
 	    	    	
-	    	String url = "https://MinecraftCapes.co.uk/getEars/" + uuid;	    	
-	    	
+	    	String url = "https://minecraftcapes.co.uk/getEars/" + uuid;
+
 	    	Identifier rl = new Identifier(MODID, "ears/" + uuid);
 	    	TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
 	    			           			      		   		     
@@ -36,11 +36,12 @@ public class DownloadEars {
 	public static NativeImage parseEars(NativeImage img, String uuid) {
 	    NativeImage imgNew = new NativeImage(64, 64, true);
 	    
-	    for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
-	    	for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {	    		
-	    		imgNew.setPixelRgba(24 + imgWidth, imgHeight, img.getPixelRgba(imgWidth, imgHeight));
+	    for(int h = 0; h < img.getHeight(); h++) {
+	    	for(int w = 0; w < img.getWidth(); w++) {
+	    		imgNew.setPixelRgba(24 + w, h, img.getPixelRgba(w, h));
 	    	}
-	    }			  
+	    }			
+	    
 	    img.close();
 	    PlayerEventHandler.playersEar.put(uuid, true);
 	    
