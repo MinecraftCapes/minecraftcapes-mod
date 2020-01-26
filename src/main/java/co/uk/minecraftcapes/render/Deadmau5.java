@@ -34,7 +34,13 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
             p_225628_1_.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(f));
             p_225628_1_.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(f1));
             p_225628_1_.func_227861_a_((double)(0.375F * (float)(j * 2 - 1)), 0.0D, 0.0D);
-            p_225628_1_.func_227861_a_(0.0D, -0.375D, 0.0D);
+
+            double height = -0.375D;
+            if(p_225628_4_.isCrouching()) {
+            	height = -0.1;
+            }
+            
+            p_225628_1_.func_227861_a_(0.0D, height, 0.0D);
             p_225628_1_.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-f1));
             p_225628_1_.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-f));
             p_225628_1_.func_227862_a_(1.3333334F, 1.3333334F, 1.3333334F);
