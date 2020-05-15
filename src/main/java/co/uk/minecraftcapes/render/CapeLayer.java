@@ -27,17 +27,17 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
       super(p_i50950_1_);
    }
 
-   public void func_225628_a_(MatrixStack p_225628_1_, IRenderTypeBuffer p_225628_2_, int p_225628_3_, AbstractClientPlayerEntity p_225628_4_, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_) {
-	   ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(p_225628_4_);
-      if (!p_225628_4_.isInvisible() && p_225628_4_.isWearing(PlayerModelPart.CAPE) && rl != null) {
-         ItemStack itemstack = p_225628_4_.getItemStackFromSlot(EquipmentSlotType.CHEST);
+   public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+      ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(entitylivingbaseIn);
+      if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(PlayerModelPart.CAPE) && rl != null) {
+         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
          if (itemstack.getItem() != Items.ELYTRA) {
-            p_225628_1_.func_227860_a_();
-            p_225628_1_.func_227861_a_(0.0D, 0.0D, 0.125D);
-            double d0 = MathHelper.lerp((double)p_225628_7_, p_225628_4_.prevChasingPosX, p_225628_4_.chasingPosX) - MathHelper.lerp((double)p_225628_7_, p_225628_4_.prevPosX, p_225628_4_.func_226277_ct_());
-            double d1 = MathHelper.lerp((double)p_225628_7_, p_225628_4_.prevChasingPosY, p_225628_4_.chasingPosY) - MathHelper.lerp((double)p_225628_7_, p_225628_4_.prevPosY, p_225628_4_.func_226278_cu_());
-            double d2 = MathHelper.lerp((double)p_225628_7_, p_225628_4_.prevChasingPosZ, p_225628_4_.chasingPosZ) - MathHelper.lerp((double)p_225628_7_, p_225628_4_.prevPosZ, p_225628_4_.func_226281_cx_());
-            float f = p_225628_4_.prevRenderYawOffset + (p_225628_4_.renderYawOffset - p_225628_4_.prevRenderYawOffset);
+            matrixStackIn.push();
+            matrixStackIn.translate(0.0D, 0.0D, 0.125D);
+            double d0 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevChasingPosX, entitylivingbaseIn.chasingPosX) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevPosX, entitylivingbaseIn.getPosX());
+            double d1 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevChasingPosY, entitylivingbaseIn.chasingPosY) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevPosY, entitylivingbaseIn.getPosY());
+            double d2 = MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevChasingPosZ, entitylivingbaseIn.chasingPosZ) - MathHelper.lerp((double)partialTicks, entitylivingbaseIn.prevPosZ, entitylivingbaseIn.getPosZ());
+            float f = entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset);
             double d3 = (double)MathHelper.sin(f * ((float)Math.PI / 180F));
             double d4 = (double)(-MathHelper.cos(f * ((float)Math.PI / 180F)));
             float f1 = (float)d1 * 10.0F;
@@ -50,18 +50,18 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
                f2 = 0.0F;
             }
 
-            float f4 = MathHelper.lerp(p_225628_7_, p_225628_4_.prevCameraYaw, p_225628_4_.cameraYaw);
-            f1 = f1 + MathHelper.sin(MathHelper.lerp(p_225628_7_, p_225628_4_.prevDistanceWalkedModified, p_225628_4_.distanceWalkedModified) * 6.0F) * 32.0F * f4;
-            if (p_225628_4_.isCrouching()) {
+            float f4 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevCameraYaw, entitylivingbaseIn.cameraYaw);
+            f1 = f1 + MathHelper.sin(MathHelper.lerp(partialTicks, entitylivingbaseIn.prevDistanceWalkedModified, entitylivingbaseIn.distanceWalkedModified) * 6.0F) * 32.0F * f4;
+            if (entitylivingbaseIn.isCrouching()) {
                f1 += 25.0F;
             }
 
-            p_225628_1_.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(6.0F + f2 / 2.0F + f1));
-            p_225628_1_.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(f3 / 2.0F));
-            p_225628_1_.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180.0F - f3 / 2.0F));
-            IVertexBuilder ivertexbuilder = p_225628_2_.getBuffer(RenderType.func_228634_a_(rl));
-            this.getEntityModel().func_228289_b_(p_225628_1_, ivertexbuilder, p_225628_3_, OverlayTexture.field_229196_a_);
-            p_225628_1_.func_227865_b_();
+            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
+            matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f3 / 2.0F));
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - f3 / 2.0F));
+            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(rl));
+            this.getEntityModel().renderCape(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY);
+            matrixStackIn.pop();
          }
       }
    }

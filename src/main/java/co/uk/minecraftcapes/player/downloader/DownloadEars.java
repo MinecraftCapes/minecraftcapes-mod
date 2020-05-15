@@ -1,49 +1,53 @@
 package co.uk.minecraftcapes.player.downloader;
 
-import static co.uk.minecraftcapes.reference.Reference.MODID;
-
 import co.uk.minecraftcapes.events.PlayerEventHandler;
 import co.uk.minecraftcapes.helpers.Downloader;
 import co.uk.minecraftcapes.helpers.IImageBuffer;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.UUID;
+
+import static co.uk.minecraftcapes.reference.Reference.MODID;
+
 public class DownloadEars {
- 
-	public static void download(final String uuid) {
-		
-	    if ((uuid != null) && (!uuid.isEmpty())) {
-	    	    	
-	    	String url = "https://minecraftcapes.co.uk/getEars/" + uuid;	    	
+
+	private static UUID playerUUID;
+
+	public static void download(final UUID uuid) {
+		playerUUID = uuid;
+		if(playerUUID != null) {
+	    	String url = "https://minecraftcapes.co.uk/getEars/" + uuid.toString().replace("-", "");
 	    	
 	    	ResourceLocation rl = new ResourceLocation(MODID, "ears/" + uuid);
 	    	TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-	    			           			      		   		     
-	    	IImageBuffer iib = new IImageBuffer() {	    				    		
-	    		public NativeImage parseTexture(NativeImage img) {
-	    			return parseEars(img, uuid);
-	    		}
-	    	};
 	    		    	
-	    	Downloader textureEars = new Downloader(url, null, iib);
-	    	textureManager.func_229263_a_(rl, textureEars);		    	
+	    	Downloader textureEars = new Downloader(url, null, iImageBuffer);
+	    	textureManager.loadTexture(rl, textureEars);
 		}
 	}
-	
-	public static NativeImage parseEars(NativeImage img, String uuid) {
-	    NativeImage imgNew = new NativeImage(64, 64, true);
-	    
-	    for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
-	    	for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {	    		
-	    		imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
-	    	}
-	    }
-	    
-	    img.close();
-	    PlayerEventHandler.playersEar.put(uuid, true);
-	    
-	    return imgNew;
-    }
+
+	private static final IImageBuffer iImageBuffer = new IImageBuffer() {
+		@Override
+		public NativeImage parseTexture(NativeImage img) {
+			NativeImage imgNew = new NativeImage(64, 64, true);
+
+			for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
+				for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {
+					imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
+				}
+			}
+
+			img.close();
+			PlayerEventHandler.setEars(playerUUID);
+
+			return imgNew;
+		}
+
+		@Override
+		public void handleAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {}
+	};
 }

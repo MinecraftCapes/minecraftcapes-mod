@@ -1,21 +1,28 @@
 package co.uk.minecraftcapes.helpers;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nullable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Downloader extends SimpleTexture
 {
@@ -30,26 +37,21 @@ public class Downloader extends SimpleTexture
     private Thread imageThread;
     private boolean textureUploaded;
     
-    public Downloader(String imageUrlIn, ResourceLocation textureResourceLocation, IImageBuffer imageBufferIn)
-    {
+    public Downloader(String imageUrlIn, ResourceLocation textureResourceLocation, IImageBuffer imageBufferIn) {
         super(textureResourceLocation);
         this.imageUrl = imageUrlIn;
         this.imageBuffer = imageBufferIn;
     }
 
     
-    private void checkTextureUploaded()
-    {
-        if (!this.textureUploaded)
-        {
-            if (this.nativeImage != null)
-            {
-                if (this.textureLocation != null)
-                {
+    private void checkTextureUploaded() {
+        if (!this.textureUploaded) {
+            if (this.nativeImage != null) {
+                if (this.textureLocation != null) {
                     this.deleteGlTexture();
                 }
 
-                TextureUtil.func_225680_a_(super.getGlTextureId(), this.nativeImage.getWidth(), this.nativeImage.getHeight());
+                TextureUtil.prepareImage(super.getGlTextureId(), this.nativeImage.getWidth(), this.nativeImage.getHeight());
                 this.nativeImage.uploadTextureSub(0, 0, 0, false);
                 this.textureUploaded = true;
             }
@@ -68,60 +70,78 @@ public class Downloader extends SimpleTexture
 
     public void loadTexture(IResourceManager resourceManager) throws IOException
     {
-        if (this.nativeImage == null && this.textureLocation != null)
-        {
+        if (this.nativeImage == null && this.textureLocation != null) {
             super.loadTexture(resourceManager);
         }
 
-        if (this.imageThread == null)
-        {
+        if (this.imageThread == null) {
             this.loadTextureFromServer();
         }
     }
 
-    protected void loadTextureFromServer()
-    {
-    	
+    protected void loadTextureFromServer() {
     	if(Downloader.this.imageUrl == null) {
     		return;
     	}
     	
-        this.imageThread = new Thread("Texture Downloader #" + TEXTURE_DOWNLOADER_THREAD_ID.incrementAndGet())
-        {
-            public void run()
-            {
+        this.imageThread = new Thread("Texture Downloader #" + TEXTURE_DOWNLOADER_THREAD_ID.incrementAndGet()) {
+            public void run() {
                 HttpURLConnection httpurlconnection = null;
                 Downloader.LOGGER.debug("Downloading http texture from {}", Downloader.this.imageUrl);
 
-                try
-                {
+                try {
                     httpurlconnection = (HttpURLConnection)(new URL(Downloader.this.imageUrl)).openConnection(Minecraft.getInstance().getProxy());
                     httpurlconnection.setDoInput(true);
                     httpurlconnection.setDoOutput(false);
                     httpurlconnection.connect();
 
-                    if (httpurlconnection.getResponseCode() / 100 == 2)
-                    {
-                        NativeImage nativeImage;
-                        nativeImage = NativeImage.read(httpurlconnection.getInputStream());                        
-                        nativeImage = Downloader.this.imageBuffer.parseTexture(nativeImage);
-                        
-                        Downloader.this.setNativeImage(nativeImage);                        
-                        
-                        Downloader.LOGGER.debug("Downloading complete. Image loaded in {}", nativeImage);
-                        
-                        return;
+                    if (httpurlconnection.getResponseCode() / 100 == 2) {
+                        //If PNG (Static Cape) else GIF (Animated)
+                        if(httpurlconnection.getContentType().equalsIgnoreCase("image/png")) {
+                            NativeImage nativeImage;
+                            nativeImage = NativeImage.read(httpurlconnection.getInputStream());
+                            nativeImage = Downloader.this.imageBuffer.parseTexture(nativeImage);
+
+                            Downloader.this.setNativeImage(nativeImage);
+
+                            Downloader.LOGGER.debug("Downloading complete. Image loaded in {}", nativeImage);
+                            return;
+                        } else if(httpurlconnection.getContentType().equalsIgnoreCase("image/gif")) {
+                            ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
+                            ImageInputStream imageInputStream = ImageIO.createImageInputStream(httpurlconnection.getInputStream());
+                            reader.setInput(imageInputStream);
+
+                            BufferedImage mergedImg = null;
+                            Int2ObjectMap<NativeImage> animatedCape = new Int2ObjectOpenHashMap<>();
+                            for(int i = 0; i < reader.getNumImages(true); i++) {
+                                //Gets the current image and the previous image (if any)
+                                BufferedImage newImg = reader.read(i);
+                                if(i == 0) mergedImg = newImg;
+
+                                //Merges the old and new image together. Otherwise you get a corrupt cape
+                                mergedImg.getGraphics().drawImage(newImg, 0, 0, null);
+
+                                //Creates a NativeImage from the BufferedImage and adds it to the map
+                                NativeImage nativeImage = new NativeImage(mergedImg.getWidth(), mergedImg.getHeight(), true);
+                                for (int x = 0; x < mergedImg.getWidth(); x++) {
+                                    for (int y = 0; y < mergedImg.getHeight(); y++) {
+                                        Color color = new Color(mergedImg.getRGB(x, y));
+                                        nativeImage.setPixelRGBA(x, y, NativeImage.getCombined(color.getAlpha(), color.getBlue(), color.getGreen(), color.getRed()));
+                                    }
+                                }
+                                animatedCape.put(i, nativeImage);
+                            }
+                            Downloader.this.imageBuffer.handleAnimatedCape(animatedCape);
+
+                            Downloader.LOGGER.debug("Downloading complete. Animated Image loaded");
+                            return;
+                        }
                     }
-                }
-                catch (Exception exception)
-                {
+                } catch (Exception exception) {
                     Downloader.LOGGER.error("Couldn't download http texture", (Throwable)exception);
                     return;
-                }
-                finally
-                {
-                    if (httpurlconnection != null)
-                    {
+                } finally {
+                    if (httpurlconnection != null) {
                     	Downloader.LOGGER.debug("Disconnected from {}", httpurlconnection.getURL().toString());
                         httpurlconnection.disconnect();
                     }
@@ -130,5 +150,12 @@ public class Downloader extends SimpleTexture
         };
         this.imageThread.setDaemon(true);
         this.imageThread.start();
+    }
+
+    private static BufferedImage makeImageForIndex(BufferedImage oldImg, BufferedImage newImg) {
+        BufferedImage mergedImg = new BufferedImage(oldImg.getWidth(), oldImg.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        newImg.getGraphics().drawImage(oldImg, 0, 0, null);
+
+        return newImg;
     }
 }

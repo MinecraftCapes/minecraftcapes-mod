@@ -19,12 +19,10 @@ public class MinecraftCapes {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-
 	public static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
 	public MinecraftCapes() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(MinecraftCapes::enqueueIMC);
-
         proxy.init();
 	}
 	
@@ -32,8 +30,6 @@ public class MinecraftCapes {
 	@SubscribeEvent
 	public static void enqueueIMC(InterModEnqueueEvent event) {
 		proxy.enqueueIMC();
-
-
 	}
 
 	public static Logger getLogger(){
