@@ -36,7 +36,6 @@ public class DownloadEars {
 					imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
 				}
 			}
-
 			img.close();
 			PlayerHandler.getPlayer(playerUUID).setHasEars(true);
 			return imgNew;

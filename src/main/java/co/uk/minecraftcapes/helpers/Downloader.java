@@ -17,6 +17,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -114,7 +115,7 @@ public class Downloader extends SimpleTexture
                             for(int i = 0; i < reader.getNumImages(true); i++) {
                                 //Gets the current image and the previous image (if any)
                                 BufferedImage newImg = reader.read(i);
-                                if(i == 0) mergedImg = newImg;
+                                if(i == 0) mergedImg = new BufferedImage(newImg.getWidth(), newImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
                                 //Merges the old and new image together. Otherwise you get a corrupt cape
                                 mergedImg.getGraphics().drawImage(newImg, 0, 0, null);
@@ -123,10 +124,11 @@ public class Downloader extends SimpleTexture
                                 NativeImage nativeImage = new NativeImage(mergedImg.getWidth(), mergedImg.getHeight(), true);
                                 for (int x = 0; x < mergedImg.getWidth(); x++) {
                                     for (int y = 0; y < mergedImg.getHeight(); y++) {
-                                        Color color = new Color(mergedImg.getRGB(x, y));
+                                        Color color = new Color(mergedImg.getRGB(x, y), true);
                                         nativeImage.setPixelRGBA(x, y, NativeImage.getCombined(color.getAlpha(), color.getBlue(), color.getGreen(), color.getRed()));
                                     }
                                 }
+                                System.out.println(new Color(mergedImg.getRGB(4, 16), true).toString());
                                 animatedCape.put(i, nativeImage);
                             }
                             Downloader.this.imageBuffer.handleAnimatedCape(animatedCape);

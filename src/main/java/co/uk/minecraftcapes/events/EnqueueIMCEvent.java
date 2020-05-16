@@ -33,7 +33,7 @@ public class EnqueueIMCEvent {
                 }
                 ObfuscationReflectionHelper.setPrivateValue(LivingRenderer.class, render, layerRenderers, "field_177097_h");
 
-                //This changes deadmau5 ears to look better
+                //This makes deadmau5 ears look better
                 ModelRenderer bipedDeadmau5Head = new ModelRenderer(render.getEntityModel(), 24, 0);
                 bipedDeadmau5Head.addBox(1.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
                 bipedDeadmau5Head.addBox(-7.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);

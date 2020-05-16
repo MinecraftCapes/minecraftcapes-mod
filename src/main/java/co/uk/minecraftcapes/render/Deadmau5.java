@@ -23,7 +23,7 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
       ResourceLocation rl = PlayerHandler.getPlayer(entitylivingbaseIn.getUniqueID()).getEarLocation();
       if (rl != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
-         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(entitylivingbaseIn.getLocationSkin()));
+         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(rl));
          int i = LivingRenderer.getPackedOverlay(entitylivingbaseIn, 0.0F);
 
          matrixStackIn.push();
