@@ -1,10 +1,5 @@
 package co.uk.minecraftcapes;
 
-import static co.uk.minecraftcapes.reference.Reference.MODID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import co.uk.minecraftcapes.proxy.ClientProxy;
 import co.uk.minecraftcapes.proxy.IProxy;
 import co.uk.minecraftcapes.proxy.ServerProxy;
@@ -13,6 +8,10 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 @Mod(MODID)
 public class MinecraftCapes {

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -21,18 +22,23 @@ public class EnqueueIMCEvent {
 
         for(PlayerRenderer render : Minecraft.getInstance().getRenderManager().getSkinMap().values()) { //Get Skin Types
 
-            //This removes the Elytra layer from the skinmaps
             try {
+                //This removes the Elytra layer from the skinmaps
                 List<LayerRenderer<?, ?>> layerRenderers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, render, "field_177097_h");
-
                 ListIterator<LayerRenderer<?, ?>> it = layerRenderers.listIterator();
                 while(it.hasNext()) {
                     if(it.next() instanceof net.minecraft.client.renderer.entity.layers.ElytraLayer) {
                         it.remove();
                     }
                 }
-
                 ObfuscationReflectionHelper.setPrivateValue(LivingRenderer.class, render, layerRenderers, "field_177097_h");
+
+                //This changes deadmau5 ears to look better
+                ModelRenderer bipedDeadmau5Head = new ModelRenderer(render.getEntityModel(), 24, 0);
+                bipedDeadmau5Head.addBox(1.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
+                bipedDeadmau5Head.addBox(-7.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
+                bipedDeadmau5Head.setRotationPoint(0.0F, 0.0F, 0.0F);
+                ObfuscationReflectionHelper.setPrivateValue(PlayerModel.class, render.getEntityModel(), bipedDeadmau5Head, "field_178736_x");
             } catch (Exception e) {
                 e.printStackTrace();
             }

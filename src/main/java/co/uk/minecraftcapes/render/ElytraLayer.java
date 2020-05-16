@@ -1,11 +1,8 @@
 package co.uk.minecraftcapes.render;
 
-import static co.uk.minecraftcapes.reference.Reference.MODID;
-
+import co.uk.minecraftcapes.helpers.PlayerHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -38,7 +35,7 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
 			ResourceLocation resourcelocation;
 			if (entitylivingbaseIn instanceof AbstractClientPlayerEntity) {
 				AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity)entitylivingbaseIn;
-				ResourceLocation rl = PlayerEventHandler.getCapeResourceLocation(abstractclientplayerentity);
+				ResourceLocation rl = PlayerHandler.getPlayer(abstractclientplayerentity.getUniqueID()).getCapeLocation();
 				if (abstractclientplayerentity.hasPlayerInfo() && rl != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
 					resourcelocation = rl;
 				} else {

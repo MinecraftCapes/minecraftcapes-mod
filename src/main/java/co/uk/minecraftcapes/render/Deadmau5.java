@@ -1,9 +1,8 @@
 package co.uk.minecraftcapes.render;
 
+import co.uk.minecraftcapes.helpers.PlayerHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -22,27 +21,18 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
    }
 
    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-      ResourceLocation rl = PlayerEventHandler.getEarResourceLocation(entitylivingbaseIn);
+      ResourceLocation rl = PlayerHandler.getPlayer(entitylivingbaseIn.getUniqueID()).getEarLocation();
       if (rl != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
          IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(entitylivingbaseIn.getLocationSkin()));
          int i = LivingRenderer.getPackedOverlay(entitylivingbaseIn, 0.0F);
 
-         for(int j = 0; j < 2; ++j) {
-            float f = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevRotationYaw, entitylivingbaseIn.rotationYaw) - MathHelper.lerp(partialTicks, entitylivingbaseIn.prevRenderYawOffset, entitylivingbaseIn.renderYawOffset);
-            float f1 = MathHelper.lerp(partialTicks, entitylivingbaseIn.prevRotationPitch, entitylivingbaseIn.rotationPitch);
-            matrixStackIn.push();
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f));
-            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f1));
-            matrixStackIn.translate((double)(0.375F * (float)(j * 2 - 1)), 0.0D, 0.0D);
-            matrixStackIn.translate(0.0D, -0.375D, 0.0D);
-            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-f1));
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-f));
-            float f2 = 1.3333334F;
-            matrixStackIn.scale(1.3333334F, 1.3333334F, 1.3333334F);
-            this.getEntityModel().renderEars(matrixStackIn, ivertexbuilder, packedLightIn, i);
-            matrixStackIn.pop();
+         matrixStackIn.push();
+         if(entitylivingbaseIn.isCrouching()) {
+            matrixStackIn.translate(0.0F, 0.25F, 0.0F);
          }
-
+         matrixStackIn.scale(1.3333334F, 1.3333334F, 1.3333334F);
+         this.getEntityModel().renderEars(matrixStackIn, ivertexbuilder, packedLightIn, i);
+         matrixStackIn.pop();
       }
    }
 }
