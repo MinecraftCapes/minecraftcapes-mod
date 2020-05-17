@@ -41,8 +41,8 @@ public class PlayerEventHandler {
 						playerHandler.setHasInfo(true);
 
 						if (profileResult.cape != null) {
-							//DownloadCape.download(profileResult.cape, playerUUID);
-							DownloadCape.download("https://i.imgur.com/bwFD4R4.gif", playerHandler); //HD Animated
+							DownloadCape.download(profileResult.cape, playerHandler);
+							//DownloadCape.download("https://i.imgur.com/bwFD4R4.gif", playerHandler); //HD Animated
 							//DownloadCape.download("https://i.imgur.com/FPNyJO3.gif", playerUUID); //Regular animated
 							//DownloadCape.download("https://i.imgur.com/x7CLeWj.gif", playerUUID); //NintenAnimated
 						}
