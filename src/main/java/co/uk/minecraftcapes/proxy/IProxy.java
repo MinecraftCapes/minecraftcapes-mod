@@ -1,7 +1,10 @@
 package co.uk.minecraftcapes.proxy;
 
 public interface IProxy {
-    void init();
 
-    void enqueueIMC();
+    default void init() {};
+
+    default void setup() {};
+
+    default void enqueueIMC() {};
 }

@@ -1,6 +1,7 @@
 package co.uk.minecraftcapes.render;
 
-import co.uk.minecraftcapes.helpers.PlayerHandler;
+import co.uk.minecraftcapes.capabilities.PlayerHandler;
+import co.uk.minecraftcapes.capabilities.PlayerHandlerCapability;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -22,12 +23,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
+
    public CapeLayer(IEntityRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> p_i50950_1_) {
       super(p_i50950_1_);
    }
 
    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-      ResourceLocation rl = PlayerHandler.getPlayer(entitylivingbaseIn.getUniqueID()).getCapeLocation();
+      PlayerHandler playerHandler = entitylivingbaseIn.getCapability(PlayerHandlerCapability.capability).orElse(null);
+      ResourceLocation rl = playerHandler.getCapeLocation();
       if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(PlayerModelPart.CAPE) && rl != null) {
          ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
          if (itemstack.getItem() != Items.ELYTRA) {

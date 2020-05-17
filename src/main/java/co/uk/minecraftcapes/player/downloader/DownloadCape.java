@@ -1,9 +1,8 @@
 package co.uk.minecraftcapes.player.downloader;
 
+import co.uk.minecraftcapes.capabilities.PlayerHandler;
 import co.uk.minecraftcapes.helpers.Downloader;
 import co.uk.minecraftcapes.helpers.IImageBuffer;
-import co.uk.minecraftcapes.helpers.PlayerHandler;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -15,26 +14,19 @@ import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 public class DownloadCape {
 
-	private static UUID playerUUID;
-
-	public static void download(String capeUrl, UUID playerUUID) {
-		DownloadCape.playerUUID = playerUUID;
+	public static void download(String capeUrl, PlayerHandler playerHandler) {
+		UUID playerUUID = playerHandler.getPlayerUUID();
 	    if(playerUUID != null) {
 		    ResourceLocation rl = new ResourceLocation(MODID, "capes/" + playerUUID);
 		    TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-		    Downloader textureCape = new Downloader(capeUrl, null, iImageBuffer);
+		    Downloader textureCape = new Downloader(capeUrl, null, iImageBuffer, playerHandler);
             textureManager.loadTexture(rl, textureCape);
 		}
 	}
 
 	private static final IImageBuffer iImageBuffer = new IImageBuffer() {
 		@Override
-		public void handleAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {
-			PlayerHandler.getPlayer(playerUUID).setAnimatedCape(animatedCape);
-		}
-
-		@Override
-		public NativeImage parseTexture(NativeImage img) {
+		public NativeImage parseTexture(NativeImage img, PlayerHandler playerHandler) {
 			int imageWidth = 64;
 			int imageHeight = 32;
 
@@ -47,8 +39,8 @@ public class DownloadCape {
 				}
 			}
 
+			playerHandler.setHasStaticCape(true);
 			img.close();
-			PlayerHandler.getPlayer(playerUUID).setHasStaticCape(true);
 			return imgNew;
 		}
 	};

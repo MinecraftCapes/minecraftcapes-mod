@@ -1,6 +1,7 @@
 package co.uk.minecraftcapes.render;
 
-import co.uk.minecraftcapes.helpers.PlayerHandler;
+import co.uk.minecraftcapes.capabilities.PlayerHandler;
+import co.uk.minecraftcapes.capabilities.PlayerHandlerCapability;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -32,15 +33,12 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
 		if (itemstack.getItem() == Items.ELYTRA) {
+			PlayerHandler playerHandler = entitylivingbaseIn.getCapability(PlayerHandlerCapability.capability).orElse(null);
+			AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity)entitylivingbaseIn;
+			ResourceLocation earLocation = playerHandler.getEarLocation();
 			ResourceLocation resourcelocation;
-			if (entitylivingbaseIn instanceof AbstractClientPlayerEntity) {
-				AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity)entitylivingbaseIn;
-				ResourceLocation rl = PlayerHandler.getPlayer(abstractclientplayerentity.getUniqueID()).getCapeLocation();
-				if (abstractclientplayerentity.hasPlayerInfo() && rl != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
-					resourcelocation = rl;
-				} else {
-					resourcelocation = TEXTURE_ELYTRA;
-				}
+			if (abstractclientplayerentity.hasPlayerInfo() && earLocation != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
+				resourcelocation = earLocation;
 			} else {
 				resourcelocation = TEXTURE_ELYTRA;
 			}

@@ -1,5 +1,7 @@
 package co.uk.minecraftcapes.helpers;
 
+import co.uk.minecraftcapes.MinecraftCapes;
+import co.uk.minecraftcapes.capabilities.PlayerHandler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -8,8 +10,6 @@ import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -17,15 +17,13 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Downloader extends SimpleTexture
-{
-    private static final Logger LOGGER = LogManager.getLogger();
+public class Downloader extends SimpleTexture {
+
     private static final AtomicInteger TEXTURE_DOWNLOADER_THREAD_ID = new AtomicInteger(0);
     private final String imageUrl;
     @Nullable
@@ -35,11 +33,13 @@ public class Downloader extends SimpleTexture
     @Nullable
     private Thread imageThread;
     private boolean textureUploaded;
+    private PlayerHandler playerHandler;
     
-    public Downloader(String imageUrlIn, ResourceLocation textureResourceLocation, IImageBuffer imageBufferIn) {
+    public Downloader(String imageUrlIn, ResourceLocation textureResourceLocation, IImageBuffer imageBufferIn, PlayerHandler playerHandler) {
         super(textureResourceLocation);
         this.imageUrl = imageUrlIn;
         this.imageBuffer = imageBufferIn;
+        this.playerHandler = playerHandler;
     }
 
     
@@ -86,7 +86,7 @@ public class Downloader extends SimpleTexture
         this.imageThread = new Thread("Texture Downloader #" + TEXTURE_DOWNLOADER_THREAD_ID.incrementAndGet()) {
             public void run() {
                 HttpURLConnection httpurlconnection = null;
-                Downloader.LOGGER.debug("Downloading http texture from {}", Downloader.this.imageUrl);
+                MinecraftCapes.getLogger().debug("Downloading http texture from {}", Downloader.this.imageUrl);
 
                 try {
                     httpurlconnection = (HttpURLConnection)(new URL(Downloader.this.imageUrl)).openConnection(Minecraft.getInstance().getProxy());
@@ -99,11 +99,11 @@ public class Downloader extends SimpleTexture
                         if(httpurlconnection.getContentType().equalsIgnoreCase("image/png")) {
                             NativeImage nativeImage;
                             nativeImage = NativeImage.read(httpurlconnection.getInputStream());
-                            nativeImage = Downloader.this.imageBuffer.parseTexture(nativeImage);
+                            nativeImage = Downloader.this.imageBuffer.parseTexture(nativeImage, playerHandler);
 
                             Downloader.this.setNativeImage(nativeImage);
 
-                            Downloader.LOGGER.debug("Downloading complete. Image loaded in {}", nativeImage);
+                            MinecraftCapes.getLogger().debug("Downloading complete. Image loaded in {}", nativeImage);
                             return;
                         } else if(httpurlconnection.getContentType().equalsIgnoreCase("image/gif")) {
                             ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
@@ -128,21 +128,20 @@ public class Downloader extends SimpleTexture
                                         nativeImage.setPixelRGBA(x, y, NativeImage.getCombined(color.getAlpha(), color.getBlue(), color.getGreen(), color.getRed()));
                                     }
                                 }
-                                System.out.println(new Color(mergedImg.getRGB(4, 16), true).toString());
                                 animatedCape.put(i, nativeImage);
                             }
-                            Downloader.this.imageBuffer.handleAnimatedCape(animatedCape);
+                            playerHandler.setAnimatedCape(animatedCape);
 
-                            Downloader.LOGGER.debug("Downloading complete. Animated Image loaded");
+                            MinecraftCapes.getLogger().debug("Downloading complete. Animated Image loaded");
                             return;
                         }
                     }
                 } catch (Exception exception) {
-                    Downloader.LOGGER.error("Couldn't download http texture", (Throwable)exception);
+                    MinecraftCapes.getLogger().error("Couldn't download http texture", (Throwable)exception);
                     return;
                 } finally {
                     if (httpurlconnection != null) {
-                    	Downloader.LOGGER.debug("Disconnected from {}", httpurlconnection.getURL().toString());
+                        MinecraftCapes.getLogger().debug("Disconnected from {}", httpurlconnection.getURL().toString());
                         httpurlconnection.disconnect();
                     }
                 }

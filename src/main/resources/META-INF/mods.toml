@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[26,)" #mandatory
+loaderVersion="[31,)" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
 issueTrackerURL="https://minecraftcapes.co.uk/discord"

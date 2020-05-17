@@ -33,7 +33,7 @@ public class EnqueueIMCEvent {
                 }
                 ObfuscationReflectionHelper.setPrivateValue(LivingRenderer.class, render, layerRenderers, "field_177097_h");
 
-                //This makes deadmau5 ears look better
+                //This makes deadmau5 ears look better when crouching/gliding/swimming
                 ModelRenderer bipedDeadmau5Head = new ModelRenderer(render.getEntityModel(), 24, 0);
                 bipedDeadmau5Head.addBox(1.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
                 bipedDeadmau5Head.addBox(-7.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
@@ -45,7 +45,7 @@ public class EnqueueIMCEvent {
 
             render.addLayer(new CapeLayer(render)); //Add Cape to ALL skins
             render.addLayer(new Deadmau5(render)); //Assign ears to ALL skins
-            render.addLayer(new ElytraLayer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>(render)); //Assign elyra
+            render.addLayer(new ElytraLayer<>(render)); //Assign Elytra
         }
     }
 }

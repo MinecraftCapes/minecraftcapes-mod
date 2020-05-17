@@ -1,9 +1,8 @@
 package co.uk.minecraftcapes.player.downloader;
 
+import co.uk.minecraftcapes.capabilities.PlayerHandler;
 import co.uk.minecraftcapes.helpers.Downloader;
 import co.uk.minecraftcapes.helpers.IImageBuffer;
-import co.uk.minecraftcapes.helpers.PlayerHandler;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -17,19 +16,19 @@ public class DownloadEars {
 
 	private static UUID playerUUID;
 
-	public static void download(String earsUrl, UUID playerUUID) {
-		DownloadEars.playerUUID = playerUUID;
+	public static void download(String earsUrl, PlayerHandler playerHandler) {
+		DownloadEars.playerUUID = playerHandler.getPlayerUUID();
 		if(playerUUID != null) {
 	    	ResourceLocation rl = new ResourceLocation(MODID, "ears/" + playerUUID);
 	    	TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-	    	Downloader textureEars = new Downloader(earsUrl, null, iImageBuffer);
+	    	Downloader textureEars = new Downloader(earsUrl, null, iImageBuffer, playerHandler);
 	    	textureManager.loadTexture(rl, textureEars);
 		}
 	}
 
 	private static final IImageBuffer iImageBuffer = new IImageBuffer() {
 		@Override
-		public NativeImage parseTexture(NativeImage img) {
+		public NativeImage parseTexture(NativeImage img, PlayerHandler playerHandler) {
 			NativeImage imgNew = new NativeImage(64, 64, true);
 			for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
 				for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {
@@ -37,11 +36,8 @@ public class DownloadEars {
 				}
 			}
 			img.close();
-			PlayerHandler.getPlayer(playerUUID).setHasEars(true);
+			playerHandler.setHasEars(true);
 			return imgNew;
 		}
-
-		@Override
-		public void handleAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {}
 	};
 }

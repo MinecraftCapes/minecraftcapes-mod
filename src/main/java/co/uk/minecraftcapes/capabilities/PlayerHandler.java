@@ -1,26 +1,29 @@
-package co.uk.minecraftcapes.helpers;
+package co.uk.minecraftcapes.capabilities;
 
+import co.uk.minecraftcapes.MinecraftCapes;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 import static co.uk.minecraftcapes.reference.Reference.MODID;
 
 public class PlayerHandler {
 
-    private UUID playerUUID;
-
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
-    @Getter @Setter private Boolean hasInfo = false;
+    @Setter @Getter private Boolean hasInfo = false;
+    @Setter @Getter private UUID playerUUID;
 
     @Getter
     private Int2ObjectMap<NativeImage> animatedCape;
@@ -30,32 +33,12 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
 
-    //Instances
-    private static HashMap<UUID, PlayerHandler> instances = new HashMap<UUID, PlayerHandler>();
-
-    /**
-     * Loads a new instance in the collection
-     * @param playerUUID Player UUID
-     */
-    public PlayerHandler(UUID playerUUID) {
-        this.playerUUID = playerUUID;
-        instances.put(playerUUID, this);
-    }
-
-    /**
-     * Get an instance statically from the Players UUID
-     * @param uuid
-     * @return PlayerHandler
-     */
-    public static PlayerHandler getPlayer(UUID uuid) {
-        return (instances.containsKey(uuid)) ? instances.get(uuid) : new PlayerHandler(uuid);
-    }
-
     /**
      * Sets the animated cape textures and loads all resources to memory
      * @param animatedCape
      */
     public void setAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {
+        MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
         this.animatedCape = animatedCape;
         this.setHasAnimatedCape(true);
         this.loadFramesToResource();
@@ -65,6 +48,7 @@ public class PlayerHandler {
      * Load all NativeImages into a ResourceLocation
      */
     private void loadFramesToResource() {
+        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
         getAnimatedCape().forEach((integer, nativeImage) -> {
             ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, integer));
             Minecraft.getInstance().getTextureManager().loadTexture(currentResource, new DynamicTexture(nativeImage));
@@ -109,5 +93,22 @@ public class PlayerHandler {
     public ResourceLocation getEarLocation() {
         ResourceLocation resourceLocation = new ResourceLocation(MODID, "ears/" + playerUUID);
         return hasEars ? resourceLocation : null;
+    }
+
+    /**
+     * Storage for capabilities
+     */
+    public static class Storage implements Capability.IStorage {
+
+        @Nullable
+        @Override
+        public INBT writeNBT(Capability capability, Object instance, Direction side) {
+            return null;
+        }
+
+        @Override
+        public void readNBT(Capability capability, Object instance, Direction side, INBT nbt) {
+
+        }
     }
 }

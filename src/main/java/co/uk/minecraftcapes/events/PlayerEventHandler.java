@@ -1,6 +1,8 @@
 package co.uk.minecraftcapes.events;
 
-import co.uk.minecraftcapes.helpers.PlayerHandler;
+import co.uk.minecraftcapes.MinecraftCapes;
+import co.uk.minecraftcapes.capabilities.PlayerHandler;
+import co.uk.minecraftcapes.capabilities.PlayerHandlerCapability;
 import co.uk.minecraftcapes.player.downloader.DownloadCape;
 import co.uk.minecraftcapes.player.downloader.DownloadEars;
 import com.google.gson.Gson;
@@ -21,13 +23,13 @@ public class PlayerEventHandler {
 	@SubscribeEvent
 	public void onPlayerJoin(EntityJoinWorldEvent event) {
 		if(event.getEntity() instanceof PlayerEntity) {
-			UUID playerUUID = event.getEntity().getUniqueID();
-			PlayerHandler playerHandler = PlayerHandler.getPlayer(playerUUID);
-			if(playerHandler.getHasInfo()) return;
+			PlayerHandler playerHandler = event.getEntity().getCapability(PlayerHandlerCapability.capability).orElse(null);
+			if(playerHandler == null || playerHandler.getHasInfo()) return;
+			playerHandler.setPlayerUUID(event.getEntity().getUniqueID());
 
 			new Thread(() -> {
 				try {
-					URL url = new URL("https://minecraftcapes.co.uk/getProfile/" + playerUUID);
+					URL url = new URL("https://minecraftcapes.co.uk/getProfile/" + playerHandler.getPlayerUUID());
 					HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
 					httpurlconnection.setDoInput(true);
 					httpurlconnection.setDoOutput(false);
@@ -40,13 +42,13 @@ public class PlayerEventHandler {
 
 						if (profileResult.cape != null) {
 							//DownloadCape.download(profileResult.cape, playerUUID);
-							DownloadCape.download("https://i.imgur.com/bwFD4R4.gif", playerUUID); //HD Animated
+							DownloadCape.download("https://i.imgur.com/bwFD4R4.gif", playerHandler); //HD Animated
 							//DownloadCape.download("https://i.imgur.com/FPNyJO3.gif", playerUUID); //Regular animated
 							//DownloadCape.download("https://i.imgur.com/x7CLeWj.gif", playerUUID); //NintenAnimated
 						}
 
 						if (profileResult.ears != null) {
-							DownloadEars.download(profileResult.ears, playerUUID);
+							DownloadEars.download(profileResult.ears, playerHandler);
 						}
 					}
 				} catch (IOException e) {
