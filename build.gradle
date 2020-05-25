@@ -93,7 +93,6 @@ dependencies {
 
     //Project Lombok
     compile "org.projectlombok:lombok:1.18.12"
-
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

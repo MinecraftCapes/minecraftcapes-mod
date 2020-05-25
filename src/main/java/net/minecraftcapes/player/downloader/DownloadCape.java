@@ -1,8 +1,8 @@
-package co.uk.minecraftcapes.player.downloader;
+package net.minecraftcapes.player.downloader;
 
-import co.uk.minecraftcapes.capabilities.PlayerHandler;
-import co.uk.minecraftcapes.helpers.Downloader;
-import co.uk.minecraftcapes.helpers.IImageBuffer;
+import net.minecraftcapes.helpers.Downloader;
+import net.minecraftcapes.helpers.IImageBuffer;
+import net.minecraftcapes.player.PlayerHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
 
-import static co.uk.minecraftcapes.reference.Reference.MODID;
+import static net.minecraftcapes.MinecraftCapes.MODID;
 
 public class DownloadCape {
 

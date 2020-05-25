@@ -1,28 +1,32 @@
-package co.uk.minecraftcapes.capabilities;
+package net.minecraftcapes.player;
 
-import co.uk.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.MinecraftCapes;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.UUID;
 
-import static co.uk.minecraftcapes.reference.Reference.MODID;
+import static net.minecraftcapes.MinecraftCapes.MODID;
 
 public class PlayerHandler {
+
+    private static HashMap<UUID, PlayerHandler> instances = new HashMap<>();
 
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
-    @Setter @Getter private Boolean hasInfo = false;
+    @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
 
     @Getter
@@ -32,6 +36,21 @@ public class PlayerHandler {
     private long lastFrameTime = 0;
     private int lastFrame = 0;
     private int capeInterval = 100;
+
+    public PlayerHandler(PlayerEntity player) {
+        this.playerUUID = player.getUniqueID();
+        PlayerHandler.instances.put(playerUUID, this);
+    }
+
+    /**
+     * Tries to get the PlayerHandler instance from a player
+     * @param player
+     * @return
+     */
+    public static PlayerHandler getFromPlayer(PlayerEntity player) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(player.getUniqueID());
+        return playerHandler == null ? new PlayerHandler(player) : playerHandler;
+    }
 
     /**
      * Sets the animated cape textures and loads all resources to memory
@@ -110,5 +129,24 @@ public class PlayerHandler {
         public void readNBT(Capability capability, Object instance, Direction side, INBT nbt) {
 
         }
+    }
+
+    /**
+     * A nice to string thing
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "PlayerHandler{" +
+                "hasStaticCape=" + hasStaticCape +
+                ", hasEars=" + hasEars +
+                ", hasAnimatedCape=" + hasAnimatedCape +
+                ", hasInfo=" + hasInfo +
+                ", playerUUID=" + playerUUID +
+                ", animatedCape=" + animatedCape +
+                ", lastFrameTime=" + lastFrameTime +
+                ", lastFrame=" + lastFrame +
+                ", capeInterval=" + capeInterval +
+                '}';
     }
 }

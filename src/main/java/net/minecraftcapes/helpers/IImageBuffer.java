@@ -1,6 +1,6 @@
-package co.uk.minecraftcapes.helpers;
+package net.minecraftcapes.helpers;
 
-import co.uk.minecraftcapes.capabilities.PlayerHandler;
+import net.minecraftcapes.player.PlayerHandler;
 import net.minecraft.client.renderer.texture.NativeImage;
 
 public interface IImageBuffer {

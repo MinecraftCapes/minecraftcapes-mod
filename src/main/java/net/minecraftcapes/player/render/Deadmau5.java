@@ -1,7 +1,6 @@
-package co.uk.minecraftcapes.render;
+package net.minecraftcapes.player.render;
 
-import co.uk.minecraftcapes.capabilities.PlayerHandler;
-import co.uk.minecraftcapes.capabilities.PlayerHandlerCapability;
+import net.minecraftcapes.player.PlayerHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -20,7 +19,7 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
    }
 
    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-      PlayerHandler playerHandler = entitylivingbaseIn.getCapability(PlayerHandlerCapability.capability).orElse(null);
+      PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
       ResourceLocation rl = playerHandler.getEarLocation();
       if (rl != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
          IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(rl));

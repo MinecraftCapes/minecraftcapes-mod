@@ -1,6 +1,6 @@
-package co.uk.minecraftcapes.proxy;
+package net.minecraftcapes.proxy;
 
-import co.uk.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.MinecraftCapes;
 
 public class ServerProxy implements IProxy{
 

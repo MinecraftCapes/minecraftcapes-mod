@@ -1,7 +1,7 @@
-package co.uk.minecraftcapes.helpers;
+package net.minecraftcapes.helpers;
 
-import co.uk.minecraftcapes.MinecraftCapes;
-import co.uk.minecraftcapes.capabilities.PlayerHandler;
+import net.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.player.PlayerHandler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
@@ -12,11 +12,6 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -95,45 +90,31 @@ public class Downloader extends SimpleTexture {
                     httpurlconnection.connect();
 
                     if (httpurlconnection.getResponseCode() / 100 == 2) {
-                        //If PNG (Static Cape) else GIF (Animated)
                         if(httpurlconnection.getContentType().equalsIgnoreCase("image/png")) {
-                            NativeImage nativeImage;
-                            nativeImage = NativeImage.read(httpurlconnection.getInputStream());
-                            nativeImage = Downloader.this.imageBuffer.parseTexture(nativeImage, playerHandler);
+                            NativeImage nativeImage = NativeImage.read(httpurlconnection.getInputStream());
 
-                            Downloader.this.setNativeImage(nativeImage);
-
-                            MinecraftCapes.getLogger().debug("Downloading complete. Image loaded in {}", nativeImage);
-                            return;
-                        } else if(httpurlconnection.getContentType().equalsIgnoreCase("image/gif")) {
-                            ImageReader reader = ImageIO.getImageReadersBySuffix("GIF").next();
-                            ImageInputStream imageInputStream = ImageIO.createImageInputStream(httpurlconnection.getInputStream());
-                            reader.setInput(imageInputStream);
-
-                            BufferedImage mergedImg = null;
-                            Int2ObjectMap<NativeImage> animatedCape = new Int2ObjectOpenHashMap<>();
-                            for(int i = 0; i < reader.getNumImages(true); i++) {
-                                //Gets the current image and the previous image (if any)
-                                BufferedImage newImg = reader.read(i);
-                                if(i == 0) mergedImg = new BufferedImage(newImg.getWidth(), newImg.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-                                //Merges the old and new image together. Otherwise you get a corrupt cape
-                                mergedImg.getGraphics().drawImage(newImg, 0, 0, null);
-
-                                //Creates a NativeImage from the BufferedImage and adds it to the map
-                                NativeImage nativeImage = new NativeImage(mergedImg.getWidth(), mergedImg.getHeight(), true);
-                                for (int x = 0; x < mergedImg.getWidth(); x++) {
-                                    for (int y = 0; y < mergedImg.getHeight(); y++) {
-                                        Color color = new Color(mergedImg.getRGB(x, y), true);
-                                        nativeImage.setPixelRGBA(x, y, NativeImage.getCombined(color.getAlpha(), color.getBlue(), color.getGreen(), color.getRed()));
+                            //If animated cape
+                            if(nativeImage.getHeight() != nativeImage.getWidth() / 2) {
+                                Int2ObjectMap<NativeImage> animatedCape = new Int2ObjectOpenHashMap<>();
+                                int totalFrames = nativeImage.getHeight() / (nativeImage.getWidth() / 2);
+                                for(int currentFrame = 0; currentFrame < totalFrames; currentFrame++) {
+                                    NativeImage frame = new NativeImage(nativeImage.getWidth(), nativeImage.getWidth() / 2, true);
+                                    for (int x = 0; x < frame.getWidth(); x++) {
+                                        for (int y = 0; y < frame.getHeight(); y++) {
+                                            frame.setPixelRGBA(x, y, nativeImage.getPixelRGBA(x, y + (currentFrame * (nativeImage.getWidth() / 2))));
+                                        }
                                     }
+                                    animatedCape.put(currentFrame, frame);
                                 }
-                                animatedCape.put(i, nativeImage);
+                                playerHandler.setAnimatedCape(animatedCape);
+                                MinecraftCapes.getLogger().debug("Downloading complete. Animated cape loaded for {}", playerHandler.getPlayerUUID());
+                                return;
+                            } else {
+                                nativeImage = Downloader.this.imageBuffer.parseTexture(nativeImage, playerHandler);
+                                Downloader.this.setNativeImage(nativeImage);
+                                MinecraftCapes.getLogger().debug("Downloading complete. Image loaded in {}", nativeImage);
+                                return;
                             }
-                            playerHandler.setAnimatedCape(animatedCape);
-
-                            MinecraftCapes.getLogger().debug("Downloading complete. Animated Image loaded");
-                            return;
                         }
                     }
                 } catch (Exception exception) {
@@ -149,12 +130,5 @@ public class Downloader extends SimpleTexture {
         };
         this.imageThread.setDaemon(true);
         this.imageThread.start();
-    }
-
-    private static BufferedImage makeImageForIndex(BufferedImage oldImg, BufferedImage newImg) {
-        BufferedImage mergedImg = new BufferedImage(oldImg.getWidth(), oldImg.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        newImg.getGraphics().drawImage(oldImg, 0, 0, null);
-
-        return newImg;
     }
 }

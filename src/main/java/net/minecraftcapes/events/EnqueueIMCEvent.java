@@ -1,10 +1,9 @@
-package co.uk.minecraftcapes.events;
+package net.minecraftcapes.events;
 
-import co.uk.minecraftcapes.render.CapeLayer;
-import co.uk.minecraftcapes.render.Deadmau5;
-import co.uk.minecraftcapes.render.ElytraLayer;
+import net.minecraftcapes.player.render.CapeLayer;
+import net.minecraftcapes.player.render.Deadmau5;
+import net.minecraftcapes.player.render.ElytraLayer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
