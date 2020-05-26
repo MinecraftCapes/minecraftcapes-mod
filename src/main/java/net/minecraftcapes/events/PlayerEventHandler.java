@@ -1,5 +1,6 @@
 package net.minecraftcapes.events;
 
+import net.minecraft.client.renderer.texture.DownloadingTexture;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftcapes.player.downloader.DownloadCape;
 import net.minecraftcapes.player.downloader.DownloadEars;
@@ -24,9 +25,10 @@ public class PlayerEventHandler {
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
 			if(playerHandler == null || playerHandler.getHasInfo()) return;
 
-			new Thread(() -> {
+			Thread playerDownload = new Thread(() -> {
 				try {
-					URL url = new URL("https://minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
+					//Todo needs changing to .net
+					URL url = new URL("https://minecraftcapes.co.uk/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
 					HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
 					httpurlconnection.setDoInput(true);
 					httpurlconnection.setDoOutput(false);
@@ -48,7 +50,10 @@ public class PlayerEventHandler {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}).start();
+			});
+
+			playerDownload.setDaemon(true);
+			playerDownload.start();
 		}
 	}
 

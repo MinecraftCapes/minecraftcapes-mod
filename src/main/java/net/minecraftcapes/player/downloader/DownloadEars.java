@@ -21,7 +21,7 @@ public class DownloadEars {
 		if(playerUUID != null) {
 	    	ResourceLocation rl = new ResourceLocation(MODID, "ears/" + playerUUID);
 	    	TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-	    	Downloader textureEars = new Downloader(earsUrl, null, iImageBuffer, playerHandler);
+	    	Downloader textureEars = new Downloader(earsUrl, playerHandler.getEarLocation(), iImageBuffer, playerHandler);
 	    	textureManager.loadTexture(rl, textureEars);
 		}
 	}

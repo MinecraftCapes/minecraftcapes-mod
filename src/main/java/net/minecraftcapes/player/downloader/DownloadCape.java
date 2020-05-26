@@ -19,7 +19,7 @@ public class DownloadCape {
 	    if(playerUUID != null) {
 		    ResourceLocation rl = new ResourceLocation(MODID, "capes/" + playerUUID);
 		    TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-		    Downloader textureCape = new Downloader(capeUrl, null, iImageBuffer, playerHandler);
+		    Downloader textureCape = new Downloader(capeUrl, playerHandler.getCapeLocation(), iImageBuffer, playerHandler);
             textureManager.loadTexture(rl, textureCape);
 		}
 	}
