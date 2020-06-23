@@ -1,6 +1,5 @@
 package net.minecraftcapes.player;
 
-import net.minecraftcapes.MinecraftCapes;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,12 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftcapes.MinecraftCapes;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -26,6 +22,7 @@ public class PlayerHandler {
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
+    @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
 
@@ -112,23 +109,6 @@ public class PlayerHandler {
     public ResourceLocation getEarLocation() {
         ResourceLocation resourceLocation = new ResourceLocation(MODID, "ears/" + playerUUID);
         return hasEars ? resourceLocation : null;
-    }
-
-    /**
-     * Storage for capabilities
-     */
-    public static class Storage implements Capability.IStorage {
-
-        @Nullable
-        @Override
-        public INBT writeNBT(Capability capability, Object instance, Direction side) {
-            return null;
-        }
-
-        @Override
-        public void readNBT(Capability capability, Object instance, Direction side, INBT nbt) {
-
-        }
     }
 
     /**
