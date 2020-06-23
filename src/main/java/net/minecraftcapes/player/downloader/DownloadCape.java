@@ -1,12 +1,12 @@
 package net.minecraftcapes.player.downloader;
 
-import net.minecraftcapes.helpers.Downloader;
-import net.minecraftcapes.helpers.IImageBuffer;
-import net.minecraftcapes.player.PlayerHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftcapes.helpers.Downloader;
+import net.minecraftcapes.helpers.IImageBuffer;
+import net.minecraftcapes.player.PlayerHandler;
 
 import java.util.UUID;
 

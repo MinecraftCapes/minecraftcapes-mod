@@ -1,9 +1,9 @@
 package net.minecraftcapes;
 
+import lombok.Getter;
 import net.minecraftcapes.proxy.ClientProxy;
 import net.minecraftcapes.proxy.IProxy;
 import net.minecraftcapes.proxy.ServerProxy;
-import lombok.Getter;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;

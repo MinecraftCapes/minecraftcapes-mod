@@ -1,24 +1,15 @@
 package net.minecraftcapes.events;
 
+import com.google.gson.Gson;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.texture.DownloadingTexture;
-import net.minecraft.entity.LivingEntity;
-import net.minecraftcapes.MinecraftCapes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftcapes.player.downloader.DownloadCape;
 import net.minecraftcapes.player.downloader.DownloadEars;
-import com.google.gson.Gson;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.io.IOException;

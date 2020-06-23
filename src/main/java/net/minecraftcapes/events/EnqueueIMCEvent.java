@@ -1,8 +1,5 @@
 package net.minecraftcapes.events;
 
-import net.minecraftcapes.player.render.CapeLayer;
-import net.minecraftcapes.player.render.Deadmau5;
-import net.minecraftcapes.player.render.ElytraLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -10,6 +7,9 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraftcapes.player.render.CapeLayer;
+import net.minecraftcapes.player.render.Deadmau5;
+import net.minecraftcapes.player.render.ElytraLayer;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package net.minecraftcapes.helpers;
 
-import net.minecraftcapes.player.PlayerHandler;
 import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraftcapes.player.PlayerHandler;
 
 public interface IImageBuffer {
 
