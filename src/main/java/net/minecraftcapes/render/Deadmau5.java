@@ -1,6 +1,5 @@
-package co.uk.minecraftcapes.render;
+package net.minecraftcapes.render;
 
-import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -13,6 +12,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftcapes.events.PlayerEventHandler;
+import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 {
 	
@@ -23,31 +24,19 @@ public class Deadmau5 {
 		}
 		
 		public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
-			Identifier rl = PlayerEventHandler.getEarResourceLocation(abstractClientPlayerEntity);
+			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
+			Identifier rl = playerHandler.getEarLocation();
 			if (!abstractClientPlayerEntity.isInvisible() && rl != null) {
 				VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(rl));
 		        int m = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
 
-		        for(int n = 0; n < 2; ++n) {
-		        	
-		    		float d = 0F;
-		            if (abstractClientPlayerEntity.isInSneakingPose()) {
-		            	d = 0.25F;
-		            }
-		            
-		        	float o = MathHelper.lerp(h, abstractClientPlayerEntity.prevYaw, abstractClientPlayerEntity.yaw) - MathHelper.lerp(h, abstractClientPlayerEntity.prevBodyYaw, abstractClientPlayerEntity.bodyYaw);
-		            float p = MathHelper.lerp(h, abstractClientPlayerEntity.prevPitch, abstractClientPlayerEntity.pitch);
-		            matrixStack.push();
-		            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(o));
-		            matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(p));
-		            matrixStack.translate((double)(0.375F * (float)(n * 2 - 1)), d, 0.0D);
-		            matrixStack.translate(0.0D, -0.375D, 0.0D);
-		            matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-p));
-		            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-o));
-		            matrixStack.scale(1.3333334F, 1.3333334F, 1.3333334F);
-		            ((PlayerEntityModel<?>)this.getContextModel()).renderEars(matrixStack, vertexConsumer, i, m);
-		            matrixStack.pop();
-	         	}
+				matrixStack.push();
+				if(abstractClientPlayerEntity.isSneaking()) {
+					matrixStack.translate(0.0D, -0.375D, 0.0D);
+				}
+				matrixStack.scale(1.3333334F, 1.3333334F, 1.3333334F);
+				this.getContextModel().renderEars(matrixStack, vertexConsumer, i, m);
+				matrixStack.pop();
 			}
 		}			
 	}

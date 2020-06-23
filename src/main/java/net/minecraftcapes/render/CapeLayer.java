@@ -1,6 +1,5 @@
-package co.uk.minecraftcapes.render;
+package net.minecraftcapes.render;
 
-import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -17,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftcapes.events.PlayerEventHandler;
+import net.minecraftcapes.player.PlayerHandler;
 
 public class CapeLayer {
 	
@@ -27,7 +28,8 @@ public class CapeLayer {
 		}
 
 		public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
-			Identifier rl = PlayerEventHandler.getCapeResourceLocation(abstractClientPlayerEntity);
+			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
+			Identifier rl = playerHandler.getCapeLocation();
 			if (!abstractClientPlayerEntity.isInvisible() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && rl != null) {
 				ItemStack itemStack = abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST);
 		        if (itemStack.getItem() != Items.ELYTRA) {
@@ -59,7 +61,7 @@ public class CapeLayer {
 		            matrixStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(s / 2.0F));
 		            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F - s / 2.0F));
 		            VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(rl));
-		            ((PlayerEntityModel<?>)this.getContextModel()).renderCape(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV);
+		            this.getContextModel().renderCape(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV);
 		            matrixStack.pop();
 		         }
 		      }

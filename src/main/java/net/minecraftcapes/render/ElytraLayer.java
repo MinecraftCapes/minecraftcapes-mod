@@ -1,10 +1,10 @@
-package co.uk.minecraftcapes.render;
+package net.minecraftcapes.render;
 
-import co.uk.minecraftcapes.events.PlayerEventHandler;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.ElytraEntityModel;
@@ -15,6 +15,8 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraftcapes.events.PlayerEventHandler;
+import net.minecraftcapes.player.PlayerHandler;
 
 public class ElytraLayer {
 
@@ -28,25 +30,22 @@ public class ElytraLayer {
 		}
 
 		public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity livingEntity, float f, float g, float h, float j, float k, float l) {
-			Identifier rl = PlayerEventHandler.getCapeResourceLocation(livingEntity);
 			ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
 		    if (itemStack.getItem() == Items.ELYTRA) {
-		    	Identifier identifier4;
-		        if (livingEntity instanceof AbstractClientPlayerEntity) {
-		            if(rl != null) {
-		            	identifier4 = rl;
-		            } else {
-		            	identifier4 = SKIN;
-		            }
+				PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
+				Identifier capeLocation = playerHandler.getCapeLocation();
+				Identifier resourcelocation;
+				if (capeLocation != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+					resourcelocation = capeLocation;
 		        } else {
-		        	identifier4 = SKIN;
+					resourcelocation = SKIN;
 		        }
 
 		        matrixStack.push();
 		        matrixStack.translate(0.0D, 0.0D, 0.125D);
 		        this.getContextModel().copyStateTo(this.elytra);
 		        this.elytra.setAngles(livingEntity, f, g, j, k, l);
-		        VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, this.elytra.getLayer(identifier4), false, itemStack.hasEnchantmentGlint());
+		        VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, this.elytra.getLayer(resourcelocation), false, itemStack.hasEnchantmentGlint());
 		        this.elytra.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 		        matrixStack.pop();
 		    }

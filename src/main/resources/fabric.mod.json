@@ -4,19 +4,19 @@
   "version": "${version}",
 
   "name": "James090500's MinecraftCapes Mod",
-  "description": "Custom Cape, Elytras and Deadmau5 textures for minecraft which everyone with the mod can see!",
+  "description": "Custom Cape, Elytras and Deadmau5 textures for Minecraft which everyone with the mod can see!",
   "authors": [
     "james090500"
   ],
   "contact": {
-    "homepage": "https://minecraftcapes.co.uk/"
+    "homepage": "https://minecraftcapes.net/"
   },
   "license": "CC0-1.0",
   "icon": "assets/minecraftcapes/logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "co.uk.minecraftcapes.MinecraftCapes"
+      "net.minecraftcapes.MinecraftCapes"
     ]
   },
   "mixins": [

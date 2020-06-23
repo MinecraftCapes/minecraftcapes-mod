@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "co.uk.minecraftcapes.mixin",
+  "package": "net.minecraftcapes.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],
