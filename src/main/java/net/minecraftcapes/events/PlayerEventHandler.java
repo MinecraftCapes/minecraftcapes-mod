@@ -2,6 +2,7 @@ package net.minecraftcapes.events;
 
 import com.google.gson.Gson;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftcapes.player.downloader.DownloadCape;
 import net.minecraftcapes.player.downloader.DownloadEars;
@@ -11,12 +12,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
 
 public class PlayerEventHandler {
 
-	public static void onPlayerJoin(UUID uuid) {
-		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(uuid);
+	public static void onPlayerJoin(PlayerEntity playerEntity) {
+		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(playerEntity);
 		if(playerHandler == null || playerHandler.getHasInfo()) return;
 
 		Thread playerDownload = new Thread(() -> {

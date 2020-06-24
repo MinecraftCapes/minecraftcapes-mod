@@ -5,8 +5,10 @@
   "mixins": [
   ],
   "client": [
+    "MixinDinnerbone",
     "MixinPlayerEntityRenderer",
-    "MixinPlayerJoinWorld"
+    "MixinPlayerJoinWorld",
+    "MixinPlayerModel"
   ],
   "injectors": {
     "defaultRequire": 1

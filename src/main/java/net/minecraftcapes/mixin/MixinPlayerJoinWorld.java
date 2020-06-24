@@ -22,7 +22,7 @@ public abstract class MixinPlayerJoinWorld extends PlayerEntity {
 
 	@Inject(method = "<init>*", at = @At("RETURN"))
 	private void construct(ClientWorld clientWorld, GameProfile gameProfile, CallbackInfo info) {
-		PlayerEventHandler.onPlayerJoin(gameProfile.getId());
+		PlayerEventHandler.onPlayerJoin(this);
 	}
 
 }

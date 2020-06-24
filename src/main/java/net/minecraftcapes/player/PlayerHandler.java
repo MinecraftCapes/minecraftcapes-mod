@@ -38,11 +38,6 @@ public class PlayerHandler {
         PlayerHandler.instances.put(playerUUID, this);
     }
 
-    public PlayerHandler(UUID uuid) {
-        this.playerUUID = uuid;
-        PlayerHandler.instances.put(playerUUID, this);
-    }
-
     /**
      * Tries to get the PlayerHandler instance from a player
      * @param player
@@ -51,16 +46,6 @@ public class PlayerHandler {
     public static PlayerHandler getFromPlayer(PlayerEntity player) {
         PlayerHandler playerHandler = PlayerHandler.instances.get(player.getUuid());
         return playerHandler == null ? new PlayerHandler(player) : playerHandler;
-    }
-
-    /**
-     * Tries to get the PlayerHandler instance from a uuid
-     * @param uuid
-     * @return
-     */
-    public static PlayerHandler getFromPlayer(UUID uuid) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
-        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
     }
 
     /**

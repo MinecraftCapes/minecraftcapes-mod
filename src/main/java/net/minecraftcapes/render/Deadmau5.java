@@ -32,7 +32,7 @@ public class Deadmau5 {
 
 				matrixStack.push();
 				if(abstractClientPlayerEntity.isSneaking()) {
-					matrixStack.translate(0.0D, -0.375D, 0.0D);
+					matrixStack.translate(0.0F, 0.25F, 0.0F);
 				}
 				matrixStack.scale(1.3333334F, 1.3333334F, 1.3333334F);
 				this.getContextModel().renderEars(matrixStack, vertexConsumer, i, m);
