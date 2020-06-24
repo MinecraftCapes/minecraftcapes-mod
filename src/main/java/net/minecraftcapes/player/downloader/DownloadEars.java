@@ -14,10 +14,8 @@ import static net.minecraftcapes.MinecraftCapes.MODID;
 
 public class DownloadEars {
 
-	private static UUID playerUUID;
-
 	public static void download(String earsUrl, PlayerHandler playerHandler) {
-		DownloadEars.playerUUID = playerHandler.getPlayerUUID();
+		UUID playerUUID = playerHandler.getPlayerUUID();
 		if(playerUUID != null) {
 	    	ResourceLocation rl = new ResourceLocation(MODID, "ears/" + playerUUID);
 	    	TextureManager textureManager = Minecraft.getInstance().getTextureManager();
@@ -26,18 +24,15 @@ public class DownloadEars {
 		}
 	}
 
-	private static final IImageBuffer iImageBuffer = new IImageBuffer() {
-		@Override
-		public NativeImage parseTexture(NativeImage img, PlayerHandler playerHandler) {
-			NativeImage imgNew = new NativeImage(64, 64, true);
-			for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
-				for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {
-					imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
-				}
+	private static final IImageBuffer iImageBuffer = (img, playerHandler) -> {
+		NativeImage imgNew = new NativeImage(64, 64, true);
+		for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
+			for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {
+				imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
 			}
-			img.close();
-			playerHandler.setHasEars(true);
-			return imgNew;
 		}
+		img.close();
+		playerHandler.setHasEars(true);
+		return imgNew;
 	};
 }

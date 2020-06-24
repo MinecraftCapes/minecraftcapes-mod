@@ -53,13 +53,11 @@ public class Downloader extends SimpleTexture {
     	return super.getGlTextureId();
     }
     
-    public void setNativeImage(NativeImage nativeImageIn)
-    {
+    public void setNativeImage(NativeImage nativeImageIn) {
         this.nativeImage = nativeImageIn;
     }    
 
-    public void loadTexture(IResourceManager resourceManager) throws IOException
-    {
+    public void loadTexture(IResourceManager resourceManager) throws IOException {
         if (this.nativeImage == null && this.textureLocation != null) {
             super.loadTexture(resourceManager);
         } else {
@@ -68,7 +66,6 @@ public class Downloader extends SimpleTexture {
     }
 
     protected void loadTextureFromServer() {
-        System.out.println(Downloader.this.imageUrl);
     	if(Downloader.this.imageUrl == null) {
     		return;
     	}

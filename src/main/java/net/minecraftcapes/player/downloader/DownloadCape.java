@@ -24,24 +24,21 @@ public class DownloadCape {
 		}
 	}
 
-	private static final IImageBuffer iImageBuffer = new IImageBuffer() {
-		@Override
-		public NativeImage parseTexture(NativeImage img, PlayerHandler playerHandler) {
-			int imageWidth = 64;
-			int imageHeight = 32;
+	private static final IImageBuffer iImageBuffer = (img, playerHandler) -> {
+		int imageWidth = 64;
+		int imageHeight = 32;
 
-			for (int srcWidth = img.getWidth(), srcHeight = img.getHeight(); imageWidth < srcWidth || imageHeight < srcHeight; imageWidth *= 2, imageHeight *= 2) {}
+		for (int srcWidth = img.getWidth(), srcHeight = img.getHeight(); imageWidth < srcWidth || imageHeight < srcHeight; imageWidth *= 2, imageHeight *= 2) {}
 
-			final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
-			for (int x = 0; x < img.getWidth(); x++) {
-				for (int y = 0; y < img.getHeight(); y++) {
-					imgNew.setPixelRGBA(x, y, img.getPixelRGBA(x, y));
-				}
+		final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
+		for (int x = 0; x < img.getWidth(); x++) {
+			for (int y = 0; y < img.getHeight(); y++) {
+				imgNew.setPixelRGBA(x, y, img.getPixelRGBA(x, y));
 			}
-
-			playerHandler.setHasStaticCape(true);
-			img.close();
-			return imgNew;
 		}
+
+		playerHandler.setHasStaticCape(true);
+		img.close();
+		return imgNew;
 	};
 }
