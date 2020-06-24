@@ -6,8 +6,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftcapes.events.PlayerEventHandler;
-import net.minecraftcapes.player.downloader.DownloadCape;
-import net.minecraftcapes.player.downloader.DownloadEars;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

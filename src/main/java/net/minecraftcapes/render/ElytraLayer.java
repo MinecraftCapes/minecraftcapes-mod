@@ -15,7 +15,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
-import net.minecraftcapes.events.PlayerEventHandler;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class ElytraLayer {
