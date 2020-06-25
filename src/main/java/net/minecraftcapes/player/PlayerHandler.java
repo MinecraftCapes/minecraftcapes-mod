@@ -67,7 +67,9 @@ public class PlayerHandler {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
         getAnimatedCape().forEach((integer, nativeImage) -> {
             Identifier currentResource = new Identifier(MODID, String.format("capes/%s/%d", playerUUID, integer));
-            //MinecraftClient.getInstance().getTextureManager().registerTexture(currentResource, new NativeImageBackedTexture(nativeImage));
+            MinecraftClient.getInstance().execute(() -> {
+                MinecraftClient.getInstance().getTextureManager().registerTexture(currentResource, new NativeImageBackedTexture(nativeImage));
+            });
         });
     }
 

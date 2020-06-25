@@ -12,6 +12,7 @@ import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.player.PlayerHandler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
