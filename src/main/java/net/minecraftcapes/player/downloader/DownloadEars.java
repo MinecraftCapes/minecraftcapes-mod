@@ -1,7 +1,6 @@
 package net.minecraftcapes.player.downloader;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.helpers.Downloader;
@@ -25,14 +24,7 @@ public class DownloadEars {
 	}
 
 	private static final IImageBuffer iImageBuffer = (img, playerHandler) -> {
-		NativeImage imgNew = new NativeImage(64, 64, true);
-		for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
-			for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {
-				imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
-			}
-		}
-		img.close();
 		playerHandler.setHasEars(true);
-		return imgNew;
+		return img;
 	};
 }
