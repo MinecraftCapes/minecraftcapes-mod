@@ -1,9 +1,9 @@
 modLoader="javafml" #mandatory
-loaderVersion="[26,)" #mandatory
+loaderVersion="[28,)" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
-issueTrackerURL="https://minecraftcapes.co.uk/discord"
-displayURL="https://minecraftcapes.co.uk/"
+issueTrackerURL="https://minecraftcapes.net/discord"
+displayURL="https://minecraftcapes.net/"
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="logo.png"
 authors="james090500, Siriuo"
