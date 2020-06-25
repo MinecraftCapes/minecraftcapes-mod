@@ -1,17 +1,13 @@
 package net.minecraftcapes.events;
 
 import com.google.gson.Gson;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftcapes.player.downloader.DownloadCape;
 import net.minecraftcapes.player.downloader.DownloadEars;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.glfw.GLFWScrollCallback;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

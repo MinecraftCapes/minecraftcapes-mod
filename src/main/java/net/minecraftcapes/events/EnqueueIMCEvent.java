@@ -33,7 +33,8 @@ public class EnqueueIMCEvent {
                 ObfuscationReflectionHelper.setPrivateValue(LivingRenderer.class, render, layerRenderers, "field_177097_h");
 
                 //This makes deadmau5 ears look better when crouching/gliding/swimming
-                RendererModel bipedDeadmau5Head = new RendererModel(render.getEntityModel(), 24, 0);
+                RendererModel bipedDeadmau5Head = new RendererModel(render.getEntityModel(), 0, 0);
+                bipedDeadmau5Head.setTextureSize(14, 7);
                 bipedDeadmau5Head.addBox(1.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
                 bipedDeadmau5Head.addBox(-7.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
                 bipedDeadmau5Head.setRotationPoint(0.0F, 0.0F, 0.0F);
