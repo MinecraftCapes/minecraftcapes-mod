@@ -25,14 +25,7 @@ public class DownloadEars {
 	}
 
 	private static final IImageBuffer iImageBuffer = (img, playerHandler) -> {
-		NativeImage imgNew = new NativeImage(64, 64, true);
-		for(int imgHeight = 0; imgHeight < img.getHeight(); imgHeight++) {
-			for(int imgWidth = 0; imgWidth < img.getWidth(); imgWidth++) {
-				imgNew.setPixelRGBA(24 + imgWidth, imgHeight, img.getPixelRGBA(imgWidth, imgHeight));
-			}
-		}
-		img.close();
 		playerHandler.setHasEars(true);
-		return imgNew;
+		return img;
 	};
 }
