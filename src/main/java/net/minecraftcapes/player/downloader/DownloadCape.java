@@ -7,6 +7,7 @@ import net.minecraftcapes.helpers.Downloader;
 import net.minecraftcapes.helpers.IImageBuffer;
 import net.minecraftcapes.player.PlayerHandler;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.UUID;
 
@@ -34,11 +35,9 @@ public class DownloadCape {
 			}
 
 			final BufferedImage imgNew = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-			for (int x = 0; x < img.getWidth(); x++) {
-				for (int y = 0; y < img.getHeight(); y++) {
-					imgNew.copyData(img.getRaster());
-				}
-			}
+			Graphics g = imgNew.getGraphics();
+			g.drawImage(img, 0, 0, null);
+			g.dispose();
 
 			playerHandler.setHasStaticCape(true);
 			return imgNew;
