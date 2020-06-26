@@ -20,8 +20,8 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "9.5"
-group= "co.uk.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "10"
+group= "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "minecraftcapes"
 
 minecraft {
@@ -58,7 +58,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    compile "org.projectlombok:lombok:1.18.12"
 }
 
 processResources
