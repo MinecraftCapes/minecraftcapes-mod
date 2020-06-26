@@ -9,7 +9,7 @@ import net.minecraftcapes.proxy.IProxy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MinecraftCapes.MODID, name = "James090500's MinecraftCapes Mod", version = "10", acceptedMinecraftVersions = "1.12.2")
+@Mod(modid = MinecraftCapes.MODID, name = "James090500's MinecraftCapes Mod", version = "10", acceptedMinecraftVersions = "1.7.10")
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";
