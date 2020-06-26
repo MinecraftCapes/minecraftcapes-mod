@@ -1,14 +1,14 @@
 [
-{
-  "modid": "jmcae",
-  "name": "James090500's MinecraftCape & Elytra Mod Mod",
-  "description": "Custom Cape and Elytra textures",
-  "url": "www.MinecraftCapes.co.uk",
-  "updateUrl": "",
-  "authorList": ["james090500"],
-  "credits": "james090500",
-  "logoFile": "/logo.png",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "minecraftcapes",
+    "name": "James090500's MinecraftCapes Mod",
+    "description": "Custom Cape, Elytras and Deadmau5 textures for minecraft which everyone with the mod can see!",
+    "url": "https://minecraftcapes.net",
+    "version": "10",
+    "updateUrl": "",
+    "authorList": ["james090500", "Siruo"],
+    "logoFile": "/logo.png",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]
