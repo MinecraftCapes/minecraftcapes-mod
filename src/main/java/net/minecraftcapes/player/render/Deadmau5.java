@@ -1,4 +1,4 @@
-package net.minecraftcapes.render;
+package net.minecraftcapes.player.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
@@ -9,7 +9,6 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 {
@@ -22,13 +21,12 @@ public class Deadmau5 {
 		
 		public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
-			Identifier rl = playerHandler.getEarLocation();
-			if (!abstractClientPlayerEntity.isInvisible() && rl != null) {
-				VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(rl));
+			if (!abstractClientPlayerEntity.isInvisible() && playerHandler.getEarLocation() != null) {
+				VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(playerHandler.getEarLocation()));
 		        int m = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
 
 				matrixStack.push();
-				if(abstractClientPlayerEntity.isSneaking()) {
+				if(abstractClientPlayerEntity.isInSneakingPose()) {
 					matrixStack.translate(0.0F, 0.25F, 0.0F);
 				}
 				matrixStack.scale(1.3333334F, 1.3333334F, 1.3333334F);

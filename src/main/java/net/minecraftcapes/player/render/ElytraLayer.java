@@ -1,4 +1,4 @@
-package net.minecraftcapes.render;
+package net.minecraftcapes.player.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
@@ -32,10 +32,9 @@ public class ElytraLayer {
 			ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
 		    if (itemStack.getItem() == Items.ELYTRA) {
 				PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
-				Identifier capeLocation = playerHandler.getCapeLocation();
 				Identifier resourcelocation;
-				if (capeLocation != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
-					resourcelocation = capeLocation;
+				if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+					resourcelocation = playerHandler.getCapeLocation();
 		        } else {
 					resourcelocation = SKIN;
 		        }
