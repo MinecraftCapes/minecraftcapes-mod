@@ -25,9 +25,9 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
 
 	@Inject(method = "<init>(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V", at = @At("RETURN"))
 	private void construct(EntityRenderDispatcher entityRenderDispatcher, boolean alex, CallbackInfo info){
-		addFeature(new CapeLayer.LayerRender(this));
-		addFeature(new Deadmau5.LayerRender(this));
-		addFeature(new ElytraLayer.LayerRender(this));
+		addFeature(new CapeLayer(this));
+		addFeature(new Deadmau5(this));
+		addFeature(new ElytraLayer(this));
 		
 		ListIterator<FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>> it = features.listIterator();
 		while(it.hasNext()) {					

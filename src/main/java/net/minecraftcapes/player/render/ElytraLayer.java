@@ -17,36 +17,33 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraftcapes.player.PlayerHandler;
 
-public class ElytraLayer {
+public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
-	public static class LayerRender extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-		
-		private static final Identifier SKIN = new Identifier("textures/entity/elytra.png");
-		private final ElytraEntityModel<AbstractClientPlayerEntity> elytra = new ElytraEntityModel<AbstractClientPlayerEntity>();
-	
-		public LayerRender(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext_1) {
-			super(featureRendererContext_1);
-		}
+	private static final Identifier SKIN = new Identifier("textures/entity/elytra.png");
+	private final ElytraEntityModel<AbstractClientPlayerEntity> elytra = new ElytraEntityModel<AbstractClientPlayerEntity>();
 
-		public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity livingEntity, float f, float g, float h, float j, float k, float l) {
-			ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
-		    if (itemStack.getItem() == Items.ELYTRA) {
-				PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
-				Identifier resourcelocation;
-				if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
-					resourcelocation = playerHandler.getCapeLocation();
-		        } else {
-					resourcelocation = SKIN;
-		        }
+	public ElytraLayer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext_1) {
+		super(featureRendererContext_1);
+	}
 
-		        matrixStack.push();
-		        matrixStack.translate(0.0D, 0.0D, 0.125D);
-		        this.getContextModel().copyStateTo(this.elytra);
-		        this.elytra.setAngles(livingEntity, f, g, j, k, l);
-		        VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, this.elytra.getLayer(resourcelocation), false, itemStack.hasEnchantmentGlint());
-		        this.elytra.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
-		        matrixStack.pop();
-		    }
+	public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity livingEntity, float f, float g, float h, float j, float k, float l) {
+		ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
+		if (itemStack.getItem() == Items.ELYTRA) {
+			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
+			Identifier resourcelocation;
+			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+				resourcelocation = playerHandler.getCapeLocation();
+			} else {
+				resourcelocation = SKIN;
+			}
+
+			matrixStack.push();
+			matrixStack.translate(0.0D, 0.0D, 0.125D);
+			this.getContextModel().copyStateTo(this.elytra);
+			this.elytra.setAngles(livingEntity, f, g, j, k, l);
+			VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, this.elytra.getLayer(resourcelocation), false, itemStack.hasEnchantmentGlint());
+			this.elytra.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+			matrixStack.pop();
 		}
 	}
 }
