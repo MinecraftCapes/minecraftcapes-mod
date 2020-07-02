@@ -26,7 +26,7 @@ public class Deadmau5 {
 		        int m = LivingEntityRenderer.getOverlay(abstractClientPlayerEntity, 0.0F);
 
 				matrixStack.push();
-				if(abstractClientPlayerEntity.isSneaking()) {
+				if(abstractClientPlayerEntity.isInSneakingPose()) {
 					matrixStack.translate(0.0F, 0.25F, 0.0F);
 				}
 				matrixStack.scale(1.3333334F, 1.3333334F, 1.3333334F);

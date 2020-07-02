@@ -179,9 +179,7 @@ public class PlayerHandler {
      * @param nativeImage
      */
     private void applyTexture(Identifier identifier, NativeImage nativeImage) {
-        MinecraftClient.getInstance().execute(() -> {
-            MinecraftClient.getInstance().getTextureManager().registerTexture(identifier, new NativeImageBackedTexture(nativeImage));
-        });
+        MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(identifier, new NativeImageBackedTexture(nativeImage)));
     }
 
     /**
@@ -194,6 +192,8 @@ public class PlayerHandler {
                 "hasStaticCape=" + hasStaticCape +
                 ", hasEars=" + hasEars +
                 ", hasAnimatedCape=" + hasAnimatedCape +
+                ", hasCapeGlint=" + hasCapeGlint +
+                ", upsideDown=" + upsideDown +
                 ", hasInfo=" + hasInfo +
                 ", playerUUID=" + playerUUID +
                 ", animatedCape=" + animatedCape +
