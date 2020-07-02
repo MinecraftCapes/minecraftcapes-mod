@@ -16,7 +16,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class CapeLayer {
