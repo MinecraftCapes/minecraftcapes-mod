@@ -1,4 +1,4 @@
-package net.minecraftcapes.render;
+package net.minecraftcapes.player.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
