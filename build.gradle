@@ -27,7 +27,7 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 	modRuntime("curse.maven:modmenu:2902148")
-	modRuntime("curse.maven:auth-me-for-fabric:2982693")
+	modRuntime("curse.maven:auth-me:2990330")
 }
 
 processResources {
