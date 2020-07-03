@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
@@ -21,9 +20,8 @@ public class Deadmau5 extends RenderPlayer {
 
       AbstractClientPlayer entitylivingbaseIn = (AbstractClientPlayer) event.entity;
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-      ResourceLocation rl = playerHandler.getEarLocation();
-      if (rl != null && !entitylivingbaseIn.isInvisible()) {
-         Minecraft.getMinecraft().getTextureManager().bindTexture(rl);
+      if (playerHandler.getEarLocation() != null && !entitylivingbaseIn.isInvisible()) {
+         Minecraft.getMinecraft().getTextureManager().bindTexture(playerHandler.getEarLocation());
          GL11.glPushMatrix();
          if(entitylivingbaseIn.isSneaking()) {
             GL11.glTranslatef(0.0F, 0.25F, 0.0F);

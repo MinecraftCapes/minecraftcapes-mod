@@ -6,9 +6,7 @@ import com.google.common.util.concurrent.ListenableFutureTask;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import lombok.Getter;
-import net.minecraftcapes.MinecraftCapes;
 import org.apache.commons.lang3.Validate;
-import org.lwjgl.Sys;
 
 import java.util.Queue;
 import java.util.concurrent.Callable;

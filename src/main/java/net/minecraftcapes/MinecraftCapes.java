@@ -4,12 +4,11 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
 import net.minecraftcapes.proxy.IProxy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MinecraftCapes.MODID, name = "James090500's MinecraftCapes Mod", version = "10", acceptedMinecraftVersions = "1.7.10")
+@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "10", acceptedMinecraftVersions = "1.7.10")
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";
