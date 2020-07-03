@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
@@ -20,9 +19,8 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 
    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-      ResourceLocation rl = playerHandler.getEarLocation();
-      if (rl != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
-         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(rl));
+      if (playerHandler.getEarLocation() != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
+         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(playerHandler.getEarLocation()));
          int i = LivingRenderer.getPackedOverlay(entitylivingbaseIn, 0.0F);
 
          matrixStackIn.push();

@@ -5,9 +5,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.player.PlayerHandler;
-import net.minecraftcapes.player.downloader.DownloadCape;
-import net.minecraftcapes.player.downloader.DownloadEars;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 public class PlayerEventHandler {
 
@@ -29,6 +29,7 @@ public class PlayerEventHandler {
 
 			Thread playerDownload = new Thread(() -> {
 				try {
+					MinecraftCapes.getLogger().debug("Getting profile for {}", playerHandler.getPlayerUUID());
 					URL url = new URL("https://minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
 					HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
 					httpurlconnection.setDoInput(true);
@@ -40,14 +41,15 @@ public class PlayerEventHandler {
 						ProfileResult profileResult = new Gson().fromJson(reader, ProfileResult.class);
 
 						playerHandler.setHasInfo(true);
+						playerHandler.setHasCapeGlint(profileResult.capeGlint);
 						playerHandler.setUpsideDown(profileResult.upsideDown);
 
-						if (profileResult.cape != null) {
-							DownloadCape.download(profileResult.cape, playerHandler);
+						if (profileResult.textures.get("cape") != null) {
+							playerHandler.applyCape(profileResult.textures.get("cape"));
 						}
 
-						if (profileResult.ears != null) {
-							DownloadEars.download(profileResult.ears, playerHandler);
+						if (profileResult.textures.get("ears") != null) {
+							playerHandler.applyEars(profileResult.textures.get("ears"));
 						}
 					}
 				} catch (IOException e) {
@@ -99,8 +101,8 @@ public class PlayerEventHandler {
 	}
 
 	class ProfileResult {
-		private String cape = null;
-		private String ears = null;
+		private boolean capeGlint = false;
 		private boolean upsideDown = false;
+		private Map<String, String> textures = null;
 	}
 }

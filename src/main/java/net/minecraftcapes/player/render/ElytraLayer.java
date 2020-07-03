@@ -34,10 +34,9 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
 		if (itemstack.getItem() == Items.ELYTRA) {
 			AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity)entitylivingbaseIn;
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractclientplayerentity);
-			ResourceLocation capeLocation = playerHandler.getCapeLocation();
 			ResourceLocation resourcelocation;
-			if (abstractclientplayerentity.hasPlayerInfo() && capeLocation != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
-				resourcelocation = capeLocation;
+			if (abstractclientplayerentity.hasPlayerInfo() && playerHandler.getCapeLocation() != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
+				resourcelocation = playerHandler.getCapeLocation();
 			} else {
 				resourcelocation = TEXTURE_ELYTRA;
 			}
