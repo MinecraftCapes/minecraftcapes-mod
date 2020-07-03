@@ -35,9 +35,8 @@ public class ElytraLayer implements LayerRenderer<EntityLivingBase> {
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 			AbstractClientPlayer abstractclientplayerentity = (AbstractClientPlayer) entitylivingbaseIn;
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractclientplayerentity);
-			ResourceLocation capeLocation = playerHandler.getCapeLocation();
-			if (abstractclientplayerentity.hasPlayerInfo() && capeLocation != null && abstractclientplayerentity.isWearing(EnumPlayerModelParts.CAPE)) {
-				this.renderPlayer.bindTexture(capeLocation);
+			if (abstractclientplayerentity.hasPlayerInfo() && playerHandler.getCapeLocation() != null && abstractclientplayerentity.isWearing(EnumPlayerModelParts.CAPE)) {
+				this.renderPlayer.bindTexture(playerHandler.getCapeLocation());
 			} else {
 				this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
 			}
