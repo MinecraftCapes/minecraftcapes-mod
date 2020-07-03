@@ -10,5 +10,5 @@ authors="james090500, Siriuo"
 [[mods]]
 modId="minecraftcapes" #mandatory
 version="${file.jarVersion}"
-displayName="James090500's MinecraftCapes Mod"
+displayName="MinecraftCapes Mod"
 description="Custom Cape, Elytras and Deadmau5 textures for minecraft which everyone with the mod can see!"

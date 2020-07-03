@@ -4,7 +4,6 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 implements LayerRenderer<AbstractClientPlayer> {
@@ -18,9 +17,9 @@ public class Deadmau5 implements LayerRenderer<AbstractClientPlayer> {
    @Override
    public void render(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-      ResourceLocation rl = playerHandler.getEarLocation();
-      if (rl != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
-         this.playerRenderer.bindTexture(rl);
+      if (playerHandler.getEarLocation() != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
+         this.playerRenderer.bindTexture(playerHandler.getEarLocation());
+         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.pushMatrix();
          if(entitylivingbaseIn.isSneaking()) {
             GlStateManager.translatef(0.0F, 0.25F, 0.0F);

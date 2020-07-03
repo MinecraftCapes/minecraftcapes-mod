@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftcapes.player.PlayerHandler;
-import net.minecraftcapes.player.downloader.DownloadCape;
-import net.minecraftcapes.player.downloader.DownloadEars;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -14,12 +12,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 public class PlayerEventHandler {
 
 	@SubscribeEvent
 	public void onPlayerJoin(EntityJoinWorldEvent event) {
-		if(event.getEntity() instanceof EntityPlayer && event.getWorld().isRemote()) {
+		if(event.getEntity() instanceof EntityPlayer && event.getWorld().isRemote) {
 			EntityPlayer player = (EntityPlayer) event.getEntity();
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
 			if(playerHandler == null || playerHandler.getHasInfo()) return;
@@ -39,12 +38,16 @@ public class PlayerEventHandler {
 						playerHandler.setHasInfo(true);
 						playerHandler.setUpsideDown(profileResult.upsideDown);
 
-						if (profileResult.cape != null) {
-							DownloadCape.download(profileResult.cape, playerHandler);
+						playerHandler.setHasInfo(true);
+						playerHandler.setHasCapeGlint(profileResult.capeGlint);
+						playerHandler.setUpsideDown(profileResult.upsideDown);
+
+						if (profileResult.textures.get("cape") != null) {
+							playerHandler.applyCape(profileResult.textures.get("cape"));
 						}
 
-						if (profileResult.ears != null) {
-							DownloadEars.download(profileResult.ears, playerHandler);
+						if (profileResult.textures.get("ears") != null) {
+							playerHandler.applyEars(profileResult.textures.get("ears"));
 						}
 					}
 				} catch (IOException e) {
@@ -58,8 +61,8 @@ public class PlayerEventHandler {
 	}
 
 	class ProfileResult {
-		private String cape = null;
-		private String ears = null;
+		private boolean capeGlint = false;
 		private boolean upsideDown = false;
+		private Map<String, String> textures = null;
 	}
 }
