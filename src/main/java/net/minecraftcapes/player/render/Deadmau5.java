@@ -17,6 +17,7 @@ public class Deadmau5 extends FeatureRenderer<AbstractClientPlayerEntity, Player
 	public void render(AbstractClientPlayerEntity entity, float f, float g, float h, float i, float j, float k, float l) {
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entity);
 		if (!entity.isInvisible() && playerHandler.getEarLocation() != null) {
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			this.bindTexture(playerHandler.getEarLocation());
 			GlStateManager.pushMatrix();
 			GlStateManager.scalef(1.3333334F, 1.3333334F, 1.3333334F);
@@ -30,6 +31,6 @@ public class Deadmau5 extends FeatureRenderer<AbstractClientPlayerEntity, Player
 
 	@Override
 	public boolean hasHurtOverlay() {
-		return false;
+		return true;
 	}
 }

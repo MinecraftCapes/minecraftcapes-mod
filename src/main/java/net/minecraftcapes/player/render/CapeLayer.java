@@ -12,37 +12,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.model.CapeEntityModel;
 
 public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
-	private FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext;
+	private final CapeEntityModel<AbstractClientPlayerEntity> cape = new CapeEntityModel<AbstractClientPlayerEntity>();
 
 	public CapeLayer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext) {
 		super(featureRendererContext);
-		this.featureRendererContext = featureRendererContext;
 	}
 
-	@Override
-	public boolean hasHurtOverlay() {
-		return false;
-	}
-
-	public void render(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float i, float j, float k, float l) {
-		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
-		if (!abstractClientPlayerEntity.isInvisible() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null) {
-			ItemStack itemStack = abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST);
+	public void render(AbstractClientPlayerEntity livingEntity, float f, float g, float h, float i, float j, float k, float l) {
+		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
+		if (!livingEntity.isInvisible() && livingEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null) {
+			ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
 			if (itemStack.getItem() != Items.ELYTRA) {
 				GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 				GlStateManager.enableBlend();
 				GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
 				this.bindTexture(playerHandler.getCapeLocation());
+
 				GlStateManager.pushMatrix();
 				GlStateManager.translatef(0.0F, 0.0F, 0.125F);
 
-				double d = MathHelper.lerp((double)h, abstractClientPlayerEntity.field_7524, abstractClientPlayerEntity.field_7500) - MathHelper.lerp((double)h, abstractClientPlayerEntity.prevX, abstractClientPlayerEntity.x);
-				double e = MathHelper.lerp((double)h, abstractClientPlayerEntity.field_7502, abstractClientPlayerEntity.field_7521) - MathHelper.lerp((double)h, abstractClientPlayerEntity.prevY, abstractClientPlayerEntity.y);
-				double m = MathHelper.lerp((double)h, abstractClientPlayerEntity.field_7522, abstractClientPlayerEntity.field_7499) - MathHelper.lerp((double)h, abstractClientPlayerEntity.prevZ, abstractClientPlayerEntity.z);
-				float n = abstractClientPlayerEntity.field_6220 + (abstractClientPlayerEntity.field_6283 - abstractClientPlayerEntity.field_6220);
+				double d = MathHelper.lerp((double)h, livingEntity.field_7524, livingEntity.field_7500) - MathHelper.lerp((double)h, livingEntity.prevX, livingEntity.x);
+				double e = MathHelper.lerp((double)h, livingEntity.field_7502, livingEntity.field_7521) - MathHelper.lerp((double)h, livingEntity.prevY, livingEntity.y);
+				double m = MathHelper.lerp((double)h, livingEntity.field_7522, livingEntity.field_7499) - MathHelper.lerp((double)h, livingEntity.prevZ, livingEntity.z);
+				float n = livingEntity.field_6220 + (livingEntity.field_6283 - livingEntity.field_6220);
 				double o = (double)MathHelper.sin(n * 0.017453292F);
 				double p = (double)(-MathHelper.cos(n * 0.017453292F));
 				float q = (float)e * 10.0F;
@@ -55,9 +52,9 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 					r = 0.0F;
 				}
 
-				float t = MathHelper.lerp(h, abstractClientPlayerEntity.field_7505, abstractClientPlayerEntity.field_7483);
-				q += MathHelper.sin(MathHelper.lerp(h, abstractClientPlayerEntity.prevHorizontalSpeed, abstractClientPlayerEntity.horizontalSpeed) * 6.0F) * 32.0F * t;
-				if (abstractClientPlayerEntity.isInSneakingPose()) {
+				float t = MathHelper.lerp(h, livingEntity.field_7505, livingEntity.field_7483);
+				q += MathHelper.sin(MathHelper.lerp(h, livingEntity.prevHorizontalSpeed, livingEntity.horizontalSpeed) * 6.0F) * 32.0F * t;
+				if (livingEntity.isInSneakingPose()) {
 					q += 25.0F;
 				}
 
@@ -65,17 +62,21 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 				GlStateManager.rotatef(s / 2.0F, 0.0F, 0.0F, 1.0F);
 				GlStateManager.rotatef(-s / 2.0F, 0.0F, 1.0F, 0.0F);
 				GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-				((PlayerEntityModel)this.getContextModel()).renderCape(0.0625F);
-				if(playerHandler.getHasCapeGlint()) {
-					ArmorFeatureRenderer.renderEnchantedGlint(
-							this::bindTexture,
-							abstractClientPlayerEntity,
-							featureRendererContext.getModel(),
-							f, g, h, i, j, k, l);
+
+				this.cape.setAngles(livingEntity, f, g, i, j, k, l);
+				this.cape.render(livingEntity, f, g, i, j, k, l);
+				if (playerHandler.getHasCapeGlint()) {
+					ArmorFeatureRenderer.renderEnchantedGlint(this::bindTexture, livingEntity, this.cape, f, g, h, i, j, k, l);
 				}
+
 				GlStateManager.disableBlend();
 				GlStateManager.popMatrix();
 			 }
 		  }
+	}
+
+	@Override
+	public boolean hasHurtOverlay() {
+		return false;
 	}
 }
