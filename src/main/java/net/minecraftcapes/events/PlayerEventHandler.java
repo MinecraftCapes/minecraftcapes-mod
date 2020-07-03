@@ -27,8 +27,7 @@ public class PlayerEventHandler {
 				@Override
 				public void run() {
 					try {
-						//URL url = new URL("https://minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
-						URL url = new URL("https://minecraftcapes.net/profile/ba4161c03a42496c8ae07d13372f3371");
+						URL url = new URL("https://minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
 						HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getMinecraft().getProxy());
 						httpurlconnection.setDoInput(true);
 						httpurlconnection.setDoOutput(false);
