@@ -1,9 +1,9 @@
 package net.minecraftcapes.player.model;
 
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 
 public class ModelCape extends ModelBase {
@@ -22,7 +22,10 @@ public class ModelCape extends ModelBase {
         this.cape.render(scale);
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, AbstractClientPlayer livingEntity) {
+    @Override
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+        EntityPlayer livingEntity = (EntityPlayer) entityIn;
         if (livingEntity.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()) {
             if (livingEntity.isSneaking()) {
                 this.cape.rotationPointZ = 1.4F;
