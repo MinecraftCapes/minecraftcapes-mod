@@ -4,7 +4,6 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 implements LayerRenderer<AbstractClientPlayer> {

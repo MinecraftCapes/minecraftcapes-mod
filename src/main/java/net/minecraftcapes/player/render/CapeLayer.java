@@ -4,10 +4,8 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -64,7 +62,9 @@ public class CapeLayer implements LayerRenderer<AbstractClientPlayer> {
          GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
          this.modelCape.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
          this.modelCape.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-         renderEchantmentGlint(entitylivingbaseIn, this.modelCape, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+         if(playerHandler.getHasCapeGlint()) {
+            renderEchantmentGlint(entitylivingbaseIn, this.modelCape, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+         }
          GlStateManager.disableBlend();
          GlStateManager.popMatrix();
       }
