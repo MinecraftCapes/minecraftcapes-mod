@@ -64,7 +64,9 @@ public class CapeLayer extends RenderPlayer {
          GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
          this.modelCape.setRotationAngles(event.entityPlayer.limbSwing, event.entityPlayer.limbSwingAmount, event.entityPlayer.getAge(), event.entityPlayer.getRotationYawHead(), event.entityPlayer.cameraPitch, 0.0625F, entitylivingbaseIn);
          this.modelCape.render(entitylivingbaseIn, event.entityPlayer.limbSwing, event.entityPlayer.limbSwingAmount, event.entityPlayer.getAge(), event.entityPlayer.getRotationYawHead(),event.entityPlayer.cameraPitch, 0.0625F);
-         renderEchantmentGlint(entitylivingbaseIn, this.modelCape, event.entityPlayer.limbSwing, event.entityPlayer.limbSwingAmount, partialTicks, event.entityPlayer.getAge(), event.entityPlayer.getRotationYawHead(), event.entityPlayer.cameraPitch, 0.0625F);
+         if(playerHandler.getHasCapeGlint()) {
+            renderEchantmentGlint(entitylivingbaseIn, this.modelCape, event.entityPlayer.limbSwing, event.entityPlayer.limbSwingAmount, partialTicks, event.entityPlayer.getAge(), event.entityPlayer.getRotationYawHead(), event.entityPlayer.cameraPitch, 0.0625F);
+         }
          GL11.glPopMatrix();
       }
    }
