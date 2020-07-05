@@ -3,18 +3,20 @@ package net.minecraftcapes.player.render;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.model.ModelCape;
 
 public class CapeLayer implements LayerRenderer<AbstractClientPlayer> {
 
    private final RenderPlayer playerRenderer;
+   private final ModelCape modelCape = new ModelCape();
 
    public CapeLayer(RenderPlayer playerRendererIn) {
       this.playerRenderer = playerRendererIn;
@@ -23,12 +25,11 @@ public class CapeLayer implements LayerRenderer<AbstractClientPlayer> {
    @Override
    public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-      ResourceLocation rl = playerHandler.getCapeLocation();
-      if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(EnumPlayerModelParts.CAPE) && rl != null) {
+      if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(EnumPlayerModelParts.CAPE) && playerHandler.getCapeLocation() != null) {
          ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
          if (itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.playerRenderer.bindTexture(rl);
+            this.playerRenderer.bindTexture(playerHandler.getCapeLocation());
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.0F, 0.0F, 0.125F);
             double d0 = entitylivingbaseIn.prevChasingPosX + (entitylivingbaseIn.chasingPosX - entitylivingbaseIn.prevChasingPosX) * (double)partialTicks - (entitylivingbaseIn.prevPosX + (entitylivingbaseIn.posX - entitylivingbaseIn.prevPosX) * (double)partialTicks);
@@ -59,7 +60,11 @@ public class CapeLayer implements LayerRenderer<AbstractClientPlayer> {
             GlStateManager.rotate(f3 / 2.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.rotate(-f3 / 2.0F, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-            this.playerRenderer.getMainModel().renderCape(0.0625F);
+            this.modelCape.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
+            this.modelCape.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            if (playerHandler.getHasCapeGlint()) {
+               LayerArmorBase.renderEnchantedGlint(this.playerRenderer, entitylivingbaseIn, this.modelCape, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+            }
             GlStateManager.popMatrix();
          }
       }
