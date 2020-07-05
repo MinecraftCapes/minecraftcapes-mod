@@ -3,20 +3,23 @@ package net.minecraftcapes.player.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.ArmorLayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.model.ModelCape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
+
+   private final ModelCape modelCape = new ModelCape();
 
    public CapeLayer(IEntityRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> p_i50950_1_) {
       super(p_i50950_1_);
@@ -24,12 +27,11 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
 
    public void render(AbstractClientPlayerEntity entityIn, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entityIn);
-      ResourceLocation rl = playerHandler.getCapeLocation();
-      if (entityIn.hasPlayerInfo() && !entityIn.isInvisible() && entityIn.isWearing(PlayerModelPart.CAPE) && rl != null) {
+      if (entityIn.hasPlayerInfo() && !entityIn.isInvisible() && entityIn.isWearing(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null) {
          ItemStack itemstack = entityIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
          if (itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.bindTexture(rl);
+            this.bindTexture(playerHandler.getCapeLocation());
             GlStateManager.pushMatrix();
             GlStateManager.translatef(0.0F, 0.0F, 0.125F);
             double d0 = MathHelper.lerp((double)p_212842_4_, entityIn.prevChasingPosX, entityIn.chasingPosX) - MathHelper.lerp((double)p_212842_4_, entityIn.prevPosX, entityIn.posX);
@@ -58,7 +60,11 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
             GlStateManager.rotatef(f3 / 2.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.rotatef(-f3 / 2.0F, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-            this.getEntityModel().renderCape(0.0625F);
+            this.modelCape.setRotationAngles(entityIn, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
+            this.modelCape.render(entityIn, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
+            if(playerHandler.getHasCapeGlint()) {
+               ArmorLayer.func_215338_a(this::bindTexture, entityIn, this.modelCape, p_212842_2_, p_212842_3_, p_212842_4_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
+            }
             GlStateManager.popMatrix();
          }
       }

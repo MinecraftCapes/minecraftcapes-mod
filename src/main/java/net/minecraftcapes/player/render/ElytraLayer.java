@@ -35,9 +35,8 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 			AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity) entityIn;
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractclientplayerentity);
-			ResourceLocation capeLocation = playerHandler.getCapeLocation();
-			if (abstractclientplayerentity.hasPlayerInfo() && capeLocation != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
-				this.bindTexture(capeLocation);
+			if (abstractclientplayerentity.hasPlayerInfo() && playerHandler.getCapeLocation() != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
+				this.bindTexture(playerHandler.getCapeLocation());
 			} else {
 				this.bindTexture(TEXTURE_ELYTRA);
 			}
@@ -49,7 +48,6 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
 			if (itemstack.isEnchanted()) {
 				ArmorLayer.func_215338_a(this::bindTexture, entityIn, this.modelElytra, p_212842_2_, p_212842_3_, p_212842_4_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
 			}
-
 			GlStateManager.disableBlend();
 			GlStateManager.popMatrix();
 		}
