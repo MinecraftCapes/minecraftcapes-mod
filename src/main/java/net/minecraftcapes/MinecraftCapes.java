@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MinecraftCapes.MODID, name = "James090500's MinecraftCapes Mod", version = "10", acceptedMinecraftVersions = "1.10.2")
+@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "10", acceptedMinecraftVersions = "1.10.2")
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";

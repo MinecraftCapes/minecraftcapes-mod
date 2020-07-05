@@ -29,15 +29,14 @@ public class ElytraLayer implements LayerRenderer<EntityLivingBase> {
 	@Override
 	public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-		if (itemstack.getItem() == Items.ELYTRA) {
+		if (itemstack != null && itemstack.getItem() == Items.ELYTRA) {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 			AbstractClientPlayer abstractclientplayerentity = (AbstractClientPlayer) entitylivingbaseIn;
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractclientplayerentity);
-			ResourceLocation capeLocation = playerHandler.getCapeLocation();
-			if (abstractclientplayerentity.hasPlayerInfo() && capeLocation != null && abstractclientplayerentity.isWearing(EnumPlayerModelParts.CAPE)) {
-				this.renderPlayer.bindTexture(capeLocation);
+			if (abstractclientplayerentity.hasPlayerInfo() && playerHandler.getCapeLocation() != null && abstractclientplayerentity.isWearing(EnumPlayerModelParts.CAPE)) {
+				this.renderPlayer.bindTexture(playerHandler.getCapeLocation());
 			} else {
 				this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
 			}
