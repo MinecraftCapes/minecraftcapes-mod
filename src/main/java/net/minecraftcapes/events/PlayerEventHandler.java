@@ -36,9 +36,6 @@ public class PlayerEventHandler {
 						ProfileResult profileResult = new Gson().fromJson(reader, ProfileResult.class);
 
 						playerHandler.setHasInfo(true);
-						playerHandler.setUpsideDown(profileResult.upsideDown);
-
-						playerHandler.setHasInfo(true);
 						playerHandler.setHasCapeGlint(profileResult.capeGlint);
 						playerHandler.setUpsideDown(profileResult.upsideDown);
 
