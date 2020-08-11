@@ -4,6 +4,12 @@ plugins {
 	id "io.freefair.lombok" version "5.1.0"
 }
 
+repositories {
+	maven {
+		url = "https://www.cursemaven.com"
+	}
+}
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -22,7 +28,10 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
+	modApi "curse.maven:modmenu:3023985"
+	modApi "curse.maven:auth-me:3015237"
 }
+
 
 processResources {
 	inputs.property "version", project.version

@@ -10,7 +10,8 @@
     "Siriuo"
   ],
   "contact": {
-    "homepage": "https://minecraftcapes.net/"
+    "homepage": "https://minecraftcapes.net/",
+    "issues": "https://minecraftcapes.net/discord"
   },
   "license": "CC0-1.0",
   "icon": "assets/minecraftcapes/logo.png",
