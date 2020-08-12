@@ -2,9 +2,11 @@ package net.minecraftcapes.player.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
+import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.ElytraEntityModel;
@@ -41,7 +43,7 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 			matrixStack.translate(0.0D, 0.0D, 0.125D);
 			this.getContextModel().copyStateTo(this.elytra);
 			this.elytra.setAngles(livingEntity, f, g, j, k, l);
-			VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, this.elytra.getLayer(resourcelocation), false, itemStack.hasGlint());
+			VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, RenderLayer.getArmorCutoutNoCull(resourcelocation), false, itemStack.hasGlint());
 			this.elytra.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 			matrixStack.pop();
 		}

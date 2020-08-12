@@ -6,6 +6,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
+import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -56,7 +57,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 				matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(6.0F + r / 2.0F + q));
 				matrixStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(s / 2.0F));
 				matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F - s / 2.0F));
-				VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, RenderLayer.getEntityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+				VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, RenderLayer.getArmorCutoutNoCull(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
 				this.getContextModel().renderCape(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV);
 				matrixStack.pop();
 			 }
