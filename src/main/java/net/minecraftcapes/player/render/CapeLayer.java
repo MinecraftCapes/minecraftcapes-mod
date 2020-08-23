@@ -27,7 +27,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 
 	public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
-		if (!abstractClientPlayerEntity.isInvisible() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null) {
+		if (!abstractClientPlayerEntity.isInvisible() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null && abstractClientPlayerEntity.getCapeTexture() == null) {
 			ItemStack itemStack = abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST);
 			if (itemStack.getItem() != Items.ELYTRA) {
 				matrixStack.push();
