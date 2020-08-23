@@ -24,7 +24,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 
 	public void render(AbstractClientPlayerEntity livingEntity, float f, float g, float h, float i, float j, float k, float l) {
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
-		if (!livingEntity.isInvisible() && livingEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null) {
+		if (!livingEntity.isInvisible() && livingEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null && livingEntity.getCapeTexture() == null) {
 			ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
 			if (itemStack.getItem() != Items.ELYTRA) {
 				GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
