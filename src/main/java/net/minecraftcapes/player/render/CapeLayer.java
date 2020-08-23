@@ -23,7 +23,7 @@ public class CapeLayer extends RenderPlayer {
       float partialTicks = event.partialRenderTick;
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
       ResourceLocation rl = playerHandler.getCapeLocation();
-      if (rl != null && !entitylivingbaseIn.isInvisible()) {
+      if (rl != null && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.getLocationCape() == null) {
          GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
          Minecraft.getMinecraft().getTextureManager().bindTexture(rl);
          GL11.glPushMatrix();
