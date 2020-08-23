@@ -25,7 +25,7 @@ public class CapeLayer implements LayerRenderer<AbstractClientPlayer> {
    @Override
    public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
-      if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(EnumPlayerModelParts.CAPE) && playerHandler.getCapeLocation() != null) {
+      if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(EnumPlayerModelParts.CAPE) && playerHandler.getCapeLocation() != null && entitylivingbaseIn.getLocationCape() == null) {
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.enableBlend();
          GlStateManager.blendFunc(1, 0);
