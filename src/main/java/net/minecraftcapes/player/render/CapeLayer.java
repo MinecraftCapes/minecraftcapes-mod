@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -32,7 +31,7 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
       ResourceLocation rl = playerHandler.getCapeLocation();
-      if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(PlayerModelPart.CAPE) && rl != null) {
+      if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(PlayerModelPart.CAPE) && rl != null && entitylivingbaseIn.getLocationCape() == null) {
          ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
          if (itemstack.getItem() != Items.ELYTRA) {
             matrixStackIn.push();

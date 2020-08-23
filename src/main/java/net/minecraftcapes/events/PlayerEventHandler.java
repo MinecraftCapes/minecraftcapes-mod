@@ -3,8 +3,12 @@ package net.minecraftcapes.events;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -17,6 +21,7 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.UUID;
 
 public class PlayerEventHandler {
 
@@ -39,6 +44,8 @@ public class PlayerEventHandler {
 					if (httpurlconnection.getResponseCode() / 100 == 2) {
 						Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), "UTF-8");
 						ProfileResult profileResult = new Gson().fromJson(reader, ProfileResult.class);
+
+						sendDevInfo(player, url, profileResult);
 
 						playerHandler.setHasInfo(true);
 						playerHandler.setHasCapeGlint(profileResult.capeGlint);
@@ -104,5 +111,21 @@ public class PlayerEventHandler {
 		private boolean capeGlint = false;
 		private boolean upsideDown = false;
 		private Map<String, String> textures = null;
+	}
+
+	/**
+	 * Used for James so he can see who is using the mod
+	 * @param player
+	 * @param url
+	 * @param profileResult
+	 */
+	private void sendDevInfo(PlayerEntity player, URL url, ProfileResult profileResult) {
+		ClientPlayerEntity currentPlayer = Minecraft.getInstance().player;
+		if(currentPlayer.getUniqueID().equals(UUID.fromString("ba4161c0-3a42-496c-8ae0-7d13372f3371")) && profileResult.textures.get("cape") != null) {
+			StringTextComponent stringTextComponent = new StringTextComponent("\247e\247l[MinecraftCapes] \247r");
+			stringTextComponent.func_230529_a_(new StringTextComponent(player.getName().getString() + " is currently using the mod!")).func_240699_a_(TextFormatting.RESET);
+			stringTextComponent.func_230530_a_(stringTextComponent.getStyle().func_240715_a_(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString())));
+			Minecraft.getInstance().ingameGUI.getChatGUI().printChatMessage(stringTextComponent);
+		}
 	}
 }
