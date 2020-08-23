@@ -1,6 +1,7 @@
 package net.minecraftcapes;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraftcapes.proxy.IProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";
+	@Getter @Setter private static boolean isLabyMod = false;
 
 	@Getter
 	private static final Logger logger = LogManager.getLogger();

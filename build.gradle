@@ -64,6 +64,8 @@ dependencies {
 	
     //Project Lombok
     compile "org.projectlombok:lombok:1.18.12"
+
+    compile files('libs/lm_api_mc1.12.2.jar')
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

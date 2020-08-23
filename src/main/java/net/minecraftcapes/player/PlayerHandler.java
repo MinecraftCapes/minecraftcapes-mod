@@ -119,7 +119,16 @@ public class PlayerHandler {
     }
 
     public void applyEars(String ears) {
-        BufferedImage earImage = readTexture(ears);
+        BufferedImage earImage;
+        if(MinecraftCapes.isLabyMod()) {
+            BufferedImage oldImage = readTexture(ears);
+            earImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+            Graphics g = earImage.getGraphics();
+            g.drawImage(oldImage, 24, 0, null);
+            g.dispose();
+        } else {
+            earImage = readTexture(ears);
+        }
         applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
