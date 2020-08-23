@@ -1,9 +1,9 @@
-# Fabric Example Mod
+# MinecraftCapes Mod
+This respository contains the actual mod for MinecraftCapes. The mod itself is simple. It downloads textures from https://minecraftcapes.net and then applies them in game.
 
-## Setup
+There are Forge and Fabric versions with Forge 1.8.9 and Forge 1.12.2 having LabyMod support.
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+## Authors
 
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+* **James Harrison** - *Lead Developer* - [james090500](https://github.com/james090500)
+* **Tim** - *Developer* - [Siriuo](https://github.com/Siriuo)
