@@ -7,8 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -123,8 +121,8 @@ public class PlayerEventHandler {
 		ClientPlayerEntity currentPlayer = Minecraft.getInstance().player;
 		if(currentPlayer.getUniqueID().equals(UUID.fromString("ba4161c0-3a42-496c-8ae0-7d13372f3371")) && profileResult.textures.get("cape") != null) {
 			StringTextComponent stringTextComponent = new StringTextComponent("\247e\247l[MinecraftCapes] \247r");
-			stringTextComponent.func_230529_a_(new StringTextComponent(player.getName().getString() + " is currently using the mod!")).func_240699_a_(TextFormatting.RESET);
-			stringTextComponent.func_230530_a_(stringTextComponent.getStyle().func_240715_a_(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString())));
+//			stringTextComponent.append(new StringTextComponent(player.getName().getString() + " is currently using the mod!")).mergeStyle(TextFormatting.RESET);
+//			stringTextComponent.setStyle(stringTextComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString())));
 			Minecraft.getInstance().ingameGUI.getChatGUI().printChatMessage(stringTextComponent);
 		}
 	}
