@@ -28,8 +28,12 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
-	modApi "curse.maven:modmenu:3023985"
+
+	//Auth and Mod Menu
 	modApi "curse.maven:auth-me:3015237"
+	modApi "curse.maven:modmenu:3023985"
+	
+	modApi "curse.maven:armor-visibility:3012791"
 }
 
 
