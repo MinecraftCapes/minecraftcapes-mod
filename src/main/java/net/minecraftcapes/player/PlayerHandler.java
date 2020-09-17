@@ -26,6 +26,8 @@ public class PlayerHandler {
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
+    @Getter @Setter private Boolean showCape = true;
+    @Getter @Setter private Boolean forceShowElytra = false;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;

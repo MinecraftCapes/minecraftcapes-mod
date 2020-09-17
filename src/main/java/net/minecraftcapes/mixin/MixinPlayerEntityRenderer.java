@@ -1,11 +1,14 @@
 package net.minecraftcapes.mixin;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraftcapes.compatibility.CompatHooks;
 import net.minecraftcapes.player.render.CapeLayer;
 import net.minecraftcapes.player.render.Deadmau5;
 import net.minecraftcapes.player.render.ElytraLayer;
@@ -35,6 +38,13 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
 				it.remove();
 			}
 		}
-	}	
+	}
+
+	@Inject(method = "render", at = @At("RETURN"))
+	private void render(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+		CompatHooks.getHooks().forEach(hook -> {
+			hook.onPlayerRender(abstractClientPlayerEntity);
+		});
+	}
 
 }

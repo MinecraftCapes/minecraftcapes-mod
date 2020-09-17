@@ -29,9 +29,9 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 	}
 
 	public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity livingEntity, float f, float g, float h, float j, float k, float l) {
+		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
 		ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
-		if (itemStack.getItem() == Items.ELYTRA) {
-			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
+		if (itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) {
 			Identifier resourcelocation;
 			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
 				resourcelocation = playerHandler.getCapeLocation();
