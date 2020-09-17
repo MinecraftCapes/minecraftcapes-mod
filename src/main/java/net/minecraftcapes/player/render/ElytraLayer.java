@@ -24,13 +24,13 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 	}
 
 	public void render(AbstractClientPlayerEntity livingEntity, float f, float g, float h, float i, float j, float k, float l) {
+		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
 		ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
-		if (itemStack.getItem() == Items.ELYTRA) {
+		if (itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) {
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
 			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
 				this.bindTexture(playerHandler.getCapeLocation());
 			} else {

@@ -6,6 +6,8 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.compatibility.CompatHooks;
 import net.minecraftcapes.player.render.CapeLayer;
 import net.minecraftcapes.player.render.Deadmau5;
 import net.minecraftcapes.player.render.ElytraLayer;
@@ -35,6 +37,13 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
 				it.remove();
 			}
 		}
-	}	
+	}
+
+	@Inject(method = "render", at = @At("RETURN"))
+	private void render(AbstractClientPlayerEntity abstractClientPlayerEntity, double d, double e, double f, float g, float h, CallbackInfo ci) {
+		CompatHooks.getHooks().forEach(hook -> {
+			hook.onPlayerRender(abstractClientPlayerEntity);
+		});
+	}
 
 }
