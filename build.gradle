@@ -5,6 +5,16 @@ plugins {
 	id ("com.wynprice.cursemaven") version "2.1.1"
 }
 
+repositories {
+	maven {
+		url = "https://jitpack.io"
+	}
+	maven {
+		name = "NerdHubMC"
+		url = "https://maven.abusedmaster.xyz/"
+	}
+}
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -28,6 +38,7 @@ dependencies {
 	// You may need to force-disable transitiveness on them.
 	modRuntime("curse.maven:modmenu:2902148")
 	modRuntime("curse.maven:auth-me:2990330")
+	modImplementation "com.github.emilyploszaj:trinkets:2.4.2"
 }
 
 processResources {
