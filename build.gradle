@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id 'maven-publish'
 	id "io.freefair.lombok" version "5.1.0"
 }
@@ -37,9 +37,9 @@ dependencies {
 	// You may need to force-disable transitiveness on them.
 
 	//Auth and Mod Menu
-	modApi "curse.maven:auth-me:3055414"
+	modApi "curse.maven:auth-me:3073170"
 	modApi "curse.maven:modmenu:3023985"
-	modImplementation "com.github.emilyploszaj:trinkets:2.6.4"
+	modImplementation "com.github.emilyploszaj:trinkets:2.6.6"
 }
 
 

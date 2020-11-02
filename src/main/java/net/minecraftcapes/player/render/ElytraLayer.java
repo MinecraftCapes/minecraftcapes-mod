@@ -43,7 +43,7 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 			matrixStack.translate(0.0D, 0.0D, 0.125D);
 			this.getContextModel().copyStateTo(this.elytra);
 			this.elytra.setAngles(livingEntity, f, g, j, k, l);
-			VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, RenderLayer.getArmorCutoutNoCull(resourcelocation), false, itemStack.hasGlint());
+			VertexConsumer vertexConsumer = ItemRenderer.getArmorGlintConsumer(vertexConsumerProvider, RenderLayer.getArmorCutoutNoCull(resourcelocation), false, itemStack.hasGlint());
 			this.elytra.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 			matrixStack.pop();
 		}
