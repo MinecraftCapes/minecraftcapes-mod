@@ -31,10 +31,12 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 	public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity livingEntity, float f, float g, float h, float j, float k, float l) {
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
 		ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
-		if (itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) {
+		if ((itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) && !playerHandler.getForceHideElytra()) {
 			Identifier resourcelocation;
 			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
 				resourcelocation = playerHandler.getCapeLocation();
+			} else if(livingEntity.getCapeTexture() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+				resourcelocation = livingEntity.getCapeTexture();
 			} else {
 				resourcelocation = SKIN;
 			}

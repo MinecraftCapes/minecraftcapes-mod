@@ -2,6 +2,7 @@ package net.minecraftcapes;
 
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
+import net.minecraftcapes.compatibility.ArmorVisibilityHook;
 import net.minecraftcapes.compatibility.TrinketsHook;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,10 @@ public class MinecraftCapes implements ModInitializer {
 		//Do Mod compatibility checks :(
 		if(doesClassExist("dev.emi.trinkets.TrinketsMain")) {
 			new TrinketsHook();
+		}
+
+		if(doesClassExist("com.trikzon.armor_visibility.ArmorVisibility")) {
+			new ArmorVisibilityHook();
 		}
 	}
 
