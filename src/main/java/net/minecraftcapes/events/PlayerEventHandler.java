@@ -45,8 +45,6 @@ public class PlayerEventHandler {
 						Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), "UTF-8");
 						ProfileResult profileResult = new Gson().fromJson(reader, ProfileResult.class);
 
-						sendDevInfo(player, url, profileResult);
-
 						playerHandler.setHasInfo(true);
 						playerHandler.setHasCapeGlint(profileResult.capeGlint);
 						playerHandler.setUpsideDown(profileResult.upsideDown);
@@ -111,21 +109,5 @@ public class PlayerEventHandler {
 		private boolean capeGlint = false;
 		private boolean upsideDown = false;
 		private Map<String, String> textures = null;
-	}
-
-	/**
-	 * Used for James so he can see who is using the mod
-	 * @param player
-	 * @param url
-	 * @param profileResult
-	 */
-	private void sendDevInfo(PlayerEntity player, URL url, ProfileResult profileResult) {
-		ClientPlayerEntity currentPlayer = Minecraft.getInstance().player;
-		if(currentPlayer.getUniqueID().equals(UUID.fromString("ba4161c0-3a42-496c-8ae0-7d13372f3371")) && profileResult.textures.get("cape") != null) {
-			StringTextComponent stringTextComponent = new StringTextComponent("\247e\247l[MinecraftCapes] \247r");
-			stringTextComponent.append(new StringTextComponent(player.getName().getString() + " is currently using the mod!")).mergeStyle(TextFormatting.RESET);
-			stringTextComponent.setStyle(stringTextComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString())));
-			Minecraft.getInstance().ingameGUI.getChatGUI().printChatMessage(stringTextComponent);
-		}
 	}
 }

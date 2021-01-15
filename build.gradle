@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 
 version = 'v10'
 group = 'net.minecraftcapes' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'MinecraftCapes Forge 1.16.4'
+archivesBaseName = 'MinecraftCapes Forge 1.16.5'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -99,16 +99,16 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.16.4-35.0.1'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.0.0'
 
     //Project Lombok
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     //Caelus API https://github.com/TheIllusiveC4/Colytra/issues/32
-    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.16.2-2.0.0.0")
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.16.2-2.0.0.0:api")
-    runtimeOnly fg.deobf("curse.maven:colytra:3067395")
+    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.16.4-2.1.0.2")
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.16.4-2.1.0.2:api")
+    runtimeOnly fg.deobf("curse.maven:colytra-280200:3113926")
 
 }
 
