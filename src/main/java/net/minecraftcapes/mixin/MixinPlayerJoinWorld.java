@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractClientPlayerEntity.class)
 public abstract class MixinPlayerJoinWorld extends PlayerEntity {
-	
-	public MixinPlayerJoinWorld(World world, GameProfile gameProfile) {
-		super(world, gameProfile);
+
+	public MixinPlayerJoinWorld(World world, GameProfile profile) {
+		super(world, profile);
 	}
 
 	@Inject(method = "<init>*", at = @At("RETURN"))

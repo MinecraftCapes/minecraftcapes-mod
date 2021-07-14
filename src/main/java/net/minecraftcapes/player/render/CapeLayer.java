@@ -5,7 +5,6 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -16,6 +15,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
@@ -25,11 +25,13 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 	}
 
 	public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, float h, float j, float k, float l) {
+		if(!MinecraftCapesConfig.isCapeVisible() && abstractClientPlayerEntity.getCapeTexture() == null) return;
+
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractClientPlayerEntity);
 		if(playerHandler.getShowCape()) {
-			if (!abstractClientPlayerEntity.isInvisible() && abstractClientPlayerEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null && abstractClientPlayerEntity.getCapeTexture() == null) {
+			if (!abstractClientPlayerEntity.isInvisible() && (playerHandler.getCapeLocation() != null || abstractClientPlayerEntity.getCapeTexture() != null)) {
 				ItemStack itemStack = abstractClientPlayerEntity.getEquippedStack(EquipmentSlot.CHEST);
-				if (itemStack.getItem() != Items.ELYTRA) {
+				if(itemStack.getItem() != Items.ELYTRA || (playerHandler.getForceHideElytra() && !playerHandler.getForceShowElytra())) {
 					matrixStack.push();
 					matrixStack.translate(0.0D, 0.0D, 0.125D);
 					double d = MathHelper.lerp((double) h, abstractClientPlayerEntity.field_7524, abstractClientPlayerEntity.field_7500) - MathHelper.lerp((double) h, abstractClientPlayerEntity.prevX, abstractClientPlayerEntity.getX());
@@ -57,7 +59,14 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 					matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(6.0F + r / 2.0F + q));
 					matrixStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(s / 2.0F));
 					matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F - s / 2.0F));
-					VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, RenderLayer.getEntityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+
+					VertexConsumer vertexConsumer;
+					if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
+						vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, RenderLayer.getEntityCutoutNoCull(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+					} else {
+						vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, RenderLayer.getEntityCutoutNoCull(abstractClientPlayerEntity.getCapeTexture()), false, false);
+					}
+
 					this.getContextModel().renderCape(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV);
 					matrixStack.pop();
 				}
