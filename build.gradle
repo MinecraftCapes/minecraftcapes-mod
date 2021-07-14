@@ -11,10 +11,6 @@ repositories {
 	maven {
 		url = "https://jitpack.io"
 	}
-	maven {
-		name = "NerdHubMC"
-		url = "https://maven.abusedmaster.xyz/"
-	}
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -35,9 +31,8 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
-	modRuntime "curse.maven:auth-me:2990330"
-	modRuntime "curse.maven:mod-menu:2854751"
-	modImplementation "com.github.emilyploszaj:trinkets:2.1.1"
+	modApi "curse.maven:modmenu-308702:2854751"
+	modApi "curse.maven:auth-me-356643:2990330"
 }
 
 processResources {

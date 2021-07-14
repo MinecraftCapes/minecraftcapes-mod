@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntityModel.class)
 public abstract class MixinPlayerModel extends BipedEntityModel {
 
-    @Shadow private ModelPart ears;
+    @Shadow
+    private ModelPart ears;
 
     public MixinPlayerModel(float scale) {
         super(scale);

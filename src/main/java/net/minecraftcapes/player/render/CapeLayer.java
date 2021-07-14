@@ -2,7 +2,6 @@ package net.minecraftcapes.player.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
@@ -11,6 +10,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftcapes.player.model.CapeEntityModel;
 
@@ -23,16 +23,22 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 	}
 
 	public void render(AbstractClientPlayerEntity livingEntity, float f, float g, float h, float i, float j, float k, float l) {
+		if(!MinecraftCapesConfig.isCapeVisible() && livingEntity.getCapeTexture() == null) return;
+
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
 		if(playerHandler.getShowCape()) {
-			if (!livingEntity.isInvisible() && livingEntity.isPartVisible(PlayerModelPart.CAPE) && playerHandler.getCapeLocation() != null && livingEntity.getCapeTexture() == null) {
+			if (!livingEntity.isInvisible() && (playerHandler.getCapeLocation() != null || livingEntity.getCapeTexture() != null)) {
 				ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
-				if (itemStack.getItem() != Items.ELYTRA) {
+				if(itemStack.getItem() != Items.ELYTRA || (playerHandler.getForceHideElytra() && !playerHandler.getForceShowElytra())) {
 					GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 					GlStateManager.enableBlend();
 					GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-					this.bindTexture(playerHandler.getCapeLocation());
+					if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
+						this.bindTexture(playerHandler.getCapeLocation());
+					} else {
+						this.bindTexture(livingEntity.getCapeTexture());
+					}
 
 					GlStateManager.pushMatrix();
 					GlStateManager.translatef(0.0F, 0.0F, 0.125F);
@@ -66,7 +72,7 @@ public class CapeLayer extends FeatureRenderer<AbstractClientPlayerEntity, Playe
 
 					this.cape.setAngles(livingEntity, f, g, i, j, k, l);
 					this.cape.render(livingEntity, f, g, i, j, k, l);
-					if (playerHandler.getHasCapeGlint()) {
+					if (playerHandler.getHasCapeGlint() && MinecraftCapesConfig.isCapeVisible()) {
 						ArmorFeatureRenderer.renderEnchantedGlint(this::bindTexture, livingEntity, this.cape, f, g, h, i, j, k, l);
 					}
 

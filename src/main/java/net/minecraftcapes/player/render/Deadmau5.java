@@ -5,16 +5,19 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-	
+
 	public Deadmau5(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext_1) {
 		super(featureRendererContext_1);
 	}
 
 	@Override
 	public void render(AbstractClientPlayerEntity entity, float f, float g, float h, float i, float j, float k, float l) {
+		if(!MinecraftCapesConfig.isEarsVisible()) return;
+
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entity);
 		if (!entity.isInvisible() && playerHandler.getEarLocation() != null) {
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -24,7 +27,7 @@ public class Deadmau5 extends FeatureRenderer<AbstractClientPlayerEntity, Player
 			if(entity.isInSneakingPose()) {
 				GlStateManager.translatef(0.0F, 0.25F, 0.0F);
 			}
-			((PlayerEntityModel)this.getContextModel()).renderEars(0.0625F);
+			this.getContextModel().renderEars(0.0625F);
 			GlStateManager.popMatrix();
 		}
 	}

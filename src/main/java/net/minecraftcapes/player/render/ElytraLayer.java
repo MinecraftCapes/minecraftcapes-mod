@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-		
+
 	private static final Identifier SKIN = new Identifier("textures/entity/elytra.png");
 	private final ElytraEntityModel<AbstractClientPlayerEntity> elytra = new ElytraEntityModel<AbstractClientPlayerEntity>();
 
@@ -26,7 +26,7 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 	public void render(AbstractClientPlayerEntity livingEntity, float f, float g, float h, float i, float j, float k, float l) {
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(livingEntity);
 		ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
-		if (itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) {
+		if((itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) && !playerHandler.getForceHideElytra()) {
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
