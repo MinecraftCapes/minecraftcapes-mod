@@ -12,6 +12,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
@@ -31,8 +32,10 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+			if(playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
 				this.bindTexture(playerHandler.getCapeLocation());
+			} else if (livingEntity.getCapeTexture() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+				this.bindTexture(livingEntity.getCapeTexture());
 			} else {
 				this.bindTexture(SKIN);
 			}
