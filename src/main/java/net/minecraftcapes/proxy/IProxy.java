@@ -4,5 +4,7 @@ public interface IProxy {
 
     default void init() {};
 
+    default void setup() {};
+
     default void enqueueIMC() {};
 }

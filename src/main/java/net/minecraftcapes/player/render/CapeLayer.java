@@ -17,6 +17,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,10 +30,11 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
    }
 
    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+      if(!MinecraftCapesConfig.isCapeVisible() && entitylivingbaseIn.getLocationCape() == null) return;
+
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
       if(playerHandler.getShowCape()) {
-         ResourceLocation rl = playerHandler.getCapeLocation();
-         if (entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible() && entitylivingbaseIn.isWearing(PlayerModelPart.CAPE) && entitylivingbaseIn.getLocationCape() == null && rl != null) {
+         if (!entitylivingbaseIn.isInvisible() && (entitylivingbaseIn.getLocationCape() != null || playerHandler.getCapeLocation() != null)) {
             ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (itemstack.getItem() != Items.ELYTRA) {
                matrixStackIn.push();
@@ -62,7 +64,12 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
                matrixStackIn.rotate(Vector3f.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
                matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f3 / 2.0F));
                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - f3 / 2.0F));
-               IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+               IVertexBuilder ivertexbuilder;
+               if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
+                  ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+               } else {
+                  ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(entitylivingbaseIn.getLocationCape()), false, false);
+               }
                this.getEntityModel().renderCape(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY);
                matrixStackIn.pop();
             }
