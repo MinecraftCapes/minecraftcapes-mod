@@ -15,7 +15,7 @@ public class ArmorVisibilityHook implements ICompatHooks {
 
     public void onPlayerRender(PlayerEntity playerEntity) {
         PlayerHandler playerHandler = PlayerHandler.getFromPlayer(playerEntity);
-        if(ArmorVisibility.CONFIG.allArmorInvis || (ArmorVisibility.CONFIG.myArmorInvis && playerEntity.equals(MinecraftClient.getInstance().player))) {
+        if(!ArmorVisibility.save.allArmorVisibilityToggle || (!ArmorVisibility.save.myArmorVisibilityToggle && playerEntity.equals(MinecraftClient.getInstance().player))) {
             playerHandler.setForceHideElytra(true);
         } else {
             playerHandler.setForceHideElytra(false);

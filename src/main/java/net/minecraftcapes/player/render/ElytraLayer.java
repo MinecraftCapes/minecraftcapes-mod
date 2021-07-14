@@ -6,7 +6,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerModelPart;
-import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.ElytraEntityModel;
@@ -17,12 +16,13 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-		
+
 	private static final Identifier SKIN = new Identifier("textures/entity/elytra.png");
-	private final ElytraEntityModel<AbstractClientPlayerEntity> elytra = new ElytraEntityModel<AbstractClientPlayerEntity>();
+	private final ElytraEntityModel<AbstractClientPlayerEntity> elytra = new ElytraEntityModel<>();
 
 	public ElytraLayer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext_1) {
 		super(featureRendererContext_1);
@@ -33,7 +33,7 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 		ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
 		if ((itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) && !playerHandler.getForceHideElytra()) {
 			Identifier resourcelocation;
-			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
+			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE) && MinecraftCapesConfig.isCapeVisible()) {
 				resourcelocation = playerHandler.getCapeLocation();
 			} else if(livingEntity.getCapeTexture() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
 				resourcelocation = livingEntity.getCapeTexture();

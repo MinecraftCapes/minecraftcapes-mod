@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinPlayerModel extends BipedEntityModel {
 
     @Shadow
-    private ModelPart ears;
+    private ModelPart ear;
 
     public MixinPlayerModel(float scale) {
         super(scale);
@@ -26,6 +26,6 @@ public abstract class MixinPlayerModel extends BipedEntityModel {
         bipedDeadmau5Head.addCuboid(1.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
         bipedDeadmau5Head.addCuboid(-7.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
         bipedDeadmau5Head.setPivot(0.0F, 0.0F, 0.0F);
-        this.ears = bipedDeadmau5Head;
+        this.ear = bipedDeadmau5Head;
     }
 }

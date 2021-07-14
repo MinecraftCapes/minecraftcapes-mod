@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftcapes.events.PlayerEventHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractClientPlayerEntity.class)
 public abstract class MixinPlayerJoinWorld extends PlayerEntity {
-	
-	public MixinPlayerJoinWorld(ClientWorld world, GameProfile gameProfile) {
-		super(world, world.getSpawnPos(), world.method_30671(), gameProfile);
+
+	public MixinPlayerJoinWorld(World world, BlockPos pos, float yaw, GameProfile profile) {
+		super(world, pos, yaw, profile);
 	}
 
 	@Inject(method = "<init>*", at = @At("RETURN"))

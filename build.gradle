@@ -12,8 +12,12 @@ repositories {
 		url = "https://jitpack.io"
 	}
 	maven {
-		name = "NerdHubMC"
-		url = "https://maven.abusedmaster.xyz/"
+		name = "TerraformersMC"
+		url = "https://maven.kotlindiscord.com/repository/terraformers/"
+	}
+	maven {
+		name = "Ladysnake Libs"
+		url = "https://ladysnake.jfrog.io/artifactory/mods"
 	}
 }
 
@@ -40,8 +44,8 @@ dependencies {
 	modApi "curse.maven:auto-config-373261:3095961"
 	modApi "curse.maven:auth-me-356643:3073169"
 	modApi "curse.maven:modmenu-308702:3121655"
-	modApi "curse.maven:armorvisibility-387962:3012791"
-	modCompileOnly "com.github.emilyploszaj:trinkets:2.6.6"
+	modApi "curse.maven:armorvisibility-387962:3345783"
+	modCompileOnly "dev.emi:trinkets:2.6.7"
 }
 
 

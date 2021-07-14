@@ -4,9 +4,9 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Vec3f;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +25,7 @@ public abstract class MixinDinnerbone extends EntityRenderer {
         if(entity instanceof PlayerEntity) {
             if(PlayerHandler.getFromPlayer((PlayerEntity) entity).isUpsideDown()) {
                 matrices.translate(0.0D, (double) (entity.getHeight() + 0.1F), 0.0D);
-                matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(180.0F));
+                matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F));
             }
         }
     }

@@ -11,14 +11,19 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class PlayerEventHandler {
 
 	public static void onPlayerJoin(PlayerEntity playerEntity) {
 		PlayerHandler playerHandler = PlayerHandler.getFromPlayer(playerEntity);
-		if(playerHandler == null || playerHandler.getHasInfo()) return;
+		if(playerHandler.getHasInfo()) return;
 
+		downloadProfile(playerHandler);
+	}
+
+	public static void downloadProfile(PlayerHandler playerHandler) {
 		Thread playerDownload = new Thread(() -> {
 			try {
 				MinecraftCapes.getLogger().debug("Getting profile for {}", playerHandler.getPlayerUUID());
@@ -29,8 +34,9 @@ public class PlayerEventHandler {
 				httpurlconnection.connect();
 
 				if (httpurlconnection.getResponseCode() / 100 == 2) {
-					Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), "UTF-8");
+					Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), StandardCharsets.UTF_8);
 					ProfileResult profileResult = new Gson().fromJson(reader, ProfileResult.class);
+					reader.close();
 
 					playerHandler.setHasInfo(true);
 					playerHandler.setHasCapeGlint(profileResult.capeGlint);
