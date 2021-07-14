@@ -33,7 +33,7 @@ public class ElytraLayer extends FeatureRenderer<AbstractClientPlayerEntity, Pla
 		ItemStack itemStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
 		if ((itemStack.getItem() == Items.ELYTRA || playerHandler.getForceShowElytra()) && !playerHandler.getForceHideElytra()) {
 			Identifier resourcelocation;
-			if (playerHandler.getCapeLocation() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE) && MinecraftCapesConfig.isCapeVisible()) {
+			if (playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
 				resourcelocation = playerHandler.getCapeLocation();
 			} else if(livingEntity.getCapeTexture() != null && livingEntity.isPartVisible(PlayerModelPart.CAPE)) {
 				resourcelocation = livingEntity.getCapeTexture();
