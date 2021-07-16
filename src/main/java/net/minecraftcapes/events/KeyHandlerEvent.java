@@ -14,8 +14,10 @@ public class KeyHandlerEvent {
 
     @SubscribeEvent
     public static void onKeyPress(TickEvent.ClientTickEvent event) {
-        if(ClientProxy.menuKey.isPressed()) {
-            Minecraft.getInstance().displayGuiScreen(new MenuScreen());
+        if(event.phase == TickEvent.Phase.END) {
+            if (ClientProxy.menuKey.isKeyDown()) {
+                Minecraft.getInstance().displayGuiScreen(new MenuScreen());
+            }
         }
     }
 
