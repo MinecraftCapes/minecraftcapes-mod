@@ -5,6 +5,7 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> {
@@ -15,6 +16,8 @@ public class Deadmau5 extends LayerRenderer<AbstractClientPlayerEntity, PlayerMo
 
    @Override
    public void render(AbstractClientPlayerEntity entityIn, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
+      if(!MinecraftCapesConfig.isEarsVisible()) return;
+
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entityIn);
       if (playerHandler.getEarLocation() != null && entityIn.hasSkin() && !entityIn.isInvisible()) {
          GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
