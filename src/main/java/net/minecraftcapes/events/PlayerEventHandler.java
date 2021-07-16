@@ -41,6 +41,7 @@ public class PlayerEventHandler {
 				if (httpurlconnection.getResponseCode() / 100 == 2) {
 					Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), "UTF-8");
 					ProfileResult profileResult = new Gson().fromJson(reader, ProfileResult.class);
+					reader.close();
 
 					playerHandler.setHasInfo(true);
 					playerHandler.setHasCapeGlint(profileResult.capeGlint);

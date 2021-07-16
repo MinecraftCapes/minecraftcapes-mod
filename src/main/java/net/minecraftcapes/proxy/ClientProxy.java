@@ -22,6 +22,8 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.List;
@@ -47,7 +49,7 @@ public class ClientProxy implements IProxy {
     }
 
     @Override
-    public void setup() {
+    public void clientSetup(FMLCommonSetupEvent event) {
         //Register the menu
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new MenuScreen());
 
@@ -56,7 +58,7 @@ public class ClientProxy implements IProxy {
     }
 
     @Override
-    public void enqueueIMC(){
+    public void enqueueIMC(InterModEnqueueEvent event){
         Minecraft.getInstance().gameSettings.setModelPartEnabled(PlayerModelPart.CAPE, true);
 
         for(PlayerRenderer render : Minecraft.getInstance().getRenderManager().getSkinMap().values()) { //Get Skin Types

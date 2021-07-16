@@ -1,10 +1,14 @@
 package net.minecraftcapes.proxy;
 
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+
 public interface IProxy {
 
     default void init() {};
 
-    default void setup() {};
+    default void clientSetup(FMLCommonSetupEvent event) {};
 
-    default void enqueueIMC() {};
+    default void enqueueIMC(InterModEnqueueEvent event) {};
 }

@@ -24,18 +24,12 @@ public class MinecraftCapes {
 
 	public MinecraftCapes() {
 		getLogger().info("[MinecraftCapes] Initialising");
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(MinecraftCapes::enqueueIMC);
-        proxy.init();
-	}
 
-	@SubscribeEvent
-	public static void setup(FMLClientSetupEvent event) {
-		proxy.setup();
-	}
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(proxy::clientSetup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(proxy::enqueueIMC);
 
-	@SubscribeEvent
-	public static void enqueueIMC(InterModEnqueueEvent event) {
-		proxy.enqueueIMC();
+		proxy.init();
+
 		getLogger().info("[MinecraftCapes] Initialised");
 	}
 
