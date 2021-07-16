@@ -41,9 +41,6 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void clientSetup(FMLCommonSetupEvent event) {
-        //Register the menu
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new MenuScreen());
-
         //Register the keybinds
         ClientRegistry.registerKeyBinding(menuKey);
     }
