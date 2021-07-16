@@ -1,5 +1,6 @@
 modLoader="javafml" #mandatory
 loaderVersion="[31,)" #mandatory
+license="All Rights Reserved"#mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
 issueTrackerURL="https://minecraftcapes.net/discord"

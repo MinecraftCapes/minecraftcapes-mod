@@ -16,6 +16,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,11 +33,13 @@ public class ElytraLayer<T extends LivingEntity, M extends EntityModel<T>> exten
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
 		if (itemstack.getItem() == Items.ELYTRA) {
-			AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity)entitylivingbaseIn;
+			AbstractClientPlayerEntity abstractclientplayerentity = (AbstractClientPlayerEntity) entitylivingbaseIn;
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractclientplayerentity);
 			ResourceLocation resourcelocation;
-			if (abstractclientplayerentity.hasPlayerInfo() && playerHandler.getCapeLocation() != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
+			if (playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
 				resourcelocation = playerHandler.getCapeLocation();
+			} else if(abstractclientplayerentity.getLocationCape() != null && abstractclientplayerentity.isWearing(PlayerModelPart.CAPE)) {
+				resourcelocation = abstractclientplayerentity.getLocationCape();
 			} else {
 				resourcelocation = TEXTURE_ELYTRA;
 			}

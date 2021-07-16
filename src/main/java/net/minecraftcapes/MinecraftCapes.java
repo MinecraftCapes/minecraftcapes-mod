@@ -4,10 +4,8 @@ import lombok.Getter;
 import net.minecraftcapes.proxy.ClientProxy;
 import net.minecraftcapes.proxy.IProxy;
 import net.minecraftcapes.proxy.ServerProxy;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,15 +17,17 @@ public class MinecraftCapes {
 
 	@Getter
 	private static final Logger logger = LogManager.getLogger();
-	public static IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
+	public static IProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
 	public MinecraftCapes() {
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(MinecraftCapes::enqueueIMC);
-        proxy.init();
+		getLogger().info("[MinecraftCapes] Initialising");
+
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(proxy::clientSetup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(proxy::enqueueIMC);
+
+		proxy.init();
+
+		getLogger().info("[MinecraftCapes] Initialised");
 	}
 
-	@SubscribeEvent
-	public static void enqueueIMC(InterModEnqueueEvent event) {
-		proxy.enqueueIMC();
-	}
 }
