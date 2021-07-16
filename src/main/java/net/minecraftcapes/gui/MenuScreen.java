@@ -1,16 +1,11 @@
 package net.minecraftcapes.gui;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiCustomizeSkin;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.events.PlayerEventHandler;
 import net.minecraftcapes.player.PlayerHandler;
-
-import java.io.IOException;
 
 public class MenuScreen extends GuiScreen {
 

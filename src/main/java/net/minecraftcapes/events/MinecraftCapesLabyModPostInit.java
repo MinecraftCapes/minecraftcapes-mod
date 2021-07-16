@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftcapes.player.render.CapeLayer;
 import net.minecraftcapes.player.render.Deadmau5;
-import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Field;

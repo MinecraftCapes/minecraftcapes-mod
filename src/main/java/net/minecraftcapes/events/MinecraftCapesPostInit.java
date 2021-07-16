@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftcapes.player.render.CapeLayer;
 import net.minecraftcapes.player.render.Deadmau5;
 import net.minecraftcapes.player.render.ElytraLayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.List;

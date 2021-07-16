@@ -101,3 +101,7 @@ publishing {
         }
     }
 }
+
+sourceSets {
+    main { output.resourcesDir = new File("resources") }
+}

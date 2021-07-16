@@ -22,7 +22,12 @@ public class MinecraftCapes {
 	private static IProxy proxy;
 
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
+	public static void preInit(FMLPostInitializationEvent event) {
+		proxy.init();
+	}
+
+	@Mod.EventHandler
+	public static void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit();
 	}
 }

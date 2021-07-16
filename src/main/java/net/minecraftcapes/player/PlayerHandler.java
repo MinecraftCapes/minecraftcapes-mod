@@ -28,6 +28,7 @@ public class PlayerHandler {
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
+    @Getter @Setter private Boolean showCape = true;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
@@ -149,9 +150,9 @@ public class PlayerHandler {
      */
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
-        getAnimatedCape().forEach((integer, bufferedImage) -> {
+        getAnimatedCape().forEach((integer, BufferedImage) -> {
             ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, integer));
-            applyTexture(currentResource, bufferedImage);
+            applyTexture(currentResource, BufferedImage);
         });
     }
 
@@ -191,10 +192,10 @@ public class PlayerHandler {
     /**
      * Applys a texture on the render thread
      * @param resourceLocation
-     * @param bufferedImage
+     * @param BufferedImage
      */
-    private void applyTexture(ResourceLocation resourceLocation, BufferedImage bufferedImage) {
-        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage)));
+    private void applyTexture(ResourceLocation resourceLocation, BufferedImage BufferedImage) {
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(BufferedImage)));
     }
 
     /**
