@@ -35,7 +35,13 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
             ItemStack itemstack = entityIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (itemstack.getItem() != Items.ELYTRA) {
                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-               this.bindTexture(playerHandler.getCapeLocation());
+
+               if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
+                  this.bindTexture(playerHandler.getCapeLocation());
+               } else {
+                  this.bindTexture(entityIn.getLocationCape());
+               }
+
                GlStateManager.pushMatrix();
                GlStateManager.translatef(0.0F, 0.0F, 0.125F);
                double d0 = MathHelper.lerp((double) p_212842_4_, entityIn.prevChasingPosX, entityIn.chasingPosX) - MathHelper.lerp((double) p_212842_4_, entityIn.prevPosX, entityIn.posX);
@@ -66,7 +72,7 @@ public class CapeLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
                GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
                this.modelCape.setRotationAngles(entityIn, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
                this.modelCape.render(entityIn, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
-               if (playerHandler.getHasCapeGlint()) {
+               if (playerHandler.getHasCapeGlint() && MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
                   ArmorLayer.func_215338_a(this::bindTexture, entityIn, this.modelCape, p_212842_2_, p_212842_3_, p_212842_4_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
                }
                GlStateManager.popMatrix();
