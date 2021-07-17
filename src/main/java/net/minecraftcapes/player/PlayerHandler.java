@@ -1,5 +1,7 @@
 package net.minecraftcapes.player;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -26,13 +28,14 @@ public class PlayerHandler {
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
+    @Getter @Setter private Boolean showCape = true;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
 
     @Getter
-    private HashMap<Integer, BufferedImage> animatedCape;
+    private Int2ObjectMap<BufferedImage> animatedCape;
 
     //Animated Cape Settings
     private long lastFrameTime = 0;
@@ -79,7 +82,7 @@ public class PlayerHandler {
         BufferedImage capeImage = readTexture(cape);
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
-            HashMap<Integer, BufferedImage> animatedCape = new HashMap<Integer, BufferedImage>();
+            Int2ObjectMap<BufferedImage> animatedCape = new Int2ObjectOpenHashMap<BufferedImage>();
             int totalFrames = capeImage.getHeight() / (capeImage.getWidth() / 2);
             for(int currentFrame = 0; currentFrame < totalFrames; currentFrame++) {
                 BufferedImage frame = new BufferedImage(capeImage.getWidth(), capeImage.getWidth() / 2, BufferedImage.TYPE_INT_ARGB);
@@ -117,12 +120,17 @@ public class PlayerHandler {
     }
 
     public void applyEars(String ears) {
-        BufferedImage earImage = readTexture(ears);
-        BufferedImage imgNew = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = imgNew.getGraphics();
-        g.drawImage(earImage, 24, 0, null);
-        g.dispose();
-        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), imgNew);
+        BufferedImage earImage;
+        if(MinecraftCapes.isLabyMod()) {
+            BufferedImage oldImage = readTexture(ears);
+            earImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+            Graphics g = earImage.getGraphics();
+            g.drawImage(oldImage, 24, 0, null);
+            g.dispose();
+        } else {
+            earImage = readTexture(ears);
+        }
+        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
 
@@ -130,7 +138,7 @@ public class PlayerHandler {
      * Sets the animated cape textures and loads all resources to memory
      * @param animatedCape
      */
-    public void setAnimatedCape(HashMap<Integer, BufferedImage> animatedCape) {
+    public void setAnimatedCape(Int2ObjectMap<BufferedImage> animatedCape) {
         MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
         this.animatedCape = animatedCape;
         this.setHasAnimatedCape(true);
@@ -138,7 +146,7 @@ public class PlayerHandler {
     }
 
     /**
-     * Load all NativeImages into a ResourceLocation
+     * Load all BufferedImages into a ResourceLocation
      */
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
@@ -170,13 +178,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getCapeLocation() {
-        if(hasStaticCape) {
-            return new ResourceLocation(MODID, "capes/" + playerUUID);
-        } else if(hasAnimatedCape) {
-            return getFrame();
-        } else {
-            return null;
-        }
+        return hasStaticCape ? new ResourceLocation(MODID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -184,8 +186,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getEarLocation() {
-        ResourceLocation resourceLocation = new ResourceLocation(MODID, "ears/" + playerUUID);
-        return hasEars ? resourceLocation : null;
+        return hasEars ? new ResourceLocation(MODID, "ears/" + playerUUID) : null;
     }
 
     /**
