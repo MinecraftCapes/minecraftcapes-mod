@@ -49,7 +49,12 @@ public class ClientProxy implements IProxy {
                 List<LayerRenderer<?>> layerRenderers = ObfuscationReflectionHelper.getPrivateValue(RenderLivingBase.class, render, "field_177097_h");
                 ListIterator<LayerRenderer<?>> it = layerRenderers.listIterator();
                 while(it.hasNext()) {
-                    if(it.next() instanceof net.minecraft.client.renderer.entity.layers.LayerElytra) {
+                    LayerRenderer<?> value = it.next();
+                    if(value instanceof net.minecraft.client.renderer.entity.layers.LayerElytra) {
+                        it.remove();
+                    }
+
+                    if(value instanceof net.minecraft.client.renderer.entity.layers.LayerCape) {
                         it.remove();
                     }
                 }
