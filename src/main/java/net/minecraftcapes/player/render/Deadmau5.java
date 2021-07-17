@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
@@ -13,6 +14,8 @@ public class Deadmau5 extends RenderPlayer {
 
    @SubscribeEvent
    public void doRenderLayer(RenderPlayerEvent.Specials.Pre event) {
+      if(!MinecraftCapesConfig.isEarsVisible()) return;
+
       event.renderer.modelBipedMain.bipedEars = new ModelRenderer(event.renderer.modelBipedMain, 24, 0);
       event.renderer.modelBipedMain.bipedEars.addBox(1.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);
       event.renderer.modelBipedMain.bipedEars.addBox(-7.5F, -10.5F, -1.0F, 6, 6, 1, 0.0F);

@@ -27,6 +27,7 @@ public class PlayerHandler {
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
+    @Getter @Setter private Boolean showCape = true;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
@@ -139,12 +140,12 @@ public class PlayerHandler {
     }
 
     /**
-     * Load all NativeImages into a ResourceLocation
+     * Load all BufferedImages into a ResourceLocation
      */
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
         for(final HashMap.Entry<Integer, BufferedImage> entry : getAnimatedCape().entrySet()) {
-            final ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
+            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
             applyTexture(currentResource, entry.getValue());
         }
     }
@@ -171,13 +172,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getCapeLocation() {
-        if(hasStaticCape) {
-            return new ResourceLocation(MODID, "capes/" + playerUUID);
-        } else if(hasAnimatedCape) {
-            return getFrame();
-        } else {
-            return null;
-        }
+        return hasStaticCape ? new ResourceLocation(MODID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -185,8 +180,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getEarLocation() {
-        ResourceLocation resourceLocation = new ResourceLocation(MODID, "ears/" + playerUUID);
-        return hasEars ? resourceLocation : null;
+        return hasEars ? new ResourceLocation(MODID, "ears/" + playerUUID) : null;
     }
 
     /**
