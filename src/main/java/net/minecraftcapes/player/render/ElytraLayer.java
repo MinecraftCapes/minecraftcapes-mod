@@ -12,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class ElytraLayer implements LayerRenderer<EntityLivingBase> {
@@ -33,10 +34,13 @@ public class ElytraLayer implements LayerRenderer<EntityLivingBase> {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
 			AbstractClientPlayer abstractclientplayerentity = (AbstractClientPlayer) entitylivingbaseIn;
 			PlayerHandler playerHandler = PlayerHandler.getFromPlayer(abstractclientplayerentity);
-			if (abstractclientplayerentity.hasPlayerInfo() && playerHandler.getCapeLocation() != null && abstractclientplayerentity.isWearing(EnumPlayerModelParts.CAPE)) {
+			if (playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
 				this.renderPlayer.bindTexture(playerHandler.getCapeLocation());
+			} else if(abstractclientplayerentity.getLocationCape() != null && abstractclientplayerentity.isWearing(EnumPlayerModelParts.CAPE)) {
+				this.renderPlayer.bindTexture(abstractclientplayerentity.getLocationCape());
 			} else {
 				this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
 			}
@@ -48,7 +52,6 @@ public class ElytraLayer implements LayerRenderer<EntityLivingBase> {
 			if (itemstack.isItemEnchanted()) {
 				LayerArmorBase.renderEnchantedGlint(this.renderPlayer, entitylivingbaseIn, this.modelElytra, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
 			}
-
 			GlStateManager.disableBlend();
 			GlStateManager.popMatrix();
 		}

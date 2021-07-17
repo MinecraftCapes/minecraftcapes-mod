@@ -26,20 +26,20 @@ public class ModelCape extends ModelBase {
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         EntityPlayer livingEntity = (EntityPlayer) entityIn;
-        if (livingEntity.getItemStackFromSlot(EntityEquipmentSlot.CHEST) != null) {
+        if (livingEntity.getItemStackFromSlot(EntityEquipmentSlot.CHEST) == null) {
             if (livingEntity.isSneaking()) {
-                this.cape.rotationPointZ = 0.8F;
+                this.cape.rotationPointZ = 1.4F;
                 this.cape.rotationPointY = 1.85F;
             } else {
-                this.cape.rotationPointZ = -1.1F;
+                this.cape.rotationPointZ = 0.0F;
                 this.cape.rotationPointY = 0.0F;
             }
         } else if (livingEntity.isSneaking()) {
-            this.cape.rotationPointZ = 1F;
-            this.cape.rotationPointY = 1.2F;
+            this.cape.rotationPointZ = 0.3F;
+            this.cape.rotationPointY = 0.8F;
         } else {
-            this.cape.rotationPointZ = 0F;
-            this.cape.rotationPointY = 0F;
+            this.cape.rotationPointZ = -1.1F;
+            this.cape.rotationPointY = -0.85F;
         }
     }
 
