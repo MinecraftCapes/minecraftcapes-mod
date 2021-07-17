@@ -4,8 +4,8 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 
 public class Deadmau5 implements LayerRenderer<AbstractClientPlayer> {
@@ -18,6 +18,8 @@ public class Deadmau5 implements LayerRenderer<AbstractClientPlayer> {
 
    @Override
    public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+      if(!MinecraftCapesConfig.isEarsVisible()) return;
+
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
       if (playerHandler.getEarLocation() != null && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
          this.playerRenderer.bindTexture(playerHandler.getEarLocation());

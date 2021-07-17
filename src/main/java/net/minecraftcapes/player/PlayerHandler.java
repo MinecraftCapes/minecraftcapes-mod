@@ -26,6 +26,7 @@ public class PlayerHandler {
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
+    @Getter @Setter private Boolean showCape = true;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
@@ -117,12 +118,17 @@ public class PlayerHandler {
     }
 
     public void applyEars(String ears) {
-        BufferedImage earImage = readTexture(ears);
-        BufferedImage imgNew = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = imgNew.getGraphics();
-        g.drawImage(earImage, 24, 0, null);
-        g.dispose();
-        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), imgNew);
+        BufferedImage earImage;
+        if(MinecraftCapes.isLabyMod()) {
+            BufferedImage oldImage = readTexture(ears);
+            earImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+            Graphics g = earImage.getGraphics();
+            g.drawImage(oldImage, 24, 0, null);
+            g.dispose();
+        } else {
+            earImage = readTexture(ears);
+        }
+        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
 
@@ -138,7 +144,7 @@ public class PlayerHandler {
     }
 
     /**
-     * Load all NativeImages into a ResourceLocation
+     * Load all BufferedImages into a ResourceLocation
      */
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
@@ -170,13 +176,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getCapeLocation() {
-        if(hasStaticCape) {
-            return new ResourceLocation(MODID, "capes/" + playerUUID);
-        } else if(hasAnimatedCape) {
-            return getFrame();
-        } else {
-            return null;
-        }
+        return hasStaticCape ? new ResourceLocation(MODID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -184,8 +184,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getEarLocation() {
-        ResourceLocation resourceLocation = new ResourceLocation(MODID, "ears/" + playerUUID);
-        return hasEars ? resourceLocation : null;
+        return hasEars ? new ResourceLocation(MODID, "ears/" + playerUUID) : null;
     }
 
     /**
