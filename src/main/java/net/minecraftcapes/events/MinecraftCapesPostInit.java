@@ -25,12 +25,8 @@ public class MinecraftCapesPostInit {
             try {
                 //This removes the Elytra layer from the skinmaps
                 List<LayerRenderer<?>> layerRenderers = ObfuscationReflectionHelper.getPrivateValue(RenderLivingBase.class, render, "field_177097_h");
-                ListIterator<LayerRenderer<?>> it = layerRenderers.listIterator();
-                while(it.hasNext()) {
-                    if(it.next() instanceof net.minecraft.client.renderer.entity.layers.LayerElytra) {
-                        it.remove();
-                    }
-                }
+                layerRenderers.removeIf(modelFeature -> modelFeature instanceof net.minecraft.client.renderer.entity.layers.LayerElytra);
+                layerRenderers.removeIf(modelFeature -> modelFeature instanceof net.minecraft.client.renderer.entity.layers.LayerCape);
                 ObfuscationReflectionHelper.setPrivateValue(RenderLivingBase.class, render, layerRenderers, "field_177097_h");
 
                 //This makes deadmau5 ears look better when crouching/gliding/swimming
