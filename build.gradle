@@ -5,12 +5,10 @@ plugins {
 }
 
 repositories {
-	maven {
-		url = "https://www.cursemaven.com"
-	}
-	maven {
-		url = "https://jitpack.io"
-	}
+	maven { url = "https://www.cursemaven.com" }
+	maven { url = "https://jitpack.io" }
+	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://api.modrinth.com/maven" }
 	maven {
 		name = "TerraformersMC"
 		url = "https://maven.kotlindiscord.com/repository/terraformers/"
@@ -18,6 +16,18 @@ repositories {
 	maven {
 		name = "Ladysnake Libs"
 		url = "https://ladysnake.jfrog.io/artifactory/mods"
+	}
+	maven {
+		url = 'https://maven.cafeteria.dev'
+		content {
+			includeGroup 'net.adriantodt.fabricmc'
+		}
+	}
+	maven {
+		url "https://maven.jamieswhiteshirt.com/libs-release"
+		content {
+			includeGroup "com.jamieswhiteshirt"
+		}
 	}
 }
 
@@ -43,9 +53,12 @@ dependencies {
 	//Auth and Mod Menu
 	modApi "curse.maven:auto-config-373261:3095961"
 	modApi "curse.maven:auth-me-356643:3073169"
-	modApi "curse.maven:modmenu-308702:3121655"
+
+	//Libs
 	modApi "curse.maven:armorvisibility-387962:3345783"
 	modCompileOnly "dev.emi:trinkets:2.6.7"
+	modImplementation 'com.github.apace100:origins-fabric:0.7.3'
+
 }
 
 

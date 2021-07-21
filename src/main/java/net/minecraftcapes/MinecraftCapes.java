@@ -9,6 +9,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
 import net.minecraftcapes.compatibility.ArmorVisibilityHook;
+import net.minecraftcapes.compatibility.OriginsHook;
 import net.minecraftcapes.compatibility.TrinketsHook;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.gui.MenuScreen;
@@ -51,6 +52,10 @@ public class MinecraftCapes implements ClientModInitializer {
 
 		if(doesClassExist("com.trikzon.armor_visibility.ArmorVisibility")) {
 			new ArmorVisibilityHook();
+		}
+
+		if(doesClassExist("io.github.apace100.origins.Origins")) {
+			new OriginsHook();
 		}
 
 		getLogger().info("[MinecraftCapes] Initialised");
