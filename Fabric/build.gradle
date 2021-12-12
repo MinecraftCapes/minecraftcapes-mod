@@ -52,8 +52,9 @@ dependencies {
     implementation project(":Common")
 
     //Auth and Mod Menu
-    modCompileOnly "curse.maven:cloth-config-319057:3524837"
-    modCompileOnly "curse.maven:auth-me-356643:3524837"
+    modApi "curse.maven:cloth-config-319057:3559638"
+    modApi "curse.maven:auth-me-356643:3543339"
+    modApi "curse.maven:modmenu-308702:3479754"
 
     //Libs
     modCompileOnly "curse.maven:armorvisibility-387962:3345806"
