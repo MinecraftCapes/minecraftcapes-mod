@@ -17,7 +17,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "net.minecraftcapes.MinecraftCapesFabric"
+      "net.minecraftcapes.MinecraftCapes"
     ]
   },
   "mixins": [

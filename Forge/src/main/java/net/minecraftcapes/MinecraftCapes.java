@@ -16,11 +16,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MinecraftCapesConstants.MOD_ID)
-public class MinecraftCapesForge {
+public class MinecraftCapes {
     
     public static KeyMapping menuKey;
     
-    public MinecraftCapesForge() {
+    public MinecraftCapes() {
         MinecraftCapesConstants.LOG.info("Initialising");
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
@@ -45,7 +45,7 @@ public class MinecraftCapesForge {
         Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);
         
         //Register the keybinds
-        MinecraftCapesForge.menuKey = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
+        MinecraftCapes.menuKey = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
         ClientRegistry.registerKeyBinding(menuKey);
     }
     

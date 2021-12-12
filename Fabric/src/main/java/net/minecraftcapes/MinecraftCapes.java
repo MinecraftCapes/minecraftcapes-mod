@@ -13,7 +13,7 @@ import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.gui.MenuScreen;
 import org.lwjgl.glfw.GLFW;
 
-public class MinecraftCapesFabric implements ClientModInitializer {
+public class MinecraftCapes implements ClientModInitializer {
 
 	private static KeyMapping keyBinding;
 	
