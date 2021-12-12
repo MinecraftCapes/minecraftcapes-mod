@@ -17,7 +17,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: "io.freefair.lombok"
 
-archivesBaseName = "${mod_name} Fabric ${minecraft_version}-${version}"
+archivesBaseName = "${mod_name} Forge ${minecraft_version}"
 
 minecraft {
     mappings channel: 'official', version: minecraft_version

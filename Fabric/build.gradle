@@ -5,7 +5,7 @@ plugins {
     id "io.freefair.lombok" version "6.3.0"
 }
 
-archivesBaseName = "${mod_name} Fabric ${minecraft_version}-${version}"
+archivesBaseName = "${mod_name} Fabric ${minecraft_version}"
 
 repositories {
     maven {
