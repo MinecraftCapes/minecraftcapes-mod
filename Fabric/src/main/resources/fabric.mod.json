@@ -13,7 +13,7 @@
     "issues": "https://minecraftcapes.net/discord"
   },
   "license": "All Rights Reserved",
-  "icon": "assets/minecraftcapes/logo.png",
+  "icon": "logo.png",
   "environment": "client",
   "entrypoints": {
     "client": [

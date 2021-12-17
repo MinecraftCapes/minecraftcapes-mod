@@ -2,6 +2,7 @@ package net.minecraftcapes.config;
 
 import com.google.gson.Gson;
 import lombok.Getter;
+import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
@@ -80,7 +81,10 @@ public class MinecraftCapesConfig {
             config = new Gson().fromJson(reader, ConfigValues.class);
             reader.close();
         } catch(IOException e) {
+            CrashReport crashreport = new CrashReport("Config error", e);
+            Minecraft.crash(crashreport);
             e.printStackTrace();
+            
         }
     }
     

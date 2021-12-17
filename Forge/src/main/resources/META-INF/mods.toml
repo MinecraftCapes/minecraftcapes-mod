@@ -6,7 +6,7 @@ license="All Rights Reserved"#mandatory
 issueTrackerURL="https://minecraftcapes.net/discord"
 displayURL="https://minecraftcapes.net/"
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="assets/minecraftcapes/logo.png"
+logoFile="logo.png"
 authors="james090500, Siriuo"
 [[mods]]
 modId="minecraftcapes" #mandatory
