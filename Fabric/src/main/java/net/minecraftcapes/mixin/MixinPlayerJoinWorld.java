@@ -23,9 +23,7 @@ public abstract class MixinPlayerJoinWorld extends Player {
     @Inject(method = "<init>*", at = @At("RETURN"))
 	private void construct(ClientLevel clientLevel, GameProfile gameProfile, CallbackInfo info) {
         if(this.getLevel().isClientSide()) {
-            PlayerHandler playerHandler = PlayerHandler.getFromPlayer(this);
-            if(playerHandler == null || playerHandler.getHasInfo()) return;
-            DownloadManager.downloadProfile(playerHandler);
+            DownloadManager.prepareDownload(this);
         }
 	}
 

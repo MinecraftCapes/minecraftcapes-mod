@@ -2,6 +2,7 @@ package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapesConstants;
 
 import java.io.IOException;
@@ -12,6 +13,19 @@ import java.net.URL;
 import java.util.Map;
 
 public class DownloadManager {
+    
+    public static void prepareDownload(Player player) {
+        //Make sure player is a player and online
+        if(player.getUUID().version() != 4) return;
+        
+        //Make sure we dont have stuff already
+        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
+        if(playerHandler == null || playerHandler.getHasInfo()) return;
+        
+        //Download!
+        DownloadManager.downloadProfile(playerHandler);
+    }
+    
     public static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
             try {
