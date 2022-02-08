@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.minecraftcapes.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+  ],
+  "client": [
+    "MixinDinnerbone",
+    "MixinPlayerBaseRenderer",
+    "MixinPlayerJoinWorld",
+    "MixinPlayerModel"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
