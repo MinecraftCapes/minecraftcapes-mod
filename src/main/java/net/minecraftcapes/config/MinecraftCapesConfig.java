@@ -12,11 +12,25 @@ import java.nio.file.Paths;
 public class MinecraftCapesConfig {
 
     //File locations
-    private static File runDirectory = Minecraft.getGameDirectory().getAbsoluteFile();
-    private static Path configFile = Paths.get(runDirectory + "/config/minecraftcapes.json");
+    private static File runDirectory;
+    private static Path configFile;
 
     //The Config Instance
     @Getter private static MinecraftCapesConfig.ConfigValues config = null;
+
+    static {
+        runDirectory =  Minecraft.getGameDirectory();
+        if(runDirectory.toPath().endsWith(".")) {
+            runDirectory = new File(Minecraft.getGameDirectory().getParent());
+        }
+        configFile = Paths.get(runDirectory + "/config/minecraftcapes.json");
+
+        // Create config directory if it doesn't exist
+        File configDirectory = new File(runDirectory + "/config");
+        if(!configDirectory.exists()) {
+            configDirectory.mkdir();
+        }
+    }
 
     /**
      * The config values
@@ -66,6 +80,7 @@ public class MinecraftCapesConfig {
     public static void loadConfig() {
         try {
             if(!configFile.toFile().exists()) {
+                //Copy default config
                 InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
                 Files.copy(defaultConfigFile, configFile);
             }

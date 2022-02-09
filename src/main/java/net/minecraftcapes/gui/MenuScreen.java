@@ -1,9 +1,6 @@
 package net.minecraftcapes.gui;
 
 import net.minecraft.client.gui.screen.ScreenBase;
-import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.events.PlayerEventHandler;
-import net.minecraftcapes.player.PlayerHandler;
 
 public class MenuScreen extends ScreenBase {
 

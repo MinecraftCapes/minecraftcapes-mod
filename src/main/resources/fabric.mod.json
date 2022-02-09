@@ -24,6 +24,6 @@
   	"minecraftcapes.client.mixins.json"
   ],
   "depends": {
-    "stationapi": "2.0*"
+    "stationapi": "2.x"
   }
 }
