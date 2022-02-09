@@ -5,8 +5,8 @@
   "mixins": [
   ],
   "client": [
-    "MixinPlayerRenderer",
-    "MixinPlayerJoinWorld"
+    "MixinPlayerJoinWorld",
+    "MixinPlayerRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

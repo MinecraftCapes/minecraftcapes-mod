@@ -20,11 +20,11 @@ public class PlayerHandler {
 
     private static final HashMap<String, PlayerHandler> instances = new HashMap<>();
 
-    private BufferedImage cape;
-    private BufferedImage ears;
+    @Getter private BufferedImage cape;
+    @Getter private BufferedImage ears;
 
-    @Getter @Setter private Boolean hasStaticCape;
-    @Getter @Setter private Boolean hasAnimatedCape;
+    @Getter @Setter private Boolean hasStaticCape = false;
+    @Getter @Setter private Boolean hasAnimatedCape = false;
     @Getter @Setter private Boolean showCape = true;
     @Getter @Setter private Boolean forceShowElytra = false;
     @Getter @Setter private Boolean forceHideElytra = false;
@@ -100,6 +100,7 @@ public class PlayerHandler {
             }
 
             MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
+            this.cape = animatedCapeFrames.get(0);
             this.animatedCape = animatedCapeFrames;
             this.setHasAnimatedCape(true);
         } else {
