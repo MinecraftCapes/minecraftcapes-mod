@@ -11,7 +11,7 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void onPlayerJoin(EntityJoinWorldEvent event) {
         if(event.getEntity() instanceof Player && event.getWorld().isClientSide()) {
-            DownloadManager.prepareDownload((Player) event.getEntity());
+            DownloadManager.prepareDownload((Player) event.getEntity(), false);
         }
     }
 }

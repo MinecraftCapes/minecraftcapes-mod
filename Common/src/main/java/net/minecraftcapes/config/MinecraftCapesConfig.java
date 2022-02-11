@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
+import net.minecraftcapes.MinecraftCapesConstants;
 
 import java.io.File;
 import java.io.FileReader;
@@ -20,6 +21,7 @@ public class MinecraftCapesConfig {
     
     //File locations
     private static File runDirectory = Minecraft.getInstance().gameDirectory;
+    @Getter private static File modDirectory = new File(Minecraft.getInstance().gameDirectory + "/config/" + MinecraftCapesConstants.MOD_ID);
     private static Path configFile = Paths.get(runDirectory + "/config/minecraftcapes.json");
     
     //The Config Instance
@@ -76,6 +78,9 @@ public class MinecraftCapesConfig {
                 InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
                 Files.copy(defaultConfigFile, configFile);
             }
+    
+            //Create mod directory
+            modDirectory.mkdir();
             
             Reader reader = new FileReader(configFile.toFile());
             config = new Gson().fromJson(reader, ConfigValues.class);

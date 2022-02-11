@@ -10,10 +10,14 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapesConstants;
-import org.apache.commons.codec.binary.Base64;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -62,7 +66,7 @@ public class PlayerHandler {
      */
     private NativeImage readTexture(String textureBase64) {
         try {
-            byte[] imgBytes = Base64.decodeBase64(textureBase64);
+            byte[] imgBytes = Base64.getDecoder().decode(textureBase64);
             ByteArrayInputStream bias = new ByteArrayInputStream(imgBytes);
             return NativeImage.read(bias);
         } catch (IOException e) {
@@ -114,6 +118,10 @@ public class PlayerHandler {
         }
     }
     
+    /**
+     * Load the ears to the profile
+     * @param ears
+     */
     public void applyEars(String ears) {
         NativeImage earImage = readTexture(ears);
         applyTexture(new ResourceLocation(MinecraftCapesConstants.MOD_ID, "ears/" + playerUUID), earImage);
@@ -207,4 +215,5 @@ public class PlayerHandler {
                 ", capeInterval=" + capeInterval +
                 '}';
     }
+    
 }
