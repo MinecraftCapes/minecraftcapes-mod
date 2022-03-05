@@ -49,6 +49,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     //Common
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
 
     //Auth and Mod Menu
@@ -102,10 +103,17 @@ jar {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
             from components.java
         }
     }
 
     repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
     }
 }
+
