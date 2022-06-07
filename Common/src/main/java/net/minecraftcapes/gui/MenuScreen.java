@@ -6,15 +6,13 @@ import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
-import net.minecraftcapes.player.PlayerHandler;
 
 public class MenuScreen extends Screen {
 
     public MenuScreen() {
-        super(new TranslatableComponent("category.minecraftcapes.gui"));
+        super(Component.translatable("category.minecraftcapes.gui"));
     }
 
     protected void init() {

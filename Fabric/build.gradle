@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
     id "io.freefair.lombok" version "6.3.0"
@@ -52,9 +52,9 @@ dependencies {
     implementation project(":Common")
 
     //Auth and Mod Menu
-    modApi "curse.maven:cloth-config-319057:3559638"
-    modApi "curse.maven:auth-me-356643:3543339"
-    modApi "curse.maven:modmenu-308702:3479754"
+    //modApi "curse.maven:cloth-config-319057:3559638"
+    //modApi "curse.maven:auth-me-356643:3543339"
+    modApi "curse.maven:modmenu-308702:3821162"
 
     //Libs
     modCompileOnly "curse.maven:armorvisibility-387962:3345806"

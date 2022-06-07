@@ -69,6 +69,10 @@ public class DownloadManager {
      */
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
+    
+            //We've done our processing
+            playerHandler.setHasInfo(true);
+    
             try {
                 MinecraftCapesConstants.LOG.debug("Getting profile for {}", playerHandler.getPlayerUUID());
                 URL url = new URL("https://minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
@@ -76,19 +80,18 @@ public class DownloadManager {
                 httpurlconnection.setDoInput(true);
                 httpurlconnection.setDoOutput(false);
                 httpurlconnection.connect();
-    
-                //We've done our processing
-                playerHandler.setHasInfo(true);
-                
+
                 if (httpurlconnection.getResponseCode() / 100 == 2) {
                     Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), StandardCharsets.UTF_8);
                     DownloadManager.readProfile(playerHandler, reader);
                     reader.close();
                 } else {
                     DownloadManager.loadOfflineProfile(playerHandler);
+                    MinecraftCapesConstants.LOG.warn("minecraftcapes.net returned a {}", httpurlconnection.getResponseCode());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                DownloadManager.loadOfflineProfile(playerHandler);
+                MinecraftCapesConstants.LOG.warn("No connection to minecraftcapes.net detected");
             }
         });
         

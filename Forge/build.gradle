@@ -85,7 +85,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     //Auth
-    //runtimeOnly "curse.maven:oauth-513857:3566367"
+    runtimeOnly "curse.maven:oauth-513857:3694377"
 
     compileOnly project(":Common")
 }
