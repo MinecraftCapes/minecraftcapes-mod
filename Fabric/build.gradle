@@ -53,7 +53,7 @@ dependencies {
 
     //Auth and Mod Menu
     //modApi "curse.maven:cloth-config-319057:3559638"
-    //modApi "curse.maven:auth-me-356643:3543339"
+    modApi "curse.maven:auth-me-356643:3821981"
     modApi "curse.maven:modmenu-308702:3821162"
 
     //Libs

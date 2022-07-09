@@ -8,8 +8,9 @@ import net.minecraftcapes.events.AddLayersEvent;
 import net.minecraftcapes.events.KeyHandlerEvent;
 import net.minecraftcapes.events.PlayerEventHandler;
 import net.minecraftcapes.events.PlayerRenderEvent;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
@@ -43,10 +44,18 @@ public class MinecraftCapes {
         
         //Try turn on capes
         Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);
-        
-        //Register the keybinds
+    
+        //Register the key
         MinecraftCapes.menuKey = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
-        ClientRegistry.registerKeyBinding(menuKey);
+    }
+    
+    /**
+     * Register the keybinds
+     * @param event
+     */
+    @SubscribeEvent
+    public void registerKeyBinding(RegisterKeyMappingsEvent event) {
+        event.register(menuKey);
     }
     
     /**

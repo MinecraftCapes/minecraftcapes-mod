@@ -20,7 +20,7 @@ import net.minecraftcapes.player.render.CapeLayer;
 import net.minecraftcapes.player.render.Deadmau5;
 import net.minecraftcapes.player.render.ElytraLayer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -31,7 +31,7 @@ import java.util.List;
 public class AddLayersEvent {
 
     @SubscribeEvent
-    public static void construct(ParticleFactoryRegisterEvent event) {
+    public static void construct(RegisterParticleProvidersEvent event) {
         ((ReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener((ResourceManagerReloadListener) p_10758_ -> {
             MinecraftCapesConstants.LOG.info("Adding/removing layers to player skin maps...");
             Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().forEach((string, render) -> {
