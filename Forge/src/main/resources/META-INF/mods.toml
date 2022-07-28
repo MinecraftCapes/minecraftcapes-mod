@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[41,)" #mandatory
+loaderVersion="[42,)" #mandatory
 license="All Rights Reserved"#mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
@@ -14,10 +14,3 @@ modId="minecraftcapes" #mandatory
 version="${file.jarVersion}"
 displayName="MinecraftCapes Mod"
 description="Custom Cape, Elytras and Deadmau5 textures for minecraft which everyone with the mod can see!"
-
-[[dependencies.minecraftcapes]]
-modId="forge" #mandatory
-mandatory=true
-versionRange="[41.0.95,)" #Min for 1.19 due to API changes
-ordering="NONE"
-side="CLIENT"
