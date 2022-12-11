@@ -2,7 +2,7 @@ package net.minecraftcapes.player.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -57,9 +57,9 @@ public class CapeLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
                   f1 += 25.0F;
                }
 
-               matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
-               matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(f3 / 2.0F));
-               matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - f3 / 2.0F));
+               matrixStackIn.mulPose(Axis.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
+               matrixStackIn.mulPose(Axis.ZP.rotationDegrees(f3 / 2.0F));
+               matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F - f3 / 2.0F));
                VertexConsumer vertexConsumer;
                if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
                   vertexConsumer = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());

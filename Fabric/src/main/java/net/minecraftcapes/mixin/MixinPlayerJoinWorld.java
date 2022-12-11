@@ -18,12 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AbstractClientPlayer.class)
 public abstract class MixinPlayerJoinWorld extends Player {
     
-    public MixinPlayerJoinWorld(Level level, BlockPos blockPos, float f, GameProfile gameProfile, @Nullable ProfilePublicKey profilePublicKey) {
-        super(level, blockPos, f, gameProfile, profilePublicKey);
+    public MixinPlayerJoinWorld(Level level, BlockPos blockPos, float f, GameProfile gameProfile) {
+        super(level, blockPos, f, gameProfile);
     }
     
     @Inject(method = "<init>*", at = @At("RETURN"))
-	private void construct(ClientLevel clientLevel, GameProfile gameProfile, ProfilePublicKey profilePublicKey, CallbackInfo ci) {
+	private void construct(ClientLevel clientLevel, GameProfile gameProfile, CallbackInfo ci) {
         if(this.getLevel().isClientSide()) {
             DownloadManager.prepareDownload(this, false);
         }
