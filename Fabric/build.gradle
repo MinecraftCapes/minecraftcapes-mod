@@ -1,8 +1,8 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.1-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
-    id "io.freefair.lombok" version "6.3.0"
+    id "io.freefair.lombok" version "8.0.0-rc3"
 }
 
 archivesBaseName = "${mod_name} Fabric ${minecraft_version}"
@@ -14,30 +14,28 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    // Trinkets
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
     maven {
         name = "Ladysnake Libs"
-        url = 'https://ladysnake.jfrog.io/artifactory/mods'
+        url = "https://ladysnake.jfrog.io/artifactory/mods"
+    }
+    //Origins
+    maven {
+        url 'https://jitpack.io'
     }
     maven {
-        url = 'https://maven.cafeteria.dev'
-        content {
-            includeGroup 'net.adriantodt.fabricmc'
-        }
+        name = "AdrianTodt's Maven"
+        url = "https://dl.bintray.com/adriantodt/maven"
     }
     maven {
-        url "https://maven.jamieswhiteshirt.com/libs-release"
-        content {
-            includeGroup "com.jamieswhiteshirt"
-        }
-    }
-    maven {
-        url "https://jitpack.io"
+        url "https://maven.jamieswhiteshirt.com/libs-release/"
     }
     maven {
         url "https://maven.shedaniel.me/"
-    }
-    maven {
-        url "https://maven.terraformersmc.com/"
     }
 }
 
@@ -57,9 +55,11 @@ dependencies {
     modApi "curse.maven:modmenu-308702:3821162"
 
     //Libs
+    modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
     modCompileOnly "curse.maven:armorvisibility-387962:3864422"
-    modCompileOnly "dev.emi:trinkets:3.1.0"
-    modCompileOnly 'com.github.apace100:origins-fabric:1.3.0'
+    modCompileOnly "dev.emi:trinkets:3.6.0"
+    modCompileOnly "com.github.apace100:origins-fabric:v1.8.1"
+
 }
 
 loom {

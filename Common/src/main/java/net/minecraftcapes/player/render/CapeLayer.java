@@ -62,9 +62,9 @@ public class CapeLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
                matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F - f3 / 2.0F));
                VertexConsumer vertexConsumer;
                if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
-                  vertexConsumer = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+                  vertexConsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.entityTranslucent(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
                } else {
-                  vertexConsumer = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityTranslucent(entitylivingbaseIn.getCloakTextureLocation()), false, false);
+                  vertexConsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.entityTranslucent(entitylivingbaseIn.getCloakTextureLocation()), false, false);
                }
                this.getParentModel().renderCloak(matrixStackIn, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY);
                matrixStackIn.popPose();
