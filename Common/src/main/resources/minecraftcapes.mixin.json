@@ -5,6 +5,8 @@
   "mixins": [
   ],
   "client": [
+    "MixinCapeLayer",
+    "MixinElytraLayer",
     "MixinPlayerEntityRenderer",
     "MixinPlayerJoinWorld",
     "MixinPlayerModel"

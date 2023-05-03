@@ -21,7 +21,7 @@
     ]
   },
   "mixins": [
-  	"minecraftcapes.client.mixins.json"
+    "minecraftcapes.mixin.json"
   ],
   "depends": {
     "fabric-key-binding-api-v1": "*"

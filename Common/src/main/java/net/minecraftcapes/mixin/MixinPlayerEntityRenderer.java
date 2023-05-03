@@ -8,9 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraftcapes.compatibility.CompatHooks;
-import net.minecraftcapes.player.render.CapeLayer;
 import net.minecraftcapes.player.render.Deadmau5;
-import net.minecraftcapes.player.render.ElytraLayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,12 +23,7 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
     
     @Inject(method = "<init>*", at = @At("RETURN"))
 	private void construct(EntityRendererProvider.Context ctm, boolean alex, CallbackInfo info){
-        addLayer(new CapeLayer(this));
         addLayer(new Deadmau5(this));
-        addLayer(new ElytraLayer(this, ctm.getModelSet()));
-
-		layers.removeIf(modelFeature -> modelFeature instanceof net.minecraft.client.renderer.entity.layers.ElytraLayer);
-        layers.removeIf(modelFeature -> modelFeature instanceof net.minecraft.client.renderer.entity.layers.CapeLayer);
 	}
 
 	@Inject(method = "render", at = @At("RETURN"))

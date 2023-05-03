@@ -1,18 +1,13 @@
 package net.minecraftcapes.player;
 
-import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapesConstants;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.helpers.MinecraftApi;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileReader;

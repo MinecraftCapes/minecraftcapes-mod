@@ -4,10 +4,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.events.AddLayersEvent;
 import net.minecraftcapes.events.KeyHandlerEvent;
-import net.minecraftcapes.events.PlayerEventHandler;
-import net.minecraftcapes.events.PlayerRenderEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,10 +34,7 @@ public class MinecraftCapes {
         MinecraftCapesConfig.loadConfig();
         
         //Register the events
-        MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
-        MinecraftForge.EVENT_BUS.register(new PlayerRenderEvent());
         MinecraftForge.EVENT_BUS.register(new KeyHandlerEvent());
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(AddLayersEvent::construct);
         
         //Try turn on capes
         Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);

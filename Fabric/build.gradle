@@ -2,18 +2,25 @@ plugins {
     id 'fabric-loom' version '1.1-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
-    id "io.freefair.lombok" version "8.0.0-rc3"
+    id "io.freefair.lombok" version "8.0.1"
 }
 
 archivesBaseName = "${mod_name} Fabric ${minecraft_version}"
 
 repositories {
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
+    //Modrinth
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
         }
     }
+
     // Trinkets
     maven {
         name = "TerraformersMC"
@@ -50,15 +57,17 @@ dependencies {
     implementation project(":Common")
 
     //Auth and Mod Menu
-    //modApi "curse.maven:cloth-config-319057:3559638"
-    modApi "curse.maven:auth-me-356643:3821981"
-    modApi "curse.maven:modmenu-308702:3821162"
+    modLocalRuntime "maven.modrinth:sodium:mc1.19.4-0.4.11"
+
+    modLocalRuntime "maven.modrinth:modmenu:6.2.2"
+    modLocalRuntime "maven.modrinth:auth-me:6.0.0"
+    modLocalRuntime "maven.modrinth:cloth-config:10.0.96+fabric"
 
     //Libs
     modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
-    modCompileOnly "curse.maven:armorvisibility-387962:3864422"
+    modCompileOnly "maven.modrinth:armor-visibility:7.0.0-fabric"
     modCompileOnly "dev.emi:trinkets:3.6.0"
-    modCompileOnly "com.github.apace100:origins-fabric:v1.8.1"
+    //modCompileOnly "com.github.apace100:origins-fabric:v1.8.1"
 
 }
 
@@ -93,19 +102,19 @@ tasks.withType(JavaCompile) {
     source(project(":Common").sourceSets.main.allSource)
 }
 
-jar {
-    from("LICENSE") {
-        rename { "${it}_${mod_name}" }
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
             from components.java
         }
     }
 
     repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
     }
 }

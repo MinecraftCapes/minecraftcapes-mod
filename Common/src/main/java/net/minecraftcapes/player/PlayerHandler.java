@@ -10,13 +10,9 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapesConstants;
-import net.minecraftcapes.config.MinecraftCapesConfig;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
