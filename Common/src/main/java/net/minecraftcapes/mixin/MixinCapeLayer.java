@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.render.CapeGlintManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -74,7 +75,7 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
                     
                     VertexConsumer vertexConsumer;
                     if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
-                        vertexConsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(playerHandler.getCapeLocation()), false, playerHandler.getHasCapeGlint());
+                        vertexConsumer = CapeGlintManager.getCapeBuffer(bufferIn, RenderType.armorCutoutNoCull(playerHandler.getCapeLocation()), playerHandler.getHasCapeGlint());
                     } else {
                         vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getCloakTextureLocation()));
                     }

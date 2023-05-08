@@ -41,7 +41,7 @@ public class MinecraftApi {
      */
     private static JsonObject getApiData(String data) {
         try {
-            URL url = new URL("https://minecraftapi.net/api/v1/profile/" + data);
+            URL url = new URL("https://minecraftapi.net/api/v2/profile/" + data);
             HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection();
             httpurlconnection.setDoInput(true);
             httpurlconnection.setDoOutput(false);

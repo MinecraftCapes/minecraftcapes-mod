@@ -1,10 +1,16 @@
 package net.minecraftcapes;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.events.KeyHandlerEvent;
+import net.minecraftcapes.player.render.CapeGlintManager;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,6 +47,25 @@ public class MinecraftCapes {
     
         //Register the key
         MinecraftCapes.menuKey = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
+        
+        //Create glint manager (Requires special access transformers)
+        CapeGlintManager.CAPE_GLINT = RenderType.create(
+                "cape_glint",
+                DefaultVertexFormat.POSITION_TEX,
+                VertexFormat.Mode.QUADS,
+                256,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderType.RENDERTYPE_ARMOR_GLINT_SHADER)
+                        .setTextureState(
+                                new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false)
+                        ).setWriteMaskState(RenderType.COLOR_WRITE)
+                        .setCullState(RenderType.NO_CULL)
+                        .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
+                        .setTransparencyState(RenderType.GLINT_TRANSPARENCY)
+                        .setTexturingState(RenderType.GLINT_TEXTURING)
+                        .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
+                        .createCompositeState(false)
+        );
     }
     
     /**

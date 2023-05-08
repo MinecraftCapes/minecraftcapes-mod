@@ -72,6 +72,8 @@ dependencies {
 }
 
 loom {
+    accessWidenerPath = file("src/main/resources/minecraftcapes.accesswidener")
+
     runs {
         client {
             client()

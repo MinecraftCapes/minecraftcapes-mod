@@ -87,9 +87,9 @@ public class MinecraftCapesConfig {
             reader.close();
         } catch(IOException e) {
             CrashReport crashreport = new CrashReport("Config error", e);
+            configFile.toFile().delete();
             Minecraft.crash(crashreport);
             e.printStackTrace();
-            
         }
     }
     

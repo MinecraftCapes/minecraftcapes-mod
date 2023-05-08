@@ -23,6 +23,7 @@
   "mixins": [
     "minecraftcapes.mixin.json"
   ],
+  "accessWidener" : "minecraftcapes.accesswidener",
   "depends": {
     "fabric-key-binding-api-v1": "*"
   }
