@@ -57,7 +57,7 @@ dependencies {
     implementation project(":Common")
 
     //Auth and Mod Menu
-    modLocalRuntime "maven.modrinth:sodium:mc1.19.4-0.4.11"
+    modLocalRuntime "maven.modrinth:sodium:mc1.19.4-0.4.10"
 
     modLocalRuntime "maven.modrinth:modmenu:6.2.2"
     modLocalRuntime "maven.modrinth:auth-me:6.0.0"

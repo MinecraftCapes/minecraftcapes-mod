@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.events.KeyHandlerEvent;
-import net.minecraftcapes.player.render.CapeGlintManager;
+import net.minecraftcapes.player.CapeGlintManager;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,11 +20,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MinecraftCapesConstants.MOD_ID)
-public class MinecraftCapes {
+public class MinecraftCapes implements MinecraftCapesCommon {
     
     public static KeyMapping menuKey;
     
     public MinecraftCapes() {
+        //Set API
+        MinecraftCapesConstants.API = this;
+        
         MinecraftCapesConstants.LOG.info("Initialising");
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
@@ -47,25 +50,6 @@ public class MinecraftCapes {
     
         //Register the key
         MinecraftCapes.menuKey = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
-        
-        //Create glint manager (Requires special access transformers)
-        CapeGlintManager.CAPE_GLINT = RenderType.create(
-                "cape_glint",
-                DefaultVertexFormat.POSITION_TEX,
-                VertexFormat.Mode.QUADS,
-                256,
-                RenderType.CompositeState.builder()
-                        .setShaderState(RenderType.RENDERTYPE_ARMOR_GLINT_SHADER)
-                        .setTextureState(
-                                new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false)
-                        ).setWriteMaskState(RenderType.COLOR_WRITE)
-                        .setCullState(RenderType.NO_CULL)
-                        .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
-                        .setTransparencyState(RenderType.GLINT_TRANSPARENCY)
-                        .setTexturingState(RenderType.GLINT_TEXTURING)
-                        .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
-                        .createCompositeState(false)
-        );
     }
     
     /**
@@ -83,6 +67,26 @@ public class MinecraftCapes {
      */
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
         MinecraftCapesConstants.LOG.error("MinecraftCapes has been loaded on server side. MinecraftCapes is a client only mod. No need to worry about this. You can delete the mod if you wish!");
+    }
+    
+    @Override
+    public RenderType capeGlint() {
+        return RenderType.create("cape_glint",
+                DefaultVertexFormat.POSITION_TEX,
+                VertexFormat.Mode.QUADS,
+                256,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderType.RENDERTYPE_ARMOR_ENTITY_GLINT_SHADER)
+                        .setTextureState(
+                                new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
+                        .setWriteMaskState(RenderType.COLOR_WRITE)
+                        .setCullState(RenderType.NO_CULL)
+                        .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
+                        .setTransparencyState(RenderType.GLINT_TRANSPARENCY)
+                        .setTexturingState(RenderType.ENTITY_GLINT_TEXTURING)
+                        .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
+                        .createCompositeState(false)
+        );
     }
     
 }

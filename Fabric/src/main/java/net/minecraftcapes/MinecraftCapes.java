@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -17,15 +16,18 @@ import net.minecraftcapes.compatability.OriginsHook;
 import net.minecraftcapes.compatability.TrinketsHook;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.gui.MenuScreen;
-import net.minecraftcapes.player.render.CapeGlintManager;
+import net.minecraftcapes.player.CapeGlintManager;
 import org.lwjgl.glfw.GLFW;
 
-public class MinecraftCapes implements ClientModInitializer {
+public class MinecraftCapes implements ClientModInitializer,MinecraftCapesCommon {
 
 	private static KeyMapping keyBinding;
 	
 	@Override
 	public void onInitializeClient() {
+        //Set API
+        MinecraftCapesConstants.API = this;
+        
         MinecraftCapesConstants.LOG.info("Initialising");
         
 		//Loading Config
@@ -59,25 +61,6 @@ public class MinecraftCapes implements ClientModInitializer {
 			new OriginsHook();
 		}
         
-        //Create glint manager (Requires special access transformers)
-        CapeGlintManager.CAPE_GLINT = RenderType.create(
-                "cape_glint",
-                DefaultVertexFormat.POSITION_TEX,
-                VertexFormat.Mode.QUADS,
-                256,
-                RenderType.CompositeState.builder()
-                        .setShaderState(RenderType.RENDERTYPE_ARMOR_GLINT_SHADER)
-                        .setTextureState(
-                                new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false)
-                        ).setWriteMaskState(RenderType.COLOR_WRITE)
-                        .setCullState(RenderType.NO_CULL)
-                        .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
-                        .setTransparencyState(RenderType.GLINT_TRANSPARENCY)
-                        .setTexturingState(RenderType.GLINT_TEXTURING)
-                        .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
-                        .createCompositeState(false)
-        );
-        
         MinecraftCapesConstants.LOG.info("Initialised");
 	}
 
@@ -96,4 +79,25 @@ public class MinecraftCapes implements ClientModInitializer {
 		} catch (ClassNotFoundException e) {}
 		return false;
 	}
+    
+    @Override
+    public RenderType capeGlint() {
+        return RenderType.create("cape_glint",
+                DefaultVertexFormat.POSITION_TEX,
+                VertexFormat.Mode.QUADS,
+                256,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderType.RENDERTYPE_ARMOR_ENTITY_GLINT_SHADER)
+                        .setTextureState(
+                                new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
+                        .setWriteMaskState(RenderType.COLOR_WRITE)
+                        .setCullState(RenderType.NO_CULL)
+                        .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
+                        .setTransparencyState(RenderType.GLINT_TRANSPARENCY)
+                        .setTexturingState(RenderType.ENTITY_GLINT_TEXTURING)
+                        .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
+                        .createCompositeState(false)
+        );
+    }
+    
 }
