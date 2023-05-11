@@ -19,13 +19,13 @@ public class MenuScreen extends Screen {
         int i = 0;
 
         //Custom Capes
-        this.addRenderableWidget(CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible()).create(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()), (button, enabled) -> {
+        this.addRenderableWidget(CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible()).create(this.width / 2 - 155 * 160, this.height / 6, 150, 20, getButtonString("Custom Capes"), (button, enabled) -> {
             MinecraftCapesConfig.setCapeVisible(enabled);
         }));
         i++;
 
         //Custom Ears
-        this.addRenderableWidget(CycleButton.onOffBuilder(MinecraftCapesConfig.isEarsVisible()).create(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()), (button, enabled) -> {
+        this.addRenderableWidget(CycleButton.onOffBuilder(MinecraftCapesConfig.isEarsVisible()).create(this.width / 2 - 155 + i % 2 * 160, this.height / 6, 150, 20, getButtonString("Custom Ears"), (button, enabled) -> {
             MinecraftCapesConfig.setEarsVisible(enabled);
         }));
         i++;
@@ -35,7 +35,9 @@ public class MenuScreen extends Screen {
 
         //Reload Profile
         this.addRenderableWidget(Button.builder(Component.nullToEmpty("Reload Profile"), (button) -> {
+            button.active = false;
             DownloadManager.prepareDownload(this.minecraft.player, true);
+            button.active = true;
         }).bounds(this.width / 2 - 75, this.height / 6 + 24 * (i >> 1), 150, 20).build());
         i++;
 
@@ -51,7 +53,7 @@ public class MenuScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    private Component getButtonString(String buttonText, boolean value) {
+    private Component getButtonString(String buttonText) {
         return Component.nullToEmpty(buttonText);
     }
 }

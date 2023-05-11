@@ -21,7 +21,7 @@ public abstract class MixinPlayerModel extends HumanoidModel {
     }
 
     @Inject(method = "createMesh", at = @At("RETURN"), cancellable = true)
-    private static void getTexturedModelData(CubeDeformation cubeDeformation, boolean slim, CallbackInfoReturnable<MeshDefinition> cir) {
+    private static void createMesh(CubeDeformation cubeDeformation, boolean slim, CallbackInfoReturnable<MeshDefinition> cir) {
         MeshDefinition meshDefinition = cir.getReturnValue();
         meshDefinition.getRoot().addOrReplaceChild("ear", CubeListBuilder.create(), PartPose.ZERO);
         PartDefinition partDefinition = meshDefinition.getRoot().getChild("ear");

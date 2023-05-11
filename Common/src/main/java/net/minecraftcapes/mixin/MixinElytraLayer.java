@@ -30,8 +30,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ElytraLayer.class)
 public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
     
-    @Shadow @Final private static ResourceLocation WINGS_LOCATION = new ResourceLocation("textures/entity/elytra.png");
-    @Shadow @Final private ElytraModel<T> elytraModel;
+    @Shadow
+    @Final
+    private static ResourceLocation WINGS_LOCATION = new ResourceLocation("textures/entity/elytra.png");
+    @Shadow
+    @Final
+    private ElytraModel<T> elytraModel;
     
     public MixinElytraLayer(RenderLayerParent<T, M> renderLayerParent) {
         super(renderLayerParent);
