@@ -19,7 +19,7 @@ public class MenuScreen extends Screen {
         int i = 0;
 
         //Custom Capes
-        this.addRenderableWidget(CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible()).create(this.width / 2 - 155 * 160, this.height / 6, 150, 20, getButtonString("Custom Capes"), (button, enabled) -> {
+        this.addRenderableWidget(CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible()).create(this.width / 2 - 155, this.height / 6, 150, 20, getButtonString("Custom Capes"), (button, enabled) -> {
             MinecraftCapesConfig.setCapeVisible(enabled);
         }));
         i++;

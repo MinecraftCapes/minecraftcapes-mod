@@ -40,19 +40,49 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
     
-    public PlayerHandler(Player player) {
-        this.playerUUID = player.getUUID();
+    public PlayerHandler(UUID uuid) {
+        this.playerUUID = uuid;
         PlayerHandler.instances.put(playerUUID, this);
     }
     
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param player
-     * @return
+     * @param uuid the players uuid
+     * @return The player handler
      */
-    public static PlayerHandler getFromPlayer(Player player) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(player.getUUID());
-        return playerHandler == null ? new PlayerHandler(player) : playerHandler;
+    public static PlayerHandler get(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
+        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
+    }
+    
+    /**
+     * Tries to get the PlayerHandler instance from a player
+     * @param player the player
+     * @return The player handler
+     */
+    public static PlayerHandler get(Player player) {
+        return get(player.getUUID());
+    }
+    
+    /**
+     * Remove a player
+     * @param uuid
+     */
+    public static void remove(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.get(uuid);
+        
+        //Release resources
+        if(playerHandler.hasAnimatedCape) {
+            playerHandler.getAnimatedCape().forEach((integer, nativeImage) -> {
+                Minecraft.getInstance().getTextureManager().release(new ResourceLocation(MinecraftCapesConstants.MOD_ID, String.format("capes/%s/%d", uuid, integer)));
+            });
+        } else {
+            Minecraft.getInstance().getTextureManager().release(playerHandler.getCapeLocation());
+            Minecraft.getInstance().getTextureManager().release(playerHandler.getEarLocation());
+        }
+        
+        instances.remove(uuid);
+        
     }
     
     /**

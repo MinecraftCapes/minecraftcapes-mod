@@ -50,7 +50,7 @@ public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityM
         if (itemStack.getItem() == Items.ELYTRA) {
             ResourceLocation resourceLocation;
             if (livingEntity instanceof AbstractClientPlayer abstractClientPlayer) {
-                PlayerHandler playerHandler = PlayerHandler.getFromPlayer((AbstractClientPlayer) livingEntity);
+                PlayerHandler playerHandler = PlayerHandler.get((AbstractClientPlayer) livingEntity);
                 if(!playerHandler.getForceShowElytra() && playerHandler.getForceHideElytra()) return;
                 
                 if (playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {

@@ -2,6 +2,7 @@ package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapesConstants;
@@ -22,25 +23,34 @@ import java.util.UUID;
 
 public class DownloadManager {
     
+    public static void prepareDownload(Player player, boolean doRefresh) {
+        prepareDownload(player.getUUID(), player.getGameProfile().getName(), doRefresh);
+    }
+    public static void prepareDownload(PlayerInfo playerInfo, boolean doRefresh) {
+        prepareDownload(playerInfo.getProfile().getId(), playerInfo.getProfile().getName(), doRefresh);
+    }
+    
     /**
      * Prepares the down
-     * @param player
+     * @param playerUUID The players uuid
+     * @param playerName The players name
+     * @param doRefresh Whether we a forcing an overite
      */
-    public static void prepareDownload(Player player, boolean doRefresh) {
+    private static void prepareDownload(UUID playerUUID, String playerName, boolean doRefresh) {
         LocalPlayer localPlayer = Minecraft.getInstance().player;
 
         //Make sure player is online and not the local player in offline mode
-        if(player.getUUID().version() != 4 && (localPlayer != null && !localPlayer.getUUID().equals(player.getUUID()))) return;
+        if(playerUUID.version() != 4 && (localPlayer != null && !localPlayer.getUUID().equals(playerUUID))) return;
     
-        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
+        PlayerHandler playerHandler = PlayerHandler.get(playerUUID);
         //Lets get the local players offline cape
-        if(player.getUUID().version() != 4 && !playerHandler.getHasInfo() && !doRefresh) {
+        if(playerUUID.version() != 4 && !playerHandler.getHasInfo() && !doRefresh) {
             //Stop any more processing
             playerHandler.setHasInfo(true);
             
             //Get UUID from API off main thread
             Thread playerDownload = new Thread(() -> {
-                UUID uuid = MinecraftApi.getUUID(player.getScoreboardName());
+                UUID uuid = MinecraftApi.getUUID(playerName);
                 if(uuid == null) return;
                 playerHandler.setPlayerUUID(uuid);
                 

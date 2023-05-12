@@ -19,7 +19,7 @@ public class TrinketsHook implements ICompatHooks {
     }
 
     public void onPlayerRender(Player player) {
-        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
+        PlayerHandler playerHandler = PlayerHandler.get(player);
         Optional<TrinketComponent> trinketComponent = TrinketsApi.getTrinketComponent(player);
         if(trinketComponent.isPresent() && trinketComponent.get().getAllEquipped().contains(Items.ELYTRA)) {
             playerHandler.setShowCape(false);

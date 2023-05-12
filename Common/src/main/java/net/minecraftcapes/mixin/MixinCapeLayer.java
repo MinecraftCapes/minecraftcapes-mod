@@ -39,7 +39,7 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
         if(!MinecraftCapesConfig.isCapeVisible() && player.getCloakTextureLocation() == null) return;
         
         //Do Render
-        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
+        PlayerHandler playerHandler = PlayerHandler.get(player);
         if(playerHandler.getShowCape()) {
             if (!player.isInvisible() && (player.getCloakTextureLocation() != null || playerHandler.getCapeLocation() != null)) {
                 ItemStack itemStack = player.getItemBySlot(EquipmentSlot.CHEST);

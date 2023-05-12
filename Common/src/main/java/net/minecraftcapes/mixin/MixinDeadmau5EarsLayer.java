@@ -28,7 +28,7 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
         //Cancel default render
         ci.cancel();
         
-        PlayerHandler playerHandler = PlayerHandler.getFromPlayer(player);
+        PlayerHandler playerHandler = PlayerHandler.get(player);
         if((playerHandler.getEarLocation() != null && !player.isInvisible() && MinecraftCapesConfig.isEarsVisible()) || player.getName().toString().equalsIgnoreCase("deadmau5")) {
             //Check for Deadmau5
             VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(playerHandler.getEarLocation()));
