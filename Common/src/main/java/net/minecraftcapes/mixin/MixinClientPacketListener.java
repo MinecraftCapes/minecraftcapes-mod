@@ -1,6 +1,5 @@
 package net.minecraftcapes.mixin;
 
-import com.google.common.collect.Maps;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.TickablePacketListener;
@@ -21,11 +20,11 @@ import java.util.UUID;
 
 @Mixin(ClientPacketListener.class)
 public abstract class MixinClientPacketListener implements TickablePacketListener, ClientGamePacketListener {
-    
+
     @Shadow
     @Final
     private Map<UUID, PlayerInfo> playerInfoMap;
-    
+
     @Inject(method = "handlePlayerInfoUpdate", at = @At("RETURN"))
     public void handlePlayerInfoUpdate(ClientboundPlayerInfoUpdatePacket updatePacket, CallbackInfo ci) {
         updatePacket.newEntries().forEach(entry -> {
@@ -33,10 +32,10 @@ public abstract class MixinClientPacketListener implements TickablePacketListene
             DownloadManager.prepareDownload(playerInfo, false);
         });
     }
-    
+
     @Inject(method = "handlePlayerInfoRemove", at = @At("RETURN"))
     public void handlePlayerInfoRemove(ClientboundPlayerInfoRemovePacket removePacket, CallbackInfo ci) {
         removePacket.profileIds().forEach(PlayerHandler::remove);
     }
-    
+
 }

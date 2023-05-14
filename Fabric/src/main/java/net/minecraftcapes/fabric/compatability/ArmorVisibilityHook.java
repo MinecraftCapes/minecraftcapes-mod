@@ -1,9 +1,9 @@
-package net.minecraftcapes.compatability;
+package net.minecraftcapes.fabric.compatability;
 
 import com.diontryban.armor_visibility.client.ArmorVisibilityClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftcapes.MinecraftCapesConstants;
+import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.compatibility.CompatHooks;
 import net.minecraftcapes.compatibility.ICompatHooks;
 import net.minecraftcapes.player.PlayerHandler;
@@ -11,7 +11,7 @@ import net.minecraftcapes.player.PlayerHandler;
 public class ArmorVisibilityHook implements ICompatHooks {
 
     public ArmorVisibilityHook() {
-        MinecraftCapesConstants.LOG.info("Hooked into ArmorVisibility");
+        MinecraftCapes.getLogger().info("Hooked into ArmorVisibility");
         CompatHooks.addHook(this);
     }
 

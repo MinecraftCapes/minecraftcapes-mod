@@ -15,11 +15,11 @@ import java.util.SortedMap;
 
 @Mixin(RenderBuffers.class)
 public class MixinRenderBuffers {
-    
+
     @Shadow
     @Final
     private SortedMap<RenderType, BufferBuilder> fixedBuffers;
-    
+
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
         fixedBuffers.put(CapeGlintManager.CAPE_GLINT, new BufferBuilder(CapeGlintManager.CAPE_GLINT.bufferSize()));

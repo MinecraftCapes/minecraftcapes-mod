@@ -25,19 +25,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CapeLayer.class)
 public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-    
+
     public MixinCapeLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderLayerParent) {
         super(renderLayerParent);
     }
-    
+
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V", at = @At("HEAD"), cancellable = true)
     private void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         //Cancel default render
         ci.cancel();
-        
+
         //Check for cape
         if(!MinecraftCapesConfig.isCapeVisible() && player.getCloakTextureLocation() == null) return;
-        
+
         //Do Render
         PlayerHandler playerHandler = PlayerHandler.get(player);
         if(playerHandler.getShowCape()) {
@@ -61,24 +61,24 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
                     if (f3 < 0.0F) {
                         f3 = 0.0F;
                     }
-                    
+
                     float f5 = Mth.lerp(partialTicks, player.oBob, player.bob);
                     f2 += Mth.sin(Mth.lerp(partialTicks, player.walkDistO, player.walkDist) * 6.0F) * 32.0F * f5;
                     if (player.isCrouching()) {
                         f2 += 25.0F;
                     }
-                    
+
                     poseStack.mulPose(Axis.XP.rotationDegrees(6.0F + f3 / 2.0F + f2));
                     poseStack.mulPose(Axis.ZP.rotationDegrees(f4 / 2.0F));
                     poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f4 / 2.0F));
-                    
+
                     VertexConsumer vertexConsumer;
                     if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
                         vertexConsumer = CapeGlintManager.getCapeBuffer(bufferIn, RenderType.armorCutoutNoCull(playerHandler.getCapeLocation()), playerHandler.getHasCapeGlint());
                     } else {
                         vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getCloakTextureLocation()));
                     }
-                    
+
                     this.getParentModel().renderCloak(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY);
                     poseStack.popPose();
                 }

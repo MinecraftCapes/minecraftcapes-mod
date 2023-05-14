@@ -22,12 +22,12 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
     public MixinDeadmau5EarsLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> p_116860_) {
         super(p_116860_);
     }
-    
+
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V", at = @At("HEAD"), cancellable = true)
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         //Cancel default render
         ci.cancel();
-        
+
         PlayerHandler playerHandler = PlayerHandler.get(player);
         if((playerHandler.getEarLocation() != null && !player.isInvisible() && MinecraftCapesConfig.isEarsVisible()) || player.getName().toString().equalsIgnoreCase("deadmau5")) {
             //Check for Deadmau5
@@ -35,9 +35,9 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
             if(player.getName().toString().equalsIgnoreCase("deadmau5")) {
                 vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getSkinTextureLocation()));
             }
-            
+
             int i = LivingEntityRenderer.getOverlayCoords(player, 0.0F);
-            
+
             poseStack.pushPose();
             if(player.isCrouching()) {
                 poseStack.translate(0.0F, 0.25F, 0.0F);
@@ -47,5 +47,5 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
             poseStack.popPose();
         }
     }
-    
+
 }

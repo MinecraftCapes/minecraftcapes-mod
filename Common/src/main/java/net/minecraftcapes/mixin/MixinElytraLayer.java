@@ -29,30 +29,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ElytraLayer.class)
 public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-    
+
     @Shadow
     @Final
     private static ResourceLocation WINGS_LOCATION = new ResourceLocation("textures/entity/elytra.png");
     @Shadow
     @Final
     private ElytraModel<T> elytraModel;
-    
+
     public MixinElytraLayer(RenderLayerParent<T, M> renderLayerParent) {
         super(renderLayerParent);
     }
-    
+
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/LivingEntity;FFFFFF)V", at = @At("HEAD"), cancellable = true)
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {        //Cancel default render
         //Cancel default render
         ci.cancel();
-        
+
         ItemStack itemStack = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
         if (itemStack.getItem() == Items.ELYTRA) {
             ResourceLocation resourceLocation;
             if (livingEntity instanceof AbstractClientPlayer abstractClientPlayer) {
                 PlayerHandler playerHandler = PlayerHandler.get((AbstractClientPlayer) livingEntity);
                 if(!playerHandler.getForceShowElytra() && playerHandler.getForceHideElytra()) return;
-                
+
                 if (playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
                     resourceLocation = playerHandler.getCapeLocation();
                 } else if (abstractClientPlayer.isElytraLoaded() && abstractClientPlayer.getElytraTextureLocation() != null) {
@@ -65,7 +65,7 @@ public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityM
             } else {
                 resourceLocation = WINGS_LOCATION;
             }
-            
+
             poseStack.pushPose();
             poseStack.translate(0.0F, 0.0F, 0.125F);
             this.getParentModel().copyPropertiesTo(this.elytraModel);

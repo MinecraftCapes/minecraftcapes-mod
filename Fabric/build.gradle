@@ -30,20 +30,6 @@ repositories {
         name = "Ladysnake Libs"
         url = "https://ladysnake.jfrog.io/artifactory/mods"
     }
-    //Origins
-    maven {
-        url 'https://jitpack.io'
-    }
-    maven {
-        name = "AdrianTodt's Maven"
-        url = "https://dl.bintray.com/adriantodt/maven"
-    }
-    maven {
-        url "https://maven.jamieswhiteshirt.com/libs-release/"
-    }
-    maven {
-        url "https://maven.shedaniel.me/"
-    }
 }
 
 dependencies {
@@ -67,7 +53,6 @@ dependencies {
     modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
     modCompileOnly "maven.modrinth:armor-visibility:7.0.0-fabric"
     modCompileOnly "dev.emi:trinkets:3.6.0"
-    //modCompileOnly "com.github.apace100:origins-fabric:v1.8.1"
 
 }
 
