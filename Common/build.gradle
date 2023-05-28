@@ -1,17 +1,17 @@
 plugins {
-    id('java')
-    id('org.spongepowered.gradle.vanilla') version '0.2.1-SNAPSHOT'
+    id 'java'
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
     id 'maven-publish'
-    id "io.freefair.lombok" version "6.3.0"
+    id 'io.freefair.lombok' version '8.0.1'
 }
 
 archivesBaseName = "${mod_name}-common-${minecraft_version}"
 
 minecraft {
     version(minecraft_version)
-    runs {   
+    runs {
         if (project.hasProperty('common_runs_enabled') ? project.findProperty('common_runs_enabled').toBoolean() : true) {
-        
+
             server(project.hasProperty('common_server_run_name') ? project.findProperty('common_server_run_name') : 'vanilla_server') {
                 workingDirectory(this.file("run"))
             }
@@ -28,8 +28,11 @@ dependencies {
 }
 
 processResources {
+
     def buildProps = project.properties.clone()
+
     filesMatching(['pack.mcmeta']) {
+
         expand buildProps
     }
 }

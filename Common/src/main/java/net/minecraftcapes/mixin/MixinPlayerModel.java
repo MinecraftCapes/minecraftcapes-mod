@@ -20,8 +20,8 @@ public abstract class MixinPlayerModel extends HumanoidModel {
         super(root);
     }
 
-    @Inject(method = "createMesh(Lnet/minecraft/client/model/geom/builders/CubeDeformation;Z)Lnet/minecraft/client/model/geom/builders/MeshDefinition;", at = @At("RETURN"), cancellable = true)
-    private static void getTexturedModelData(CubeDeformation cubeDeformation, boolean slim, CallbackInfoReturnable<MeshDefinition> cir) {
+    @Inject(method = "createMesh", at = @At("RETURN"), cancellable = true)
+    private static void createMesh(CubeDeformation cubeDeformation, boolean slim, CallbackInfoReturnable<MeshDefinition> cir) {
         MeshDefinition meshDefinition = cir.getReturnValue();
         meshDefinition.getRoot().addOrReplaceChild("ear", CubeListBuilder.create(), PartPose.ZERO);
         PartDefinition partDefinition = meshDefinition.getRoot().getChild("ear");

@@ -17,12 +17,13 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "net.minecraftcapes.MinecraftCapes"
+      "net.minecraftcapes.fabric.FabricImplementation"
     ]
   },
   "mixins": [
-  	"minecraftcapes.client.mixins.json"
+    "minecraftcapes.mixin.json"
   ],
+  "accessWidener" : "minecraftcapes.accesswidener",
   "depends": {
     "fabric-key-binding-api-v1": "*"
   }
