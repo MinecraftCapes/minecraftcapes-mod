@@ -32,7 +32,7 @@ public class PlayerEventHandler {
 		Thread playerDownload = new Thread(() -> {
 			try {
 				MinecraftCapes.getLogger().debug("Getting profile for {}", playerHandler.getPlayerUUID());
-				URL url = new URL("https://minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
+				URL url = new URL("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
 				HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
 				httpurlconnection.setDoInput(true);
 				httpurlconnection.setDoOutput(false);
