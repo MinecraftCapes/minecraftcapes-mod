@@ -19,7 +19,7 @@ public class MinecraftCapes implements ClientModInitializer {
 	public static final String MODID = "minecraftcapes";
 	@Getter private static final Logger Logger = LogManager.getLogger(MODID);
 	private static KeyBinding keyBinding;
-	
+
 	@Override
 	public void onInitializeClient() {
 		getLogger().info("[MinecraftCapes] Initialising");
