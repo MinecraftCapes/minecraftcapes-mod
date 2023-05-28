@@ -20,8 +20,6 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         gradle-version: 4.9
-    - name: Set Decomp
-      run: ./gradlew setupDecompWorkspace
     - name: Execute Gradle build
       run: ./gradlew build
     - name: Upload a Build Artifact
