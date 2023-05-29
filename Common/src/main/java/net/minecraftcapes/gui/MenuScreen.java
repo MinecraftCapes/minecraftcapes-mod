@@ -78,7 +78,6 @@ public class MenuScreen extends Screen {
                 this.width / 5,
                 this.height / 3 + 90,
                 60,
-                
                 this.minecraft.player
         );
         super.render(poseStack, mouseX, mouseY, partialTicks);
