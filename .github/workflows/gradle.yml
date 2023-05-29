@@ -22,3 +22,8 @@ jobs:
         gradle-version: 7.6.1
     - name: Execute Gradle build
       run: ./gradlew build
+      with:
+        name: Jar
+        path: |
+          Fabric/build/libs/*.jar
+          Forge/build/libs/*.jar
