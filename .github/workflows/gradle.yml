@@ -26,4 +26,6 @@ jobs:
       uses: actions/upload-artifact@v3.1.2
       with:
         name: Jar
-        path: build/libs/*.jar
+        path: |
+          Fabric/build/libs/*.jar
+          Forge/build/libs/*.jar
