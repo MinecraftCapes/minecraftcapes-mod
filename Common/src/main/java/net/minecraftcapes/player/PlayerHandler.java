@@ -69,19 +69,6 @@ public class PlayerHandler {
      * @param uuid
      */
     public static void remove(UUID uuid) {
-        PlayerHandler playerHandler = PlayerHandler.get(uuid);
-
-        //Release resources
-        if(playerHandler.hasAnimatedCape) {
-            playerHandler.getAnimatedCape().forEach((integer, nativeImage) -> {
-                Minecraft.getInstance().getTextureManager().release(new ResourceLocation(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, integer)));
-            });
-        } else {
-            Minecraft.getInstance().getTextureManager().release(playerHandler.getCapeLocation());
-        }
-
-        Minecraft.getInstance().getTextureManager().release(playerHandler.getEarLocation());
-
         instances.remove(uuid);
     }
 
