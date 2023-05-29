@@ -1,8 +1,8 @@
 plugins {
-    id 'fabric-loom' version '1.1-SNAPSHOT'
+    id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
-    id "io.freefair.lombok" version "8.0.1"
+    id "io.freefair.lombok" version "6.3.0"
 }
 
 archivesBaseName = "${mod_name} Fabric ${minecraft_version}"
@@ -33,32 +33,30 @@ repositories {
 }
 
 dependencies {
-    //Fabric and Minecraft
+    //Fabirc and Minecraft
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     //Common
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
 
     //Auth and Mod Menu
-    modLocalRuntime "maven.modrinth:sodium:mc1.18.2-0.4.1"
+    //modLocalRuntime "maven.modrinth:sodium:mc1.18.2-0.4.1"
 
     modLocalRuntime "maven.modrinth:modmenu:3.2.5"
+    modLocalRuntime "maven.modrinth:cloth-config:6.2.62"
     modLocalRuntime "maven.modrinth:auth-me:3.1.0"
-    modLocalRuntime "maven.modrinth:cloth-config:6.3.81"
 
     //Libs
     modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
     modCompileOnly "maven.modrinth:armor-visibility:4.0.1-fabric"
     modCompileOnly "dev.emi:trinkets:3.3.1"
-
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/minecraftcapes.accesswidener")
-
     runs {
         client {
             client()
@@ -87,6 +85,12 @@ processResources {
 
 tasks.withType(JavaCompile) {
     source(project(":Common").sourceSets.main.allSource)
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${mod_name}" }
+    }
 }
 
 publishing {
