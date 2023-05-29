@@ -76,7 +76,7 @@ public class MenuScreen extends Screen {
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 20, 0xFFFFFF);
         renderEntityInInventory(
                 this.width / 5,
-                this.height - 60,
+                this.height / 3 + 90,
                 60,
                 
                 this.minecraft.player
