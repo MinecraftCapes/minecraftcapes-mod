@@ -105,9 +105,10 @@ processResources {
     from project(":Common").sourceSets.main.resources
 }
 
-
 mixin {
-    add sourceSets.main, 'minecraftcapes.refmap.json'
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixin.json"
+    debug.verbose = true
 }
 
 jar.finalizedBy('reobfJar')
