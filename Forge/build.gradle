@@ -1,21 +1,32 @@
+//buildscript {
+//    repositories {
+//        maven { url = 'https://maven.minecraftforge.net' }
+//        maven { url "https://plugins.gradle.org/m2/" }
+//        mavenCentral()
+//    }
+//    dependencies {
+//        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+//        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+//    }
+//    dependencies {
+//        classpath "io.freefair.gradle:lombok-plugin:6.3.0"
+//    }
+//}
 buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url "https://plugins.gradle.org/m2/" }
-        mavenCentral()
-    }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
-    dependencies {
-        classpath "io.freefair.gradle:lombok-plugin:6.3.0"
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
-apply plugin: 'java'
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: "io.freefair.lombok"
+
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'maven-publish'
+    id 'io.freefair.lombok' version '6.3.0'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+}
+
+apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = "${mod_name} Forge ${minecraft_version}"
 
@@ -72,10 +83,15 @@ minecraft {
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 repositories {
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
         }
     }
 }
@@ -83,9 +99,10 @@ repositories {
 dependencies {
     //Forge
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     //Auth
-    //runtimeOnly "curse.maven:oauth-513857:3566367"
+    //implementation "maven.modrinth:oauth:1.1.15"
 
     compileOnly project(":Common")
 }
@@ -98,8 +115,13 @@ processResources {
     from project(":Common").sourceSets.main.resources
 }
 
-
 jar.finalizedBy('reobfJar')
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixin.json"
+    debug.verbose = true
+}
 
 publishing {
     publications {
