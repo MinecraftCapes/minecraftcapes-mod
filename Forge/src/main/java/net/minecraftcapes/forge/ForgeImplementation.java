@@ -1,9 +1,11 @@
 package net.minecraftcapes.forge;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -16,6 +18,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+
+import java.util.SortedMap;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation extends MinecraftCapes {
@@ -58,6 +63,14 @@ public class ForgeImplementation extends MinecraftCapes {
     
         //Register the key
         ForgeImplementation.keyMapping = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
+        
+        //Insert the cape glint
+        SortedMap<RenderType, BufferBuilder> fixedBuffers = ObfuscationReflectionHelper.getPrivateValue(
+                RenderBuffers.class,
+                Minecraft.getInstance().renderBuffers(),
+                "f_110093_"
+        );
+        fixedBuffers.put(CAPE_GLINT, new BufferBuilder(CAPE_GLINT.bufferSize()));
         
         MinecraftCapes.getLogger().info("Initialised");
     }

@@ -22,7 +22,9 @@ public class MixinRenderBuffers {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
-        fixedBuffers.put(CapeGlintManager.CAPE_GLINT, new BufferBuilder(CapeGlintManager.CAPE_GLINT.bufferSize()));
+        if(CapeGlintManager.CAPE_GLINT != null) {
+            fixedBuffers.put(CapeGlintManager.CAPE_GLINT, new BufferBuilder(CapeGlintManager.CAPE_GLINT.bufferSize()));
+        }
     }
 
 }

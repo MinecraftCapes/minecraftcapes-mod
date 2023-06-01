@@ -92,9 +92,6 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly project(":Common")
-
-    //implementation fg.deobf("curse.maven:oauth-513857:4518838")
-    implementation "maven.modrinth:oauth:1.1.15"
 }
 
 tasks.withType(JavaCompile) {

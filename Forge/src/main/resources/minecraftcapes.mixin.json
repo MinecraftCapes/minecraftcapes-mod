@@ -9,10 +9,10 @@
     "MixinElytraLayer",
     "MixinLivingEntityRenderer",
     "MixinPlayerEntityRenderer",
-    "MixinPlayerModel",
-    "MixinRenderBuffers"
+    "MixinPlayerModel"
   ],
   "injectors" : {
     "defaultRequire" : 1
-  }
+  },
+  "refmap": "minecraftcapes.refmap.json"
 }
