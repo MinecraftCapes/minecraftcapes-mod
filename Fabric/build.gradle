@@ -45,8 +45,8 @@ dependencies {
     //Auth and Mod Menu
     //modLocalRuntime "maven.modrinth:sodium:mc1.19.3-0.4.9"
 
-    modLocalRuntime "maven.modrinth:modmenu:4.0.5"
-    modLocalRuntime "maven.modrinth:auth-me:4.2.0"
+    modLocalRuntime "maven.modrinth:modmenu:4.0.4"
+    modLocalRuntime "maven.modrinth:auth-me:4.1.0"
     modLocalRuntime "maven.modrinth:cloth-config:8.2.88+fabric"
 
     //Libs
