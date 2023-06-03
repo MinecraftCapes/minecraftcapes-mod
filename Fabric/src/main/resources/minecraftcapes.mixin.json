@@ -9,8 +9,7 @@
     "MixinElytraLayer",
     "MixinLivingEntityRenderer",
     "MixinPlayerEntityRenderer",
-    "MixinPlayerModel",
-    "MixinRenderBuffers"
+    "MixinPlayerModel"
   ],
   "injectors" : {
     "defaultRequire" : 1
