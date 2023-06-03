@@ -71,7 +71,6 @@ public class MenuScreen extends Screen {
 
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         int guiScale = (int) this.minecraft.getWindow().getGuiScale();
-        System.out.println(guiScale);
         this.renderBackground(poseStack);
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 20, 0xFFFFFF);
         renderPlayer(
