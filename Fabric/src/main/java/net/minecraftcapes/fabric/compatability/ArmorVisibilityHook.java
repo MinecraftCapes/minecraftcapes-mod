@@ -1,6 +1,6 @@
 package net.minecraftcapes.fabric.compatability;
 
-import com.diontryban.armor_visibility.client.ArmorVisibilityClient;
+import com.trikzon.armor_visibility.ArmorVisibility;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapes;
@@ -17,7 +17,7 @@ public class ArmorVisibilityHook implements ICompatHooks {
 
     public void onPlayerRender(Player player) {
         PlayerHandler playerHandler = PlayerHandler.get(player);
-        if(ArmorVisibilityClient.hideAllArmor || (ArmorVisibilityClient.hideMyArmor && player.equals(Minecraft.getInstance().player))) {
+        if(ArmorVisibility.saveFile.hideAllArmorToggle || (ArmorVisibility.saveFile.hideMyArmorToggle && player.equals(Minecraft.getInstance().player))) {
             playerHandler.setForceHideElytra(true);
         } else {
             playerHandler.setForceHideElytra(false);

@@ -2,7 +2,7 @@ package net.minecraftcapes.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -67,10 +67,10 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
                     if (player.isCrouching()) {
                         f2 += 25.0F;
                     }
-
-                    poseStack.mulPose(Axis.XP.rotationDegrees(6.0F + f3 / 2.0F + f2));
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(f4 / 2.0F));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f4 / 2.0F));
+                    
+                    poseStack.mulPose(Vector3f.XP.rotationDegrees(6.0F + f3 / 2.0F + f2));
+                    poseStack.mulPose(Vector3f.ZP.rotationDegrees(f4 / 2.0F));
+                    poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - f4 / 2.0F));
 
                     VertexConsumer vertexConsumer;
                     if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {

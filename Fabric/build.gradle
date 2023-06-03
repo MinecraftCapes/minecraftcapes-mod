@@ -43,16 +43,16 @@ dependencies {
     implementation project(":Common")
 
     //Auth and Mod Menu
-    modLocalRuntime "maven.modrinth:sodium:mc1.19.3-0.4.9"
+    //modLocalRuntime "maven.modrinth:sodium:mc1.19.2-0.4.4"
 
-    modLocalRuntime "maven.modrinth:modmenu:5.0.2"
-    modLocalRuntime "maven.modrinth:auth-me:5.0.0"
-    modLocalRuntime "maven.modrinth:cloth-config:9.0.94+fabric"
+    modLocalRuntime "maven.modrinth:modmenu:4.1.2"
+    modLocalRuntime "maven.modrinth:auth-me:4.2.0"
+    modLocalRuntime "maven.modrinth:cloth-config:8.2.88+fabric"
 
     //Libs
     modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
-    modCompileOnly "maven.modrinth:armor-visibility:7.0.0-fabric"
-    modCompileOnly "dev.emi:trinkets:3.6.0"
+    modCompileOnly "maven.modrinth:armor-visibility:6.0.1-fabric"
+    modCompileOnly "dev.emi:trinkets:3.4.1"
 
 }
 
