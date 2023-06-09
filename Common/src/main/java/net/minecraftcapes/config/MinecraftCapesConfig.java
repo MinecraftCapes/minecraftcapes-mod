@@ -74,13 +74,13 @@ public class MinecraftCapesConfig {
      */
     public static void loadConfig() {
         try {
+            //Create mod directory
+            modDirectory.mkdir();
+            
             if(!configFile.toFile().exists()) {
                 InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
                 Files.copy(defaultConfigFile, configFile);
             }
-
-            //Create mod directory
-            modDirectory.mkdir();
 
             Reader reader = new FileReader(configFile.toFile());
             config = new Gson().fromJson(reader, ConfigValues.class);

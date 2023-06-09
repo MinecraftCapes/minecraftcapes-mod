@@ -52,7 +52,7 @@ dependencies {
     //Libs
     modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
     modCompileOnly "maven.modrinth:armor-visibility:7.0.0-fabric"
-    modCompileOnly "dev.emi:trinkets:3.6.0"
+    modCompileOnly "dev.emi:trinkets:3.7.0"
 
 }
 
