@@ -1,7 +1,6 @@
 package net.minecraftcapes.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -59,22 +58,20 @@ public class MenuScreen extends Screen {
         }).bounds(this.width / 3 * 2 - 100, this.height / 3 + 24 * (i >> 1), 200, 20).build());
     }
 
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        int guiScale = (int) this.minecraft.getWindow().getGuiScale();
-        System.out.println(guiScale);
-        this.renderBackground(poseStack);
-        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 20, 0xFFFFFF);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
         renderPlayer(
-                poseStack,
+                guiGraphics,
                 this.width / 5,
                 this.height / 3 + 90,
                 60,
                 this.minecraft.player
         );
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
     
-    public static void renderPlayer(PoseStack poseStack, int leftPos, int topPos, int size, LivingEntity livingEntiy) {
+    public static void renderPlayer(GuiGraphics guiGraphics, int leftPos, int topPos, int size, LivingEntity livingEntiy) {
         Quaternionf $$9 = (new Quaternionf()).rotateZ(3.1415927F);
         Quaternionf $$10 = (new Quaternionf()).rotateX(0);
         $$9.mul($$10);
@@ -88,7 +85,7 @@ public class MenuScreen extends Screen {
         livingEntiy.setXRot(0);
         livingEntiy.yHeadRot = livingEntiy.getYRot();
         livingEntiy.yHeadRotO = livingEntiy.getYRot();
-        InventoryScreen.renderEntityInInventory(poseStack, leftPos, topPos, size, $$9, $$10, livingEntiy);
+        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos, topPos, size, $$9, $$10, livingEntiy);
         livingEntiy.yBodyRot = $$11;
         livingEntiy.setYRot($$12);
         livingEntiy.setXRot($$13);
