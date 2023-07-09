@@ -63,7 +63,17 @@ public class PlayerHandler {
     public static PlayerHandler get(Player player) {
         return get(player.getUUID());
     }
-
+    
+    /**
+     * Tries to get the PlayerHandler instance from a player
+     * @param player the player
+     * @return The player handler
+     */
+    @Deprecated
+    public static PlayerHandler getFromPlayer(Player player) {
+        return get(player.getUUID());
+    }
+    
     /**
      * Remove a player
      * @param uuid
