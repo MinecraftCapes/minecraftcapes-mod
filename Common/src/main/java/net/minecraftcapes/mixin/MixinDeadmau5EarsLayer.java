@@ -33,7 +33,7 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
             //Check for Deadmau5
             VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(playerHandler.getEarLocation()));
             if(player.getName().toString().equalsIgnoreCase("deadmau5")) {
-                vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getSkinTextureLocation()));
+                vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getSkin().texture()));
             }
 
             int i = LivingEntityRenderer.getOverlayCoords(player, 0.0F);

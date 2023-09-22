@@ -36,12 +36,12 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
         ci.cancel();
 
         //Check for cape
-        if(!MinecraftCapesConfig.isCapeVisible() && player.getCloakTextureLocation() == null) return;
+        if(!MinecraftCapesConfig.isCapeVisible() && player.getSkin().capeTexture() == null) return;
 
         //Do Render
         PlayerHandler playerHandler = PlayerHandler.get(player);
         if(playerHandler.getShowCape()) {
-            if (!player.isInvisible() && (player.getCloakTextureLocation() != null || playerHandler.getCapeLocation() != null)) {
+            if (!player.isInvisible() && (player.getSkin().capeTexture() != null || playerHandler.getCapeLocation() != null)) {
                 ItemStack itemStack = player.getItemBySlot(EquipmentSlot.CHEST);
                 if(itemStack.getItem() != Items.ELYTRA || (playerHandler.getForceHideElytra() && !playerHandler.getForceShowElytra())) {
                     poseStack.pushPose();
@@ -76,7 +76,7 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
                     if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
                         vertexConsumer = CapeGlintManager.getCapeBuffer(bufferIn, RenderType.armorCutoutNoCull(playerHandler.getCapeLocation()), playerHandler.getHasCapeGlint());
                     } else {
-                        vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getCloakTextureLocation()));
+                        vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getSkin().capeTexture()));
                     }
 
                     this.getParentModel().renderCloak(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY);

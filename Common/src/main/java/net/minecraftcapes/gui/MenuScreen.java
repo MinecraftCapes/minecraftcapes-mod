@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class MenuScreen extends Screen {
 
@@ -59,7 +60,7 @@ public class MenuScreen extends Screen {
     }
 
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseX, partialTicks);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
         renderPlayer(
                 guiGraphics,
@@ -85,7 +86,8 @@ public class MenuScreen extends Screen {
         livingEntiy.setXRot(0);
         livingEntiy.yHeadRot = livingEntiy.getYRot();
         livingEntiy.yHeadRotO = livingEntiy.getYRot();
-        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos, topPos, size, $$9, $$10, livingEntiy);
+        Vector3f vector3f = new Vector3f(0.0F, livingEntiy.getBbHeight() / 4, 0.0F);
+        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos, topPos, size, vector3f, $$9, $$10, livingEntiy);
         livingEntiy.yBodyRot = $$11;
         livingEntiy.setYRot($$12);
         livingEntiy.setXRot($$13);

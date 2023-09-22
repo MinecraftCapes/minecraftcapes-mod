@@ -55,10 +55,10 @@ public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityM
 
                 if (playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
                     resourceLocation = playerHandler.getCapeLocation();
-                } else if (abstractClientPlayer.isElytraLoaded() && abstractClientPlayer.getElytraTextureLocation() != null) {
-                    resourceLocation = abstractClientPlayer.getElytraTextureLocation();
-                } else if (abstractClientPlayer.isCapeLoaded() && abstractClientPlayer.getCloakTextureLocation() != null && abstractClientPlayer.isModelPartShown(PlayerModelPart.CAPE)) {
-                    resourceLocation = abstractClientPlayer.getCloakTextureLocation();
+                } else if (abstractClientPlayer.getSkin().elytraTexture() != null) {
+                    resourceLocation = abstractClientPlayer.getSkin().elytraTexture();
+                } else if (abstractClientPlayer.getSkin().capeTexture() != null && abstractClientPlayer.isModelPartShown(PlayerModelPart.CAPE)) {
+                    resourceLocation = abstractClientPlayer.getSkin().capeTexture();
                 } else {
                     resourceLocation = WINGS_LOCATION;
                 }
