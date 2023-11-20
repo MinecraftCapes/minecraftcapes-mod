@@ -1,14 +1,8 @@
 package net.minecraftcapes.forge;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.forge.events.KeyHandlerEvent;
@@ -18,33 +12,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-
-import java.util.SortedMap;
+import org.lwjgl.glfw.GLFW;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation extends MinecraftCapes {
-    
-    private final RenderType CAPE_GLINT = RenderType.create("cape_glint",
-        DefaultVertexFormat.POSITION_TEX,
-        VertexFormat.Mode.QUADS,
-        256,
-        RenderType.CompositeState.builder()
-            .setShaderState(RenderType.RENDERTYPE_ARMOR_ENTITY_GLINT_SHADER)
-            .setTextureState(
-                new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
-            .setWriteMaskState(RenderType.COLOR_WRITE)
-            .setCullState(RenderType.NO_CULL)
-            .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
-            .setTransparencyState(RenderType.GLINT_TRANSPARENCY)
-            .setTexturingState(RenderType.ENTITY_GLINT_TEXTURING)
-            .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
-            .createCompositeState(false)
-    );
-    public static KeyMapping keyMapping;
+    public static KeyMapping KEY_MAPPING;
     
     public ForgeImplementation() {
-        MinecraftCapes.setCapeGlint(CAPE_GLINT);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
     }
     
@@ -58,30 +32,12 @@ public class ForgeImplementation extends MinecraftCapes {
         //Register the events
         MinecraftForge.EVENT_BUS.register(new KeyHandlerEvent());
         
+        //Map the Key
+        KEY_MAPPING = new KeyMapping("key.minecraftcapes.gui", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, "category.minecraftcapes.gui");
+        
         //Try turn on capes
         Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);
-    
-        //Register the key
-        ForgeImplementation.keyMapping = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
-        
-        //Insert the cape glint
-        SortedMap<RenderType, BufferBuilder> fixedBuffers = ObfuscationReflectionHelper.getPrivateValue(
-                RenderBuffers.class,
-                Minecraft.getInstance().renderBuffers(),
-                "f_110093_"
-        );
-        fixedBuffers.put(CAPE_GLINT, new BufferBuilder(CAPE_GLINT.bufferSize()));
         
         MinecraftCapes.getLogger().info("Initialised");
     }
-    
-    /**
-     * Register the keybinds
-     * @param event
-     */
-    @SubscribeEvent
-    public void registerKeyBinding(RegisterKeyMappingsEvent event) {
-        event.register(keyMapping);
-    }
-    
 }
