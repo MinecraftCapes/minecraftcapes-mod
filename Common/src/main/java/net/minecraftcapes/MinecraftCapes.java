@@ -40,8 +40,4 @@ public class MinecraftCapes {
         //Loading Config
         MinecraftCapesConfig.loadConfig();
     }
-    
-    public static void onDisable() {
-    
-    }
 }

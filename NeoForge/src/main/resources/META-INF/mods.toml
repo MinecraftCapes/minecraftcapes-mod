@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="${forge_loader_version_range}" #mandatory
+loaderVersion="${neoforge_loader_version_range}" #mandatory
 license="${license}"#mandatory
 
 issueTrackerURL="https://minecraftcapes.net/discord"

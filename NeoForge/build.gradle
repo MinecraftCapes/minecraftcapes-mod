@@ -1,12 +1,16 @@
 plugins {
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.41'
+    id 'net.neoforged.gradle.userdev' version '7.0.45'
     id 'java-library'
 }
+
 base {
     archivesName = "${mod_name} NeoForge ${minecraft_version}"
 }
+
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 // Automatically enable neoforge AccessTransformers if the file exists
 // This location is hardcoded in FML and can not be changed.
@@ -45,7 +49,7 @@ dependencies {
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code
 TaskCollection.metaClass.excludingNeoTasks = { ->
-    delegate.matching { !it.name.startsWith("neo") }
+    delegate.matching { !it.name.startsWith("Neo") }
 }
 
 tasks.withType(JavaCompile).excludingNeoTasks().configureEach {
