@@ -99,6 +99,7 @@ public class PlayerHandler {
         return null;
     }
 
+    
     /**
      * Gets the cape texture and resizes or splits it accordingly
      * @param cape

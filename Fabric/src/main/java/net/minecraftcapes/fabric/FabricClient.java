@@ -1,16 +1,11 @@
 package net.minecraftcapes.fabric;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.fabric.compatability.ArmorVisibilityHook;
 import net.minecraftcapes.fabric.compatability.OriginsHook;
@@ -18,30 +13,11 @@ import net.minecraftcapes.fabric.compatability.TrinketsHook;
 import net.minecraftcapes.gui.MenuScreen;
 import org.lwjgl.glfw.GLFW;
 
-public class FabricImplementation extends MinecraftCapes implements ClientModInitializer {
-
-    private final RenderType CAPE_GLINT = RenderType.create("cape_glint",
-        DefaultVertexFormat.POSITION_TEX,
-        VertexFormat.Mode.QUADS,
-        256,
-        RenderType.CompositeState.builder()
-            .setShaderState(RenderType.RENDERTYPE_ARMOR_ENTITY_GLINT_SHADER)
-            .setTextureState(
-                    new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
-            .setWriteMaskState(RenderType.COLOR_WRITE)
-            .setCullState(RenderType.NO_CULL)
-            .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)
-            .setTransparencyState(RenderType.GLINT_TRANSPARENCY)
-            .setTexturingState(RenderType.ENTITY_GLINT_TEXTURING)
-            .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
-            .createCompositeState(false)
-    );
+public class FabricClient extends MinecraftCapes implements ClientModInitializer {
 	private static KeyMapping keyBinding;
-	
 	@Override
 	public void onInitializeClient() {
         MinecraftCapes.onEnable();
-        MinecraftCapes.setCapeGlint(CAPE_GLINT);
 
 		//Configure the KeyBind
 		keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
@@ -76,17 +52,15 @@ public class FabricImplementation extends MinecraftCapes implements ClientModIni
 
 	/**
 	 * Checks if a class exists or not
-	 * @param name
-	 * @return
+	 * @param name The name of the class
+	 * @return Whether the class exists
 	 */
 	private boolean doesClassExist(String name) {
 		try {
-			Class c = Class.forName(name);
+			Class<?> c = Class.forName(name);
 			System.out.println(c);
-			if (c != null) {
-				return true;
-			}
-		} catch (ClassNotFoundException e) {}
+            return true;
+        } catch (ClassNotFoundException ignored) {}
 		return false;
 	}
     
