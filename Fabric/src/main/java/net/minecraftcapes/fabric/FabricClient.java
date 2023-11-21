@@ -13,7 +13,7 @@ import net.minecraftcapes.fabric.compatability.TrinketsHook;
 import net.minecraftcapes.gui.MenuScreen;
 import org.lwjgl.glfw.GLFW;
 
-public class FabricImplementation extends MinecraftCapes implements ClientModInitializer {
+public class FabricClient extends MinecraftCapes implements ClientModInitializer {
 	private static KeyMapping keyBinding;
 	@Override
 	public void onInitializeClient() {
@@ -52,17 +52,15 @@ public class FabricImplementation extends MinecraftCapes implements ClientModIni
 
 	/**
 	 * Checks if a class exists or not
-	 * @param name
-	 * @return
+	 * @param name The name of the class
+	 * @return Whether the class exists
 	 */
 	private boolean doesClassExist(String name) {
 		try {
-			Class c = Class.forName(name);
+			Class<?> c = Class.forName(name);
 			System.out.println(c);
-			if (c != null) {
-				return true;
-			}
-		} catch (ClassNotFoundException e) {}
+            return true;
+        } catch (ClassNotFoundException ignored) {}
 		return false;
 	}
     

@@ -11,14 +11,19 @@
   },
   "license": "${license}",
   "icon": "logo.png",
-  "environment": "client",
   "entrypoints": {
     "client": [
-      "net.minecraftcapes.fabric.FabricImplementation"
+      "net.minecraftcapes.fabric.FabricClient"
+    ],
+    "server" : [
+      "net.minecraftcapes.fabric.FabricServer"
     ]
   },
   "mixins": [
-    "${mod_id}.mixins.json"
+    {
+      "config": "${mod_id}.mixins.json",
+      "environment": "client"
+    }
   ],
   "depends": {
     "fabric-key-binding-api-v1": "*"
