@@ -1,22 +1,22 @@
-package net.minecraftcapes.forge;
+package net.minecraftcapes.neoforge;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.forge.client.ClientForgeEvents;
-import net.minecraftcapes.forge.client.ClientModEvents;
-import net.minecraftcapes.forge.server.ServerModEvents;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftcapes.neoforge.client.ClientForgeEvents;
+import net.minecraftcapes.neoforge.client.ClientModEvents;
+import net.minecraftcapes.neoforge.server.ServerModEvents;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(MinecraftCapes.MOD_ID)
-public class ForgeImplementation {
+public class NeoForgeImplementation {
     
-    public ForgeImplementation() {
+    public NeoForgeImplementation() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
     }
@@ -33,8 +33,8 @@ public class ForgeImplementation {
             Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);
             
             //Register the events
-            MinecraftForge.EVENT_BUS.register(ClientForgeEvents.class);
-            MinecraftForge.EVENT_BUS.register(ClientModEvents.class);
+            NeoForge.EVENT_BUS.register(ClientForgeEvents.class);
+            NeoForge.EVENT_BUS.register(ClientModEvents.class);
             
             MinecraftCapes.getLogger().info("Initialised");
         });
@@ -47,7 +47,7 @@ public class ForgeImplementation {
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
         event.enqueueWork(() -> {
             //Register the events
-            MinecraftForge.EVENT_BUS.register(ServerModEvents.class);
+            NeoForge.EVENT_BUS.register(ServerModEvents.class);
         });
     }
 }

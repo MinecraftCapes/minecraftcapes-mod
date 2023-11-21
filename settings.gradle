@@ -6,6 +6,10 @@ pluginManagement {
             url = 'https://maven.minecraftforge.net/'
         }
         maven {
+            name = 'NeoForge'
+            url = 'https://maven.neoforged.net/releases/'
+        }
+        maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
@@ -22,5 +26,6 @@ plugins {
 
 rootProject.name = 'MinecraftCapes'
 include("Common")
-include("Fabric")
 include("Forge")
+include("NeoForge")
+include("Fabric")
