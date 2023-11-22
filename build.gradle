@@ -1,13 +1,10 @@
 plugins {
     // Required for NeoGradle
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
-
-    id "io.freefair.lombok" version "8.4"
 }
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'io.freefair.lombok'
     
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
