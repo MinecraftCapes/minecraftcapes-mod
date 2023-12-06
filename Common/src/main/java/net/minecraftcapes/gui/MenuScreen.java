@@ -25,7 +25,7 @@ public class MenuScreen extends Screen {
         
         //Reload Profile
         this.addRenderableWidget(Button.builder(Component.nullToEmpty("Open MinecraftCapes"),
-                ConfirmLinkScreen.confirmLink("https://minecraftcapes.net", this, true)
+                ConfirmLinkScreen.confirmLink(this, "https://minecraftcapes.net")
         ).bounds(this.width / 3 * 2 - 75, this.height / 3, 150, 20).build());
         i++;
         

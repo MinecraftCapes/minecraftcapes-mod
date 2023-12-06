@@ -88,7 +88,7 @@ public class MinecraftCapesConfig {
         } catch(IOException e) {
             CrashReport crashreport = new CrashReport("Config error", e);
             configFile.toFile().delete();
-            Minecraft.crash(crashreport);
+            Minecraft.crash(Minecraft.getInstance(), Minecraft.getInstance().gameDirectory, crashreport);
             e.printStackTrace();
         }
     }
