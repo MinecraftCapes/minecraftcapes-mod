@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'fabric-loom' version '1.3-SNAPSHOT'
+    id 'fabric-loom' version '1.5-SNAPSHOT'
     id "io.freefair.lombok" version "8.4"
 }
 
@@ -43,19 +43,19 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     //Common
-    implementation project(":Common")
+    compileOnly project(":Common")
 
     //Auth and Mod Menu
-    modLocalRuntime "maven.modrinth:sodium:mc1.20.3-0.5.4"
+    modLocalRuntime "maven.modrinth:sodium:mc1.20.4-0.5.8"
 
-    modLocalRuntime "maven.modrinth:modmenu:9.0.0-pre.1"
-    modLocalRuntime "maven.modrinth:auth-me:8.0.0+1.20.2"
-    modLocalRuntime "maven.modrinth:cloth-config:12.0.109+fabric"
+    modLocalRuntime "maven.modrinth:modmenu:9.0.0"
+    modLocalRuntime "maven.modrinth:auth-me:8.0.0+1.20.4"
+    modLocalRuntime "maven.modrinth:cloth-config:13.0.121+fabric"
 
     //Libs
-    modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
-    modCompileOnly "maven.modrinth:armor-visibility:9.0.1+1.20.1-fabric"
-    modCompileOnly "dev.emi:trinkets:3.8.0"
+    modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.4.0"
+    //modCompileOnly "maven.modrinth:armor-visibility:20.4.1-fabric"
+    modCompileOnly "dev.emi:trinkets:3.8.1"
 
 }
 

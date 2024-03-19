@@ -6,25 +6,28 @@ import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.neoforge.client.ClientForgeEvents;
 import net.minecraftcapes.neoforge.client.ClientModEvents;
 import net.minecraftcapes.neoforge.server.ServerModEvents;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class NeoForgeImplementation {
     
-    public NeoForgeImplementation() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
+    IEventBus modEventBus;
+    
+    public NeoForgeImplementation(IEventBus modEventBus) {
+        this.modEventBus = modEventBus;
+        modEventBus.addListener(this::clientSetup);
+        modEventBus.addListener(this::serverSetup);
     }
     
     /**
      * This client setup event
      */
-    @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MinecraftCapes.onEnable();
@@ -34,7 +37,7 @@ public class NeoForgeImplementation {
             
             //Register the events
             NeoForge.EVENT_BUS.register(ClientForgeEvents.class);
-            NeoForge.EVENT_BUS.register(ClientModEvents.class);
+            modEventBus.register(ClientModEvents.class); //EVENT BUS ERROR HERE
             
             MinecraftCapes.getLogger().info("Initialised");
         });
@@ -43,7 +46,6 @@ public class NeoForgeImplementation {
     /**
      * This client setup event
      */
-    @SubscribeEvent
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
         event.enqueueWork(() -> {
             //Register the events

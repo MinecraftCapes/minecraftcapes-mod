@@ -39,9 +39,9 @@ public class FabricClient extends MinecraftCapes implements ClientModInitializer
 			new TrinketsHook();
 		}
 
-		if(doesClassExist("com.trikzon.armor_visibility.ArmorVisibility")) {
-			new ArmorVisibilityHook();
-		}
+//		if(doesClassExist("com.trikzon.armor_visibility.ArmorVisibility")) {
+//			new ArmorVisibilityHook();
+//		}
 
 		if(doesClassExist("io.github.apace100.origins.Origins")) {
 			new OriginsHook();
