@@ -16,10 +16,21 @@ import org.lwjgl.glfw.GLFW;
 @EventBusSubscriber(modid = MinecraftCapes.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientForgeEvents {
     
-
+    public static final Lazy<KeyMapping> KEY_MAPPING = Lazy.of(() -> new KeyMapping(
+            "key." + MinecraftCapes.MOD_ID + ".gui",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_J,
+            "category." + MinecraftCapes.MOD_ID + ".gui"
+    ));
     
     /**
      * Register the client tick for key listening
      */
-
+    @SubscribeEvent
+    public static void onClickTick(PlayerTickEvent.Post event) {
+        if (KEY_MAPPING.get().consumeClick()) {
+            Minecraft.getInstance().setScreen(new MenuScreen());
+        }
+    }
 }
