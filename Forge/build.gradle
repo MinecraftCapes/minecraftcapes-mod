@@ -1,7 +1,7 @@
 plugins {
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
     id "io.freefair.lombok" version "8.4"
 }
@@ -98,8 +98,6 @@ tasks.named("sourcesJar", Jar) {
 processResources {
     from project(":Common").sourceSets.main.resources
 }
-
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {

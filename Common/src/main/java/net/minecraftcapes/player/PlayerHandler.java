@@ -135,7 +135,7 @@ public class PlayerHandler {
             }
 
             capeImage.close();
-            this.applyTexture(new ResourceLocation(MinecraftCapes.MOD_ID, "capes/" + playerUUID), imgNew);
+            this.applyTexture(ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + playerUUID), imgNew);
             this.setHasStaticCape(true);
             this.setHasAnimatedCape(false);
             MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
@@ -148,7 +148,7 @@ public class PlayerHandler {
      */
     public void applyEars(String ears) {
         NativeImage earImage = readTexture(ears);
-        applyTexture(new ResourceLocation(MinecraftCapes.MOD_ID, "ears/" + playerUUID), earImage);
+        applyTexture(ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
 
@@ -170,7 +170,7 @@ public class PlayerHandler {
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
         getAnimatedCape().forEach((integer, nativeImage) -> {
-            ResourceLocation currentResource = new ResourceLocation(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, integer));
+            ResourceLocation currentResource = ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, integer));
             applyTexture(currentResource, nativeImage);
         });
     }
@@ -187,9 +187,9 @@ public class PlayerHandler {
             lastFrame = currentFrameNo;
             lastFrameTime = time;
 
-            return new ResourceLocation(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, currentFrameNo));
+            return ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, currentFrameNo));
         }
-        return new ResourceLocation(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, lastFrame));
+        return ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, lastFrame));
     }
 
     /**
@@ -197,7 +197,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getCapeLocation() {
-        return hasStaticCape ? new ResourceLocation(MinecraftCapes.MOD_ID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
+        return hasStaticCape ? ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -205,7 +205,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getEarLocation() {
-        return hasEars ? new ResourceLocation(MinecraftCapes.MOD_ID, "ears/" + playerUUID) : null;
+        return hasEars ? ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID) : null;
     }
 
     /**

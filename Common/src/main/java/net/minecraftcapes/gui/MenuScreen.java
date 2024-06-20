@@ -60,7 +60,7 @@ public class MenuScreen extends Screen {
     }
 
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseX, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
         renderPlayer(
                 guiGraphics,
@@ -69,7 +69,6 @@ public class MenuScreen extends Screen {
                 60,
                 this.minecraft.player
         );
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
     
     public static void renderPlayer(GuiGraphics guiGraphics, int leftPos, int topPos, int size, LivingEntity livingEntiy) {

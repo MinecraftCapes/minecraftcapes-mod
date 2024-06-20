@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ElytraLayer.class)
 public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
     @Shadow
-    private final static ResourceLocation WINGS_LOCATION = new ResourceLocation("textures/entity/elytra.png");
+    private static final ResourceLocation WINGS_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/elytra.png");
     @Shadow
     @Final
     private ElytraModel<T> elytraModel;
@@ -66,8 +66,8 @@ public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityM
             poseStack.translate(0.0F, 0.0F, 0.125F);
             this.getParentModel().copyPropertiesTo(this.elytraModel);
             this.elytraModel.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            VertexConsumer vertexConsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(resourceLocation), false, itemStack.hasFoil());
-            this.elytraModel.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            VertexConsumer vertexConsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(resourceLocation), itemStack.hasFoil());
+            this.elytraModel.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY);
             poseStack.popPose();
         }
     }
