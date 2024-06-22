@@ -27,6 +27,6 @@ jobs:
       with:
         name: Jar
         path: |
-          Fabric/build/libs/*.jar
-          Forge/build/libs/*.jar
-          NeoForge/build/libs/*.jar
+          fabric/build/libs/*.jar
+          forge/build/libs/*.jar
+          neoForge/build/libs/*.jar
