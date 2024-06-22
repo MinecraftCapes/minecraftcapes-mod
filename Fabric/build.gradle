@@ -4,6 +4,10 @@ plugins {
     id 'fabric-loom' version '1.7-SNAPSHOT'
 }
 
+base {
+    archivesName = "${mod_name} Fabric ${minecraft_version}"
+}
+
 repositories {
     //Modrinth
     exclusiveContent {
