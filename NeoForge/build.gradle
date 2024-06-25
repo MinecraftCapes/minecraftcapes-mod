@@ -5,7 +5,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_name} Fabric ${minecraft_version}"
+    archivesName = "${mod_name} NeoForge ${minecraft_version}"
 }
 
 // Automatically enable neoforge AccessTransformers if the file exists
