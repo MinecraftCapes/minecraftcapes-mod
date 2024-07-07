@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'maven-publish'
-    id 'fabric-loom' version '1.5-SNAPSHOT'
+    id 'fabric-loom' version '1.7-SNAPSHOT'
     id "io.freefair.lombok" version "8.4"
 }
 
@@ -51,6 +51,10 @@ dependencies {
     modLocalRuntime "maven.modrinth:modmenu:9.0.0"
     modLocalRuntime "maven.modrinth:auth-me:8.0.0+1.20.4"
     modLocalRuntime "maven.modrinth:cloth-config:13.0.121+fabric"
+
+    //TEMP
+    modLocalRuntime "maven.modrinth:entity-model-features:2.1.3"
+    modLocalRuntime "maven.modrinth:entitytexturefeatures:6.1.3"
 
     //Libs
     modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.4.0"
