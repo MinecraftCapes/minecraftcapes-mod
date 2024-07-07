@@ -25,8 +25,8 @@ public abstract class MixinPlayerModel extends HumanoidModel {
         MeshDefinition meshDefinition = cir.getReturnValue();
         meshDefinition.getRoot().addOrReplaceChild("ear", CubeListBuilder.create(), PartPose.ZERO);
         PartDefinition partDefinition = meshDefinition.getRoot().getChild("ear");
-        partDefinition.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(0, 0).addBox(1.5F, -10.5F, -1.0F, 6, 6, 1, cubeDeformation, 0.21875F, 0.109375F), PartPose.ZERO);
-        partDefinition.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(0, 0).addBox(-7.5F, -10.5F, -1.0F, 6, 6, 1, cubeDeformation, 0.21875F, 0.109375F), PartPose.ZERO);
+        partDefinition.addOrReplaceChild("mcc_left_ear", CubeListBuilder.create().texOffs(0, 0).addBox(1.5F, -10.5F, -1.0F, 6, 6, 1, cubeDeformation, 0.21875F, 0.109375F), PartPose.ZERO);
+        partDefinition.addOrReplaceChild("mcc_right_ear", CubeListBuilder.create().texOffs(0, 0).addBox(-7.5F, -10.5F, -1.0F, 6, 6, 1, cubeDeformation, 0.21875F, 0.109375F), PartPose.ZERO);
         cir.setReturnValue(meshDefinition);
     }
 }
