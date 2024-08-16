@@ -44,7 +44,7 @@ dependencies {
     localRuntime 'net.covers1624:DevLogin:0.1.0.5'
 
     //Auth, Mod Menu and Sodium
-    modLocalRuntime "maven.modrinth:sodium:mc1.21-0.5.9"
+    modLocalRuntime "maven.modrinth:sodium:mc1.21-0.5.11"
     modLocalRuntime "maven.modrinth:modmenu:11.0.0"
 
     //Libs

@@ -11,13 +11,13 @@ base {
     archivesName = "${mod_name} Forge ${minecraft_version}"
 }
 
-repositories {
-    maven { url 'https://maven.covers1624.net/' }
-}
-
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
     config("${mod_id}.mixins.json")
+}
+
+repositories {
+    maven { url 'https://maven.covers1624.net/' }
 }
 
 // Automatically enable forge AccessTransformers if the file exists
@@ -70,6 +70,16 @@ jar {
                 'MixinConfigs': "${mod_id}.mixins.json",
         ])
     }
+}
+
+processResources {
+    //Dont use common access transformer
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourcesJar {
+    //Dont use common access transformer
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

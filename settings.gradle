@@ -17,18 +17,6 @@ pluginManagement {
         exclusiveContent {
             forRepository {
                 maven {
-                    name = 'NeoForge'
-                    url = uri("https://maven.neoforged.net/releases")
-                }
-            }
-            filter {
-                includeGroupAndSubgroups("net.neoforged")
-                includeGroup("codechicken")
-            }
-        }
-        exclusiveContent {
-            forRepository {
-                maven {
                     name = 'MinecraftForge'
                     url = uri("https://maven.minecraftforge.net/")
                 }
