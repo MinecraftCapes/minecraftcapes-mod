@@ -41,8 +41,9 @@ public class MinecraftApi {
      */
     private static JsonObject getApiData(String data) {
         try {
-            URL url = new URL("https://minecraftapi.net/api/v2/profile/" + data);
+            URL url = new URL("https://api.minecraftapi.net/api/v2/profile/" + data);
             HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection();
+            httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/1.20.2");
             httpurlconnection.setDoInput(true);
             httpurlconnection.setDoOutput(false);
             httpurlconnection.connect();

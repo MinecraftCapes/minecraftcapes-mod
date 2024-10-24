@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.util.TriState;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ public class MinecraftCapes {
             RenderType.CompositeState.builder()
                     .setShaderState(RenderType.RENDERTYPE_ARMOR_ENTITY_GLINT_SHADER)
                     .setTextureState(
-                            new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
+                            new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, TriState.TRUE, false))
                     .setWriteMaskState(RenderType.COLOR_WRITE)
                     .setCullState(RenderType.NO_CULL)
                     .setDepthTestState(RenderType.EQUAL_DEPTH_TEST)

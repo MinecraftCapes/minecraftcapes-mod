@@ -13,13 +13,11 @@ import net.minecraftcapes.MinecraftCapes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerHandler {
 
-    private static HashMap<UUID, PlayerHandler> instances = new HashMap<>();
+    private static HashMap<String, PlayerHandler> instances = new HashMap<>();
 
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
@@ -40,19 +38,18 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
 
-    public PlayerHandler(UUID uuid) {
-        this.playerUUID = uuid;
-        PlayerHandler.instances.put(playerUUID, this);
+    public PlayerHandler(String username) {
+        PlayerHandler.instances.put(username, this);
     }
 
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param uuid the players uuid
+     * @param username the players username
      * @return The player handler
      */
-    public static PlayerHandler get(UUID uuid) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
-        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
+    public static PlayerHandler get(String username) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(username);
+        return playerHandler == null ? new PlayerHandler(username) : playerHandler;
     }
 
     /**
@@ -61,7 +58,7 @@ public class PlayerHandler {
      * @return The player handler
      */
     public static PlayerHandler get(Player player) {
-        return get(player.getUUID());
+        return get(player.getGameProfile().getName());
     }
     
     /**
@@ -71,15 +68,30 @@ public class PlayerHandler {
      */
     @Deprecated
     public static PlayerHandler getFromPlayer(Player player) {
-        return get(player.getUUID());
+        return get(player.getGameProfile().getName());
     }
     
     /**
      * Remove a player
-     * @param uuid
+     * @param username
      */
+    public static void remove(String username) {
+        instances.remove(username);
+    }
+
     public static void remove(UUID uuid) {
-        instances.remove(uuid);
+        if(uuid != null) {
+            //Loop through all users
+            List<String> toRemove = new ArrayList<>();
+            instances.forEach((name, playerHandler) -> {
+                if (playerHandler.getPlayerUUID() != null && playerHandler.getPlayerUUID().equals(uuid)) {
+                    toRemove.add(name);
+                }
+            });
+
+            //Remove all found users
+            toRemove.forEach(name -> instances.remove(name));
+        }
     }
 
     /**
@@ -114,7 +126,7 @@ public class PlayerHandler {
                 NativeImage frame = new NativeImage(capeImage.getWidth(), capeImage.getWidth() / 2, true);
                 for (int x = 0; x < frame.getWidth(); x++) {
                     for (int y = 0; y < frame.getHeight(); y++) {
-                        frame.setPixelRGBA(x, y, capeImage.getPixelRGBA(x, y + (currentFrame * (capeImage.getWidth() / 2))));
+                        frame.setPixel(x, y, capeImage.getPixel(x, y + (currentFrame * (capeImage.getWidth() / 2))));
                     }
                 }
                 animatedCapeFrames.put(currentFrame, frame);
@@ -130,7 +142,7 @@ public class PlayerHandler {
             final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
             for (int x = 0; x < capeImage.getWidth(); x++) {
                 for (int y = 0; y < capeImage.getHeight(); y++) {
-                    imgNew.setPixelRGBA(x, y, capeImage.getPixelRGBA(x, y));
+                    imgNew.setPixel(x, y, capeImage.getPixel(x, y));
                 }
             }
 
@@ -147,8 +159,16 @@ public class PlayerHandler {
      * @param ears
      */
     public void applyEars(String ears) {
+        //Resize the ear image to fit in the 64x64 skin profile
         NativeImage earImage = readTexture(ears);
-        applyTexture(ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID), earImage);
+        final NativeImage resizedEarImage = new NativeImage(64, 64, true);
+        for (int x = 0; x < earImage.getWidth(); x++) {
+            for (int y = 0; y < earImage.getHeight(); y++) {
+                resizedEarImage.setPixel(24 + x, y, earImage.getPixel(x, y));
+            }
+        }
+
+        applyTexture(ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID), resizedEarImage);
         this.setHasEars(true);
     }
 

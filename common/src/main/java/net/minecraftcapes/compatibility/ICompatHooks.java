@@ -1,9 +1,9 @@
 package net.minecraftcapes.compatibility;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 
 public interface ICompatHooks {
 
-    void onPlayerRender(Player player);
+    void onPlayerRender(PlayerRenderState playerRenderState);
 
 }

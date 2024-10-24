@@ -7,9 +7,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.fabric.compatability.ArmorVisibilityHook;
-import net.minecraftcapes.fabric.compatability.OriginsHook;
-import net.minecraftcapes.fabric.compatability.TrinketsHook;
 import net.minecraftcapes.gui.MenuScreen;
 import org.lwjgl.glfw.GLFW;
 
@@ -35,17 +32,17 @@ public class FabricClient extends MinecraftCapes implements ClientModInitializer
 		});
 
 		//Do Mod compatibility checks :(
-		if(doesClassExist("dev.emi.trinkets.TrinketsMain")) {
-			new TrinketsHook();
-		}
+//		if(doesClassExist("dev.emi.trinkets.TrinketsMain")) {
+//			new TrinketsHook();
+//		}
 
 //		if(doesClassExist("com.trikzon.armor_visibility.ArmorVisibility")) {
 //			new ArmorVisibilityHook();
 //		}
 
-		if(doesClassExist("io.github.apace100.origins.Origins")) {
-			new OriginsHook();
-		}
+//		if(doesClassExist("io.github.apace100.origins.Origins")) {
+//			new OriginsHook();
+//		}
         
         MinecraftCapes.getLogger().info("Initialised");
 	}

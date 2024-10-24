@@ -38,7 +38,16 @@ public class DownloadManager {
         //Make sure player is online and not the local player in offline mode
         if(playerUUID.version() != 4 && (localPlayer != null && !localPlayer.getUUID().equals(playerUUID))) return;
 
-        PlayerHandler playerHandler = PlayerHandler.get(playerUUID);
+        // Prep player handler
+        PlayerHandler playerHandler = PlayerHandler.get(playerName);
+        playerHandler.setPlayerUUID(playerUUID);
+
+        //Handle user list profiles
+        if(playerUUID == null) {
+            playerHandler.setHasInfo(true);
+            return;
+        }
+
         //Lets get the local players offline cape
         if(playerUUID.version() != 4 && !playerHandler.getHasInfo() && !doRefresh) {
             //Stop any more processing
@@ -78,6 +87,7 @@ public class DownloadManager {
                 MinecraftCapes.getLogger().debug("Getting profile for {}", playerHandler.getPlayerUUID());
                 URL url = new URL("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
                 HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
+                httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/1.20.2");
                 httpurlconnection.setDoInput(true);
                 httpurlconnection.setDoOutput(false);
                 httpurlconnection.connect();

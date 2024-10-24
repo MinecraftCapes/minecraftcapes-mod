@@ -1,20 +1,18 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package" : "net.minecraftcapes.mixin",
+  "package": "net.minecraftcapes.mixin",
   "refmap": "${mod_id}.refmap.json",
-  "compatibilityLevel" : "JAVA_21",
-  "client" : [
+  "compatibilityLevel": "JAVA_21",
+  "client": [
     "MixinCapeLayer",
     "MixinClientPacketListener",
     "MixinDeadmau5EarsLayer",
     "MixinElytraLayer",
     "MixinLivingEntityRenderer",
-    "MixinPlayerEntityRenderer",
-    "MixinPlayerModel",
     "MixinRenderBuffers"
   ],
-  "injectors" : {
-    "defaultRequire" : 1
+  "injectors": {
+    "defaultRequire": 1
   }
 }
