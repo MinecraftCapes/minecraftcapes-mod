@@ -10,6 +10,7 @@
     "MixinDeadmau5EarsLayer",
     "MixinElytraLayer",
     "MixinLivingEntityRenderer",
+    "MixinPlayerEarsModel",
     "MixinRenderBuffers"
   ],
   "injectors": {

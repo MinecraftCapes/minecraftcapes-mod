@@ -159,16 +159,8 @@ public class PlayerHandler {
      * @param ears
      */
     public void applyEars(String ears) {
-        //Resize the ear image to fit in the 64x64 skin profile
         NativeImage earImage = readTexture(ears);
-        final NativeImage resizedEarImage = new NativeImage(64, 64, true);
-        for (int x = 0; x < earImage.getWidth(); x++) {
-            for (int y = 0; y < earImage.getHeight(); y++) {
-                resizedEarImage.setPixel(24 + x, y, earImage.getPixel(x, y));
-            }
-        }
-
-        applyTexture(ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID), resizedEarImage);
+        applyTexture(ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
 
