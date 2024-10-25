@@ -1,7 +1,5 @@
 package net.minecraftcapes.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.client.model.PlayerEarsModel;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
