@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftcapes.ExtendedPlayerRenderState;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +27,7 @@ public abstract class MixinElytraLayer<S extends HumanoidRenderState, M extends 
     @Inject(method = "getPlayerElytraTexture", at = @At("HEAD"), cancellable = true)
     private static void getPlayerElytraTexture(HumanoidRenderState player, CallbackInfoReturnable<ResourceLocation> cir) {
         if (player instanceof PlayerRenderState playerrenderstate) {
-            PlayerHandler playerHandler = PlayerHandler.get(((PlayerRenderState) player).name);
+            PlayerHandler playerHandler = ((ExtendedPlayerRenderState) player).getPlayerHandler();
             if(!playerHandler.getForceShowElytra() && playerHandler.getForceHideElytra()) {
                 cir.setReturnValue(null);
                 return;

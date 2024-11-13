@@ -16,9 +16,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation {
     
-    public ForgeImplementation() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
+    public ForgeImplementation(FMLJavaModLoadingContext context) {
+        context.getModEventBus().addListener(this::clientSetup);
+        context.getModEventBus().addListener(this::serverSetup);
     }
     
     /**
@@ -28,10 +28,7 @@ public class ForgeImplementation {
     public void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MinecraftCapes.onEnable();
-            
-            //Try turn on capes
-            Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);
-            
+
             //Register the events
             MinecraftForge.EVENT_BUS.register(ClientForgeEvents.class);
             MinecraftForge.EVENT_BUS.register(ClientModEvents.class);

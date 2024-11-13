@@ -11,7 +11,9 @@
     "MixinElytraLayer",
     "MixinLivingEntityRenderer",
     "MixinPlayerEarsModel",
-    "MixinRenderBuffers"
+    "MixinRenderBuffers",
+    "PlayerRendererMixin",
+    "PlayerRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

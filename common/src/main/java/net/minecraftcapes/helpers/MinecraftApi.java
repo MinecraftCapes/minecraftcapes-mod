@@ -11,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 
+import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
+
 public class MinecraftApi {
 
     /**
@@ -43,7 +45,7 @@ public class MinecraftApi {
         try {
             URL url = new URL("https://api.minecraftapi.net/api/v2/profile/" + data);
             HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection();
-            httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/1.20.2");
+            httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
             httpurlconnection.setDoInput(true);
             httpurlconnection.setDoOutput(false);
             httpurlconnection.connect();

@@ -17,11 +17,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
+import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
+
 public class DownloadManager {
 
     public static void prepareDownload(Player player, boolean doRefresh) {
         prepareDownload(player.getUUID(), player.getGameProfile().getName(), doRefresh);
     }
+
     public static void prepareDownload(PlayerInfo playerInfo, boolean doRefresh) {
         prepareDownload(playerInfo.getProfile().getId(), playerInfo.getProfile().getName(), doRefresh);
     }
@@ -39,14 +42,7 @@ public class DownloadManager {
         if(playerUUID.version() != 4 && (localPlayer != null && !localPlayer.getUUID().equals(playerUUID))) return;
 
         // Prep player handler
-        PlayerHandler playerHandler = PlayerHandler.get(playerName);
-        playerHandler.setPlayerUUID(playerUUID);
-
-        //Handle user list profiles
-        if(playerUUID == null) {
-            playerHandler.setHasInfo(true);
-            return;
-        }
+        PlayerHandler playerHandler = PlayerHandler.get(playerUUID);
 
         //Lets get the local players offline cape
         if(playerUUID.version() != 4 && !playerHandler.getHasInfo() && !doRefresh) {
@@ -64,10 +60,7 @@ public class DownloadManager {
             });
             playerDownload.setDaemon(true);
             playerDownload.start();
-        } else {
-            //Make sure we don't have stuff already
-            if(playerHandler.getHasInfo() && !doRefresh) return;
-
+        } else if (!playerHandler.getHasInfo() || doRefresh){
             //Download!
             DownloadManager.downloadProfile(playerHandler);
         }
@@ -84,10 +77,10 @@ public class DownloadManager {
             playerHandler.setHasInfo(true);
 
             try {
-                MinecraftCapes.getLogger().debug("Getting profile for {}", playerHandler.getPlayerUUID());
+                MinecraftCapes.getLogger().info("Getting profile for {}", playerHandler.getPlayerUUID());
                 URL url = new URL("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
                 HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
-                httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/1.20.2");
+                httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
                 httpurlconnection.setDoInput(true);
                 httpurlconnection.setDoOutput(false);
                 httpurlconnection.connect();

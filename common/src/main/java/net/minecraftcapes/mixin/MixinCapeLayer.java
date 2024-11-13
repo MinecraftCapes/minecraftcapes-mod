@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.equipment.EquipmentModel;
 import net.minecraft.world.item.equipment.Equippable;
+import net.minecraftcapes.ExtendedPlayerRenderState;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.CapeGlintManager;
 import net.minecraftcapes.player.PlayerHandler;
@@ -56,7 +57,8 @@ public abstract class MixinCapeLayer extends RenderLayer<PlayerRenderState, Play
         if(!MinecraftCapesConfig.isCapeVisible() && playerskin.capeTexture() == null) return;
 
         //Get the player handler
-        PlayerHandler playerHandler = PlayerHandler.get(player.name);
+        PlayerHandler playerHandler = ((ExtendedPlayerRenderState) player).getPlayerHandler();
+
         if(playerHandler.getShowCape()) {
             if (!player.isInvisible && (player.skin.capeTexture() != null || playerHandler.getCapeLocation() != null)) {
                 if (!this.hasLayer(player.chestItem, EquipmentModel.LayerType.WINGS) || (playerHandler.getForceHideElytra() && !playerHandler.getForceShowElytra())) {

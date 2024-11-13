@@ -17,7 +17,7 @@ import java.util.*;
 
 public class PlayerHandler {
 
-    private static HashMap<String, PlayerHandler> instances = new HashMap<>();
+    private static HashMap<UUID, PlayerHandler> instances = new HashMap<>();
 
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
@@ -38,18 +38,19 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
 
-    public PlayerHandler(String username) {
-        PlayerHandler.instances.put(username, this);
+    public PlayerHandler(UUID uuid) {
+        this.playerUUID = uuid;
+        PlayerHandler.instances.put(playerUUID, this);
     }
 
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param username the players username
+     * @param uuid the players uuid
      * @return The player handler
      */
-    public static PlayerHandler get(String username) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(username);
-        return playerHandler == null ? new PlayerHandler(username) : playerHandler;
+    public static PlayerHandler get(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
+        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
     }
 
     /**
@@ -58,7 +59,7 @@ public class PlayerHandler {
      * @return The player handler
      */
     public static PlayerHandler get(Player player) {
-        return get(player.getGameProfile().getName());
+        return get(player.getUUID());
     }
     
     /**
@@ -68,30 +69,15 @@ public class PlayerHandler {
      */
     @Deprecated
     public static PlayerHandler getFromPlayer(Player player) {
-        return get(player.getGameProfile().getName());
+        return get(player.getUUID());
     }
     
     /**
      * Remove a player
-     * @param username
+     * @param uuid
      */
-    public static void remove(String username) {
-        instances.remove(username);
-    }
-
     public static void remove(UUID uuid) {
-        if(uuid != null) {
-            //Loop through all users
-            List<String> toRemove = new ArrayList<>();
-            instances.forEach((name, playerHandler) -> {
-                if (playerHandler.getPlayerUUID() != null && playerHandler.getPlayerUUID().equals(uuid)) {
-                    toRemove.add(name);
-                }
-            });
-
-            //Remove all found users
-            toRemove.forEach(name -> instances.remove(name));
-        }
+        instances.remove(uuid);
     }
 
     /**

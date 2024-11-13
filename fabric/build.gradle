@@ -44,8 +44,9 @@ dependencies {
     localRuntime 'net.covers1624:DevLogin:0.1.0.5'
 
     //Auth, Mod Menu and Sodium
-    modLocalRuntime "maven.modrinth:sodium:mc1.21.2-0.6.0-beta.3-fabric"
+    modLocalRuntime "maven.modrinth:sodium:mc1.21.3-0.6.0-beta.5-fabric"
     modLocalRuntime "maven.modrinth:modmenu:12.0.0-beta.1"
+    modLocalRuntime "maven.modrinth:wavey-capes:VpkVO7uu"
 }
 
 loom {
