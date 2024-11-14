@@ -1,7 +1,5 @@
 package net.minecraftcapes.forge;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.forge.client.ClientForgeEvents;
 import net.minecraftcapes.forge.client.ClientModEvents;

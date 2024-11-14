@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerRendererMixin {
 
     @Inject(method = "extractRenderState(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V", at = @At("HEAD"))
-    private void addCapeHolder(AbstractClientPlayer abstractClientPlayer, PlayerRenderState playerRenderState, float f, CallbackInfo ci) {
+    private void addPlayerHandler(AbstractClientPlayer abstractClientPlayer, PlayerRenderState playerRenderState, float f, CallbackInfo ci) {
         ExtendedPlayerRenderState extendedPlayerRenderState = (ExtendedPlayerRenderState) playerRenderState;
-        extendedPlayerRenderState.setPlayerHandler(PlayerHandler.get(abstractClientPlayer.getUUID()));
+        extendedPlayerRenderState.setMinecraftCapes$playerHandler(PlayerHandler.get(abstractClientPlayer.getUUID()));
     }
 
 }

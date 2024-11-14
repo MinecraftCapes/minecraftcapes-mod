@@ -3,14 +3,12 @@
   "minVersion": "0.8",
   "package": "net.minecraftcapes.mixin",
   "refmap": "${mod_id}.refmap.json",
-  "compatibilityLevel": "JAVA_21",
   "client": [
     "MixinCapeLayer",
-    "MixinClientPacketListener",
     "MixinDeadmau5EarsLayer",
-    "MixinElytraLayer",
     "MixinLivingEntityRenderer",
     "MixinPlayerEarsModel",
+    "MixinPlayerInfo",
     "MixinRenderBuffers",
     "PlayerRendererMixin",
     "PlayerRenderStateMixin"

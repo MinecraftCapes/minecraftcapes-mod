@@ -13,7 +13,9 @@ import net.minecraftcapes.MinecraftCapes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerHandler {
 
@@ -22,13 +24,15 @@ public class PlayerHandler {
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
-    @Getter @Setter private Boolean showCape = true;
-    @Getter @Setter private Boolean forceShowElytra = false;
-    @Getter @Setter private Boolean forceHideElytra = false;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
+
+    /** Will be removed soon, no longer used */
+    @Deprecated @Getter @Setter private Boolean showCape = true;
+    @Deprecated @Getter @Setter private Boolean forceShowElytra = false;
+    @Deprecated @Getter @Setter private Boolean forceHideElytra = false;
 
     @Getter
     private Int2ObjectMap<NativeImage> animatedCape;

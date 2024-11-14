@@ -49,7 +49,10 @@ public class MenuScreen extends Screen {
 
         //Reload Profile
         this.addRenderableWidget(Button.builder(Component.nullToEmpty("Reload Profile"), (button) -> {
-            DownloadManager.prepareDownload(this.minecraft.player, true);
+            DownloadManager.prepareDownload(
+                    this.minecraft.player.getGameProfile().getId(),
+                    this.minecraft.player.getGameProfile().getName(),
+                    true);
         }).bounds(this.width / 3 * 2 - 75, this.height / 3 + 24 * (i >> 1), 150, 20).build());
         i++;
 

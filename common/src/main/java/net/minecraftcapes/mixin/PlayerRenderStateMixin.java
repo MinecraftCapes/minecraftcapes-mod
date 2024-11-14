@@ -14,6 +14,6 @@ import org.spongepowered.asm.mixin.Unique;
 public class PlayerRenderStateMixin implements ExtendedPlayerRenderState {
 
     @Unique
-    private PlayerHandler playerHandler;
+    private PlayerHandler minecraftCapes$playerHandler;
 
 }
