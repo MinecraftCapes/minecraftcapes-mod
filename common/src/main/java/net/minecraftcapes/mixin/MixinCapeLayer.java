@@ -25,7 +25,7 @@ public class MixinCapeLayer {
         if (playerHandler.getHasCapeGlint()) {
             return CapeGlintManager.getCapeBuffer(bufferSource, RenderType.armorCutoutNoCull(playerRenderState.skin.capeTexture()));
         } else {
-            return bufferSource.getBuffer(RenderType.entitySolid(playerRenderState.skin.capeTexture()));
+            return bufferSource.getBuffer(RenderType.armorCutoutNoCull(playerRenderState.skin.capeTexture()));
         }
     }
 }
