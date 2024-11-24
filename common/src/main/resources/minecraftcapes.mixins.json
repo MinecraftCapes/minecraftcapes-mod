@@ -8,7 +8,6 @@
     "MixinCapeLayer",
     "MixinDeadmau5EarsLayer",
     "MixinLivingEntityRenderer",
-    "MixinPlayerEntityRenderer",
     "MixinPlayerInfo",
     "MixinPlayerModel",
     "MixinRenderBuffers"

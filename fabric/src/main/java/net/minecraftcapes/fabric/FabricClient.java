@@ -7,8 +7,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.fabric.compatability.OriginsHook;
-import net.minecraftcapes.fabric.compatability.TrinketsHook;
 import net.minecraftcapes.gui.MenuScreen;
 import org.lwjgl.glfw.GLFW;
 
