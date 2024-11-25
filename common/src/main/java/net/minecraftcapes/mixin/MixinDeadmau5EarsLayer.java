@@ -4,15 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.Deadmau5EarsLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraftcapes.ExtendedPlayerRenderState;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Final;
@@ -38,7 +37,7 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<PlayerRenderSta
             ci.cancel();
         }
 
-        PlayerHandler playerHandler = PlayerHandler.get(player.name);
+        PlayerHandler playerHandler = ((ExtendedPlayerRenderState) player).getMinecraftCapes$playerHandler();
         if (playerHandler.getEarLocation() != null && !player.isInvisible && MinecraftCapesConfig.isEarsVisible()) {
             //Set the texture to the correct location
             VertexConsumer vertexconsumer = bufferIn.getBuffer(RenderType.entitySolid(playerHandler.getEarLocation()));

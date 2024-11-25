@@ -3,6 +3,7 @@ package net.minecraftcapes;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -15,6 +16,8 @@ public class MinecraftCapes {
     
     public static final String MOD_ID = "minecraftcapes";
     public static final String MOD_NAME = "MinecraftCapes";
+    public static final String MINECRAFT_VERSION = SharedConstants.getCurrentVersion().getName();
+
     @Getter
     private static final Logger logger = LogManager.getLogger(MOD_NAME);
     @Getter
