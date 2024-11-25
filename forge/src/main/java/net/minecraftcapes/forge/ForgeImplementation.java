@@ -16,9 +16,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation {
     
-    public ForgeImplementation() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
+    public ForgeImplementation(FMLJavaModLoadingContext context) {
+        context.getModEventBus().addListener(this::clientSetup);
+        context.getModEventBus().addListener(this::serverSetup);
     }
     
     /**

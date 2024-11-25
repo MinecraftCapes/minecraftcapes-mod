@@ -17,14 +17,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
-public class DownloadManager {
+import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
-    public static void prepareDownload(Player player, boolean doRefresh) {
-        prepareDownload(player.getUUID(), player.getGameProfile().getName(), doRefresh);
-    }
-    public static void prepareDownload(PlayerInfo playerInfo, boolean doRefresh) {
-        prepareDownload(playerInfo.getProfile().getId(), playerInfo.getProfile().getName(), doRefresh);
-    }
+public class DownloadManager {
 
     /**
      * Prepares the down
@@ -32,7 +27,7 @@ public class DownloadManager {
      * @param playerName The players name
      * @param doRefresh Whether we are forcing an overwrite
      */
-    private static void prepareDownload(UUID playerUUID, String playerName, boolean doRefresh) {
+    public static void prepareDownload(UUID playerUUID, String playerName, boolean doRefresh) {
         LocalPlayer localPlayer = Minecraft.getInstance().player;
 
         //Make sure player is online and not the local player in offline mode
@@ -78,6 +73,7 @@ public class DownloadManager {
                 MinecraftCapes.getLogger().debug("Getting profile for {}", playerHandler.getPlayerUUID());
                 URL url = new URL("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
                 HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
+                httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
                 httpurlconnection.setDoInput(true);
                 httpurlconnection.setDoOutput(false);
                 httpurlconnection.connect();

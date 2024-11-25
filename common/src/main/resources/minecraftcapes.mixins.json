@@ -6,11 +6,9 @@
   "compatibilityLevel" : "JAVA_21",
   "client" : [
     "MixinCapeLayer",
-    "MixinClientPacketListener",
     "MixinDeadmau5EarsLayer",
-    "MixinElytraLayer",
     "MixinLivingEntityRenderer",
-    "MixinPlayerEntityRenderer",
+    "MixinPlayerInfo",
     "MixinPlayerModel",
     "MixinRenderBuffers"
   ],
