@@ -36,7 +36,7 @@ neoForge {
             programArguments.addAll('--launch_target', 'cpw.mods.bootstraplauncher.BootstrapLauncher')
         }
         data {
-            data()
+            clientData()
         }
         server {
             server()
