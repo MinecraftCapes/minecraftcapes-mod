@@ -101,6 +101,35 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
+// Implement mixinextras properly into the jar.
+tasks.named("assemble").configure {
+    dependsOn("jarJar")
+}
+
+tasks.register("mccShadowJar") {
+    //Delete jar
+    doLast {
+        def slimJarPath = "build/libs/${mod_name} Forge ${minecraft_version}-${version}.jar"
+        def shadedJarPath = "build/libs/${mod_name} Forge ${minecraft_version}-${version}-all.jar"
+
+        def slimJar = file(slimJarPath)
+        if (slimJar.exists()) {
+            slimJar.delete()
+            println "Deleted file: ${slimJarPath}"
+        }
+
+        def shadedJar = file(shadedJarPath)
+        if (shadedJar.exists()) {
+            shadedJar.renameTo(slimJarPath)
+            println "Renamed file to: ${slimJarPath}"
+        }
+    }
+}
+
+tasks.named("build").configure {
+    finalizedBy tasks.mccShadowJar
+}
+
 // Merge the resources and classes into the same directory.
 // This is done because java expects modules to be in a single directory.
 // And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
