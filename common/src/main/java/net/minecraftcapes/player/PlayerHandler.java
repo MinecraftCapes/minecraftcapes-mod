@@ -104,10 +104,9 @@ public class PlayerHandler {
     
     /**
      * Gets the cape texture and resizes or splits it accordingly
-     * @param cape
+     * @param capeImage
      */
-    public void applyCape(String cape) {
-        NativeImage capeImage = readTexture(cape);
+    public void applyCape(NativeImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
             Int2ObjectMap<NativeImage> animatedCapeFrames = new Int2ObjectOpenHashMap<>();
@@ -146,10 +145,9 @@ public class PlayerHandler {
 
     /**
      * Load the ears to the profile
-     * @param ears
+     * @param earImage
      */
-    public void applyEars(String ears) {
-        NativeImage earImage = readTexture(ears);
+    public void applyEars(NativeImage earImage) {
         applyTexture(ResourceLocation.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }

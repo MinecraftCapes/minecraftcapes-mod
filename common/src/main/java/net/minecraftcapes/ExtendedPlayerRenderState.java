@@ -1,6 +1,5 @@
 package net.minecraftcapes;
 
-import net.minecraftcapes.mixin.PlayerRenderStateMixin;
 import net.minecraftcapes.player.PlayerHandler;
 
 public interface ExtendedPlayerRenderState {

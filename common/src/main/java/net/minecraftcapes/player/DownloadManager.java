@@ -1,18 +1,18 @@
 package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
+import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.helpers.MinecraftApi;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.UUID;
 
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
@@ -62,28 +62,37 @@ public class DownloadManager {
      */
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
-
-            //We've done our processing
             playerHandler.setHasInfo(true);
 
-            try {
-                MinecraftCapes.getLogger().info("Getting profile for {}", playerHandler.getPlayerUUID());
-                URL url = new URL("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
-                HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection(Minecraft.getInstance().getProxy());
-                httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
-                httpurlconnection.setDoInput(true);
-                httpurlconnection.setDoOutput(false);
-                httpurlconnection.connect();
+            byte[] playerDataBytes = downloadData("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
+            if (playerDataBytes == null) return;
 
-                if (httpurlconnection.getResponseCode() / 100 == 2) {
-                    Reader reader = new InputStreamReader(httpurlconnection.getInputStream(), StandardCharsets.UTF_8);
-                    DownloadManager.readProfile(playerHandler, reader);
-                    reader.close();
-                } else {
-                    MinecraftCapes.getLogger().warn("minecraftcapes.net returned a {}", httpurlconnection.getResponseCode());
+            try {
+                String json = new String(playerDataBytes, StandardCharsets.UTF_8);
+                ProfileResult profileResult = new Gson().fromJson(json, ProfileResult.class);
+
+                playerHandler.setHasCapeGlint(profileResult.capeGlint);
+                playerHandler.setUpsideDown(profileResult.upsideDown);
+
+                // Download cape image if available
+                if (profileResult.cape_url != null) {
+                    byte[] capeBytes = downloadData(profileResult.cape_url);
+                    if (capeBytes != null) {
+                        NativeImage capeImage = NativeImage.read(new ByteArrayInputStream(capeBytes));
+                        playerHandler.applyCape(capeImage);
+                    }
+                }
+
+                // Download ears image if available
+                if (profileResult.ear_url != null) {
+                    byte[] earsBytes = downloadData(profileResult.ear_url);
+                    if (earsBytes != null) {
+                        NativeImage earsImage = NativeImage.read(new ByteArrayInputStream(earsBytes));
+                        playerHandler.applyEars(earsImage);
+                    }
                 }
             } catch (IOException e) {
-                MinecraftCapes.getLogger().warn("No connection to minecraftcapes.net detected");
+                MinecraftCapes.getLogger().warn("Error downloading profile data", e);
             }
         });
 
@@ -91,29 +100,48 @@ public class DownloadManager {
         playerDownload.start();
     }
 
+
+
     /**
-     * Reads the profile and makes it happen
-     * @param playerHandler
-     * @param reader
+     * Downloads the data for the profile
+     * @param url
+     * @return
      */
-    private static void readProfile(PlayerHandler playerHandler, Reader reader) {
-        ProfileResult profileResult = new Gson().fromJson(reader, ProfileResult.class);
+    private static byte[] downloadData(String url) {
+        HttpURLConnection httpURLConnection = null;
+        URI uri = URI.create(url);
 
-        playerHandler.setHasCapeGlint(profileResult.capeGlint);
-        playerHandler.setUpsideDown(profileResult.upsideDown);
+        try {
+            MinecraftCapes.getLogger().info("Getting texture {}", url);
+            httpURLConnection = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
+            httpURLConnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setDoOutput(false);
+            httpURLConnection.connect();
 
-        if (profileResult.textures.get("cape") != null) {
-            playerHandler.applyCape(profileResult.textures.get("cape"));
-        }
-
-        if (profileResult.textures.get("ears") != null) {
-            playerHandler.applyEars(profileResult.textures.get("ears"));
+            if (httpURLConnection.getResponseCode() / 100 == 2) {
+                try (InputStream inputStream = httpURLConnection.getInputStream()) {
+                    return inputStream.readAllBytes(); // Read fully before closing
+                }
+            } else {
+                MinecraftCapes.getLogger().warn("minecraftcapes.net returned a {}", httpURLConnection.getResponseCode());
+                return null;
+            }
+        } catch (IOException e) {
+            MinecraftCapes.getLogger().warn("No connection to minecraftcapes.net detected");
+            throw new RuntimeException(e);
+        } finally {
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
         }
     }
+
 
     private static class ProfileResult {
         private boolean capeGlint = false;
         private boolean upsideDown = false;
-        private Map<String, String> textures = null;
+        private String cape_url = null;
+        private String ear_url = null;
     }
 }
