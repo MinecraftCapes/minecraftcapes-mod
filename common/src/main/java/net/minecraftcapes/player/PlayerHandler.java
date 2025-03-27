@@ -214,7 +214,7 @@ public class PlayerHandler {
      * @param nativeImage
      */
     private void applyTexture(ResourceLocation resourceLocation, NativeImage nativeImage) {
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(resourceLocation, new DynamicTexture(nativeImage)));
+        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(resourceLocation, new DynamicTexture(resourceLocation::toString, nativeImage)));
     }
 
     /**
