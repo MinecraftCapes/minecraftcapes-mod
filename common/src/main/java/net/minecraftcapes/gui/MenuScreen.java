@@ -67,14 +67,16 @@ public class MenuScreen extends Screen {
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
         renderPlayer(
                 guiGraphics,
-                this.width / 5,
-                this.height / 3 + 90,
+                0,
+                0,
+                this.width / 3,
+                this.height + 90,
                 60,
                 this.minecraft.player
         );
     }
     
-    public static void renderPlayer(GuiGraphics guiGraphics, int leftPos, int topPos, int size, LivingEntity livingEntiy) {
+    public static void renderPlayer(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int size, LivingEntity livingEntiy) {
         Quaternionf $$9 = (new Quaternionf()).rotateZ(3.1415927F);
         Quaternionf $$10 = (new Quaternionf()).rotateX(0);
         $$9.mul($$10);
@@ -89,7 +91,7 @@ public class MenuScreen extends Screen {
         livingEntiy.yHeadRot = livingEntiy.getYRot();
         livingEntiy.yHeadRotO = livingEntiy.getYRot();
         Vector3f vector3f = new Vector3f(0.0F, livingEntiy.getBbHeight() / 4, 0.0F);
-        InventoryScreen.renderEntityInInventory(guiGraphics, leftPos, topPos, size, vector3f, $$9, $$10, livingEntiy);
+        InventoryScreen.renderEntityInInventory(guiGraphics, x1, y1, x2, y2, size, vector3f, $$9, $$10, livingEntiy);
         livingEntiy.yBodyRot = $$11;
         livingEntiy.setYRot($$12);
         livingEntiy.setXRot($$13);

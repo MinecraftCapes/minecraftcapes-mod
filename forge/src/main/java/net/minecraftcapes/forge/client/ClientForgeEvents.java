@@ -5,15 +5,12 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.gui.MenuScreen;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber(modid = MinecraftCapes.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEvents {
     
     public static final Lazy<KeyMapping> KEY_MAPPING = Lazy.of(() -> new KeyMapping(
@@ -28,11 +25,9 @@ public class ClientForgeEvents {
      * Register the client tick for key listening
      */
     @SubscribeEvent
-    public static void onClickTick(TickEvent.ClientTickEvent event) {
-        if(event.phase == TickEvent.Phase.END) {
-            if (KEY_MAPPING.get().consumeClick()) {
-                Minecraft.getInstance().setScreen(new MenuScreen());
-            }
+    public static void onClickTick(TickEvent.ClientTickEvent.Pre event) {
+        if (KEY_MAPPING.get().consumeClick()) {
+            Minecraft.getInstance().setScreen(new MenuScreen());
         }
     }
 }

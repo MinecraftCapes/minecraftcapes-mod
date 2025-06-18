@@ -1,7 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'io.freefair.lombok' version "8.13.1"
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.36,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
@@ -38,6 +38,7 @@ minecraft {
         configureEach {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            property 'eventbus.api.strictRuntimeChecks', 'true'
         }
         client {
             main 'net.covers1624.devlogin.DevLogin'
@@ -84,6 +85,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    //annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.7'
+    //This currently causes a JDK compiler issue
+    //https://discord.com/channels/1129059589325852724/1249189448327889007/1384987979776397363
 
     //Dev Login
     runtimeOnly 'net.covers1624:DevLogin:0.1.0.5'
