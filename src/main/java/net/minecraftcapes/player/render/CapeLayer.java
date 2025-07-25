@@ -1,10 +1,12 @@
 package net.minecraftcapes.player.render;
 
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.config.MinecraftCapesConfig;
@@ -21,12 +23,15 @@ public class CapeLayer extends RenderPlayer {
    @SubscribeEvent
    public void doRenderLayer(RenderPlayerEvent.Specials.Pre event) {
       AbstractClientPlayer entitylivingbaseIn = (AbstractClientPlayer) event.entityPlayer;
-      if(!MinecraftCapesConfig.isCapeVisible() && entitylivingbaseIn.getLocationCape() == null) return;
+      if(!MinecraftCapesConfig.isCapeVisible()) return;
 
       float partialTicks = event.partialRenderTick;
       PlayerHandler playerHandler = PlayerHandler.getFromPlayer(entitylivingbaseIn);
       if(playerHandler.getShowCape()) {
-         if (!entitylivingbaseIn.isInvisible() && (entitylivingbaseIn.getLocationCape() != null || playerHandler.getCapeLocation() != null)) {
+         if (!entitylivingbaseIn.isInvisible() && playerHandler.getCapeLocation() != null) {
+            //Remove vanilla cape
+            entitylivingbaseIn.func_152121_a(MinecraftProfileTexture.Type.CAPE, null);
+
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {

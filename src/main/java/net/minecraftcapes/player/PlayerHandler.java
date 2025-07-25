@@ -57,28 +57,10 @@ public class PlayerHandler {
     }
 
     /**
-     * Reads a base64 string and converts it to a BufferedImage
-     * @param textureBase64
-     * @return
-     */
-    private BufferedImage readTexture(String textureBase64) {
-        try {
-            byte[] imgBytes = Base64.decodeBase64(textureBase64);
-            ByteArrayInputStream bias = new ByteArrayInputStream(imgBytes);
-            return ImageIO.read(bias);
-        } catch (IOException e) {
-            MinecraftCapes.getLogger().error(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * Gets the cape texture and resizes or splits it accordingly
-     * @param cape
+     * @param capeImage
      */
-    public void applyCape(String cape) {
-        BufferedImage capeImage = readTexture(cape);
+    public void applyCape(BufferedImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
             HashMap<Integer, BufferedImage> animatedCape = new HashMap<Integer, BufferedImage>();
@@ -118,8 +100,7 @@ public class PlayerHandler {
         }
     }
 
-    public void applyEars(String ears) {
-        BufferedImage earImage = readTexture(ears);
+    public void applyEars(BufferedImage earImage) {
         BufferedImage imgNew = new BufferedImage(64, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics g = imgNew.getGraphics();
         g.drawImage(earImage, 24, 0, null);

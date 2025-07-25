@@ -2,6 +2,9 @@ package net.minecraftcapes.proxy;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.events.KeyHandlerEvent;
@@ -14,7 +17,7 @@ import org.lwjgl.input.Keyboard;
 
 public class ClientProxy implements IProxy {
 
-    public static final KeyBinding menuKey = new KeyBinding("key.minecraftcapes.gui", Keyboard.KEY_J, "category.minecraftcapes.gui");
+    public static final KeyBinding menuKey = new KeyBinding(I18n.format("key.minecraftcapes.gui"), Keyboard.KEY_J, I18n.format("category.minecraftcapes.gui"));
 
     @Override
     public void init() {

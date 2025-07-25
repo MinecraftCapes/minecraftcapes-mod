@@ -5,14 +5,16 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import net.minecraftcapes.proxy.IProxy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "11.1.0", acceptedMinecraftVersions = "1.7.10")
+@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "11.2.0", acceptedMinecraftVersions = "1.7.10")
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";
+	public static final String MINECRAFT_VERSION = "1.7.10";
 
 	@Getter private static final Logger logger = LogManager.getLogger();
 
