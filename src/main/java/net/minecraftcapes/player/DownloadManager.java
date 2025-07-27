@@ -1,8 +1,6 @@
 package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftcapes.MinecraftCapes;
