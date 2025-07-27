@@ -2,7 +2,9 @@ package net.minecraftcapes.proxy;
 
 public interface IProxy {
 
-    default void init() {}
+    void init();
 
-    default void postInit() {};
+    void postInit();
+
+    ;
 }

@@ -3,20 +3,18 @@ package net.minecraftcapes.config;
 import com.google.gson.Gson;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class MinecraftCapesConfig {
 
     //File locations
     private static File runDirectory = Minecraft.getMinecraft().gameDir;
-    private static Path configFile = Paths.get(runDirectory + "/config/minecraftcapes.json");
+    private static File configFile = new File(runDirectory, "/config/minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static MinecraftCapesConfig.ConfigValues config = null;
+    @Getter private static ConfigValues config = null;
 
     /**
      * The config values
@@ -65,12 +63,12 @@ public class MinecraftCapesConfig {
      */
     public static void loadConfig() {
         try {
-            if(!configFile.toFile().exists()) {
+            if(!configFile.exists()) {
                 InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
-                Files.copy(defaultConfigFile, configFile);
+                FileUtils.copyInputStreamToFile(defaultConfigFile, configFile);
             }
 
-            Reader reader = new FileReader(configFile.toFile());
+            Reader reader = new FileReader(configFile);
             config = new Gson().fromJson(reader, ConfigValues.class);
             reader.close();
         } catch(IOException e) {
@@ -83,7 +81,7 @@ public class MinecraftCapesConfig {
      */
     private static void saveConfig() {
         try {
-            Writer writer = new FileWriter(configFile.toFile());
+            Writer writer = new FileWriter(configFile);
             new Gson().toJson(config, writer);
             writer.flush();
             writer.close();

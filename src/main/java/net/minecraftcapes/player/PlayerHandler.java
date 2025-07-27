@@ -9,13 +9,9 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.MinecraftCapes;
-import org.apache.commons.codec.binary.Base64;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -23,7 +19,7 @@ import static net.minecraftcapes.MinecraftCapes.MODID;
 
 public class PlayerHandler {
 
-    private static HashMap<UUID, PlayerHandler> instances = new HashMap<>();
+    private static HashMap<UUID, PlayerHandler> instances = new HashMap<UUID, PlayerHandler>();
 
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
@@ -42,6 +38,12 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
 
+    public PlayerHandler(UUID uuid) {
+        this.playerUUID = uuid;
+        PlayerHandler.instances.put(playerUUID, this);
+    }
+
+    @Deprecated
     public PlayerHandler(EntityPlayer player) {
         this.playerUUID = player.getUniqueID();
         PlayerHandler.instances.put(playerUUID, this);
@@ -49,40 +51,32 @@ public class PlayerHandler {
 
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param player
-     * @return
+     * @param uuid the players uuid
+     * @return The player handler
      */
-    public static PlayerHandler getFromPlayer(EntityPlayer player) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(player.getUniqueID());
-        return playerHandler == null ? new PlayerHandler(player) : playerHandler;
+    public static PlayerHandler get(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
+        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
     }
 
     /**
-     * Reads a base64 string and converts it to a BufferedImage
-     * @param textureBase64
+     * Tries to get the PlayerHandler instance from a player
+     * @param player
      * @return
      */
-    private BufferedImage readTexture(String textureBase64) {
-        try {
-            byte[] imgBytes = Base64.decodeBase64(textureBase64);
-            ByteArrayInputStream bias = new ByteArrayInputStream(imgBytes);
-            return ImageIO.read(bias);
-        } catch (IOException e) {
-            MinecraftCapes.getLogger().error(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+    @Deprecated
+    public static PlayerHandler getFromPlayer(EntityPlayer player) {
+        return get(player.getUniqueID());
     }
 
     /**
      * Gets the cape texture and resizes or splits it accordingly
-     * @param cape
+     * @param capeImage
      */
-    public void applyCape(String cape) {
-        BufferedImage capeImage = readTexture(cape);
+    public void applyCape(BufferedImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
-            Int2ObjectMap<BufferedImage> animatedCape = new Int2ObjectOpenHashMap<>();
+            Int2ObjectMap<BufferedImage> animatedCape = new Int2ObjectOpenHashMap<BufferedImage>();
             int totalFrames = capeImage.getHeight() / (capeImage.getWidth() / 2);
             for(int currentFrame = 0; currentFrame < totalFrames; currentFrame++) {
                 BufferedImage frame = new BufferedImage(capeImage.getWidth(), capeImage.getWidth() / 2, BufferedImage.TYPE_INT_ARGB);
@@ -119,17 +113,11 @@ public class PlayerHandler {
         }
     }
 
-    public void applyEars(String ears) {
-        BufferedImage earImage;
-        if(MinecraftCapes.isLabyMod()) {
-            BufferedImage oldImage = readTexture(ears);
-            earImage = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-            Graphics g = earImage.getGraphics();
-            g.drawImage(oldImage, 24, 0, null);
-            g.dispose();
-        } else {
-            earImage = readTexture(ears);
-        }
+    /**
+     * Apply ears
+     * @param earImage The ear image
+     */
+    public void applyEars(BufferedImage earImage) {
         applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
@@ -142,6 +130,7 @@ public class PlayerHandler {
         MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
         this.animatedCape = animatedCape;
         this.setHasAnimatedCape(true);
+        this.setHasStaticCape(false);
         this.loadFramesToResource();
     }
 
@@ -150,10 +139,10 @@ public class PlayerHandler {
      */
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
-        getAnimatedCape().forEach((integer, BufferedImage) -> {
-            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, integer));
-            applyTexture(currentResource, BufferedImage);
-        });
+        for(final HashMap.Entry<Integer, BufferedImage> entry : getAnimatedCape().entrySet()) {
+            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
+            applyTexture(currentResource, entry.getValue());
+        }
     }
 
     /**
@@ -192,10 +181,15 @@ public class PlayerHandler {
     /**
      * Applys a texture on the render thread
      * @param resourceLocation
-     * @param BufferedImage
+     * @param bufferedImage
      */
-    private void applyTexture(ResourceLocation resourceLocation, BufferedImage BufferedImage) {
-        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(BufferedImage)));
+    private void applyTexture(final ResourceLocation resourceLocation, final BufferedImage bufferedImage) {
+        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage));
+            }
+        });
     }
 
     /**
