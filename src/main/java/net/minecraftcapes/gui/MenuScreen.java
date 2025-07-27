@@ -1,11 +1,11 @@
 package net.minecraftcapes.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.events.PlayerEventHandler;
-import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.DownloadManager;
 
 public class MenuScreen extends GuiScreen {
 
@@ -46,7 +46,7 @@ public class MenuScreen extends GuiScreen {
                 MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
                 button.displayString = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
             } else if(button.id == 2) {
-                PlayerEventHandler.downloadProfile(PlayerHandler.getFromPlayer(MenuScreen.this.mc.thePlayer));
+                DownloadManager.prepareDownload(Minecraft.getMinecraft().thePlayer.getUniqueID(), true);
             } else if(button.id == 3) {
                 this.mc.displayGuiScreen(null);
             }

@@ -6,9 +6,6 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.events.KeyHandlerEvent;
-import net.minecraftcapes.events.MinecraftCapesLabyModPostInit;
-import net.minecraftcapes.events.MinecraftCapesPostInit;
-import net.minecraftcapes.events.PlayerEventHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
@@ -29,18 +26,5 @@ public class ClientProxy implements IProxy {
     @Override
     public void postInit() {
         MinecraftForge.EVENT_BUS.register(new KeyHandlerEvent());
-        MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
-
-        Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
-
-        try {
-            Class.forName("net.labymod.core.LabyModCore");
-            MinecraftCapes.getLogger().debug("Starting in LabyMod Mode");
-            MinecraftCapes.setLabyMod(true);
-            MinecraftCapesLabyModPostInit.init();
-        } catch (ClassNotFoundException e) {
-            MinecraftCapes.getLogger().debug("Starting in Forge Mode");
-            MinecraftCapesPostInit.init();
-        }
     }
 }

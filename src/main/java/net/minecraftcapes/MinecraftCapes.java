@@ -9,14 +9,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "11.1.0", acceptedMinecraftVersions = "1.8.9")
+@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "11.2.0", acceptedMinecraftVersions = "1.8.9")
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";
+	public static final String MINECRAFT_VERSION = "1.8.9";
 
 	@Getter private static final Logger logger = LogManager.getLogger();
-
-	@Getter @Setter private static boolean isLabyMod = false;
 
 	@SidedProxy(clientSide = "net.minecraftcapes.proxy.ClientProxy", serverSide = "net.minecraftcapes.proxy.ServerProxy")
 	private static IProxy proxy;
