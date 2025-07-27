@@ -2,7 +2,7 @@ package net.minecraftcapes.proxy;
 
 import net.minecraftcapes.MinecraftCapes;
 
-public class ServerProxy implements IProxy{
+public class ServerProxy implements IProxy {
 
     @Override
     public void init() {

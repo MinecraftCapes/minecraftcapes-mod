@@ -4,8 +4,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.events.PlayerEventHandler;
-import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.DownloadManager;
 
 public class MenuScreen extends GuiScreen {
 
@@ -41,7 +40,7 @@ public class MenuScreen extends GuiScreen {
         //Reload Profile
         this.addButton(new GuiButton(2, this.width / 2 - 75, this.height / 6 + 24 * (i >> 1), 150, 20, "Reload Profile") {
             public void onClick ( double mouseX, double mouseY) {
-                PlayerEventHandler.downloadProfile(PlayerHandler.getFromPlayer(MenuScreen.this.mc.player));
+                DownloadManager.prepareDownload(MenuScreen.this.mc.player.getUniqueID(),true);
             }
         });
         i++;

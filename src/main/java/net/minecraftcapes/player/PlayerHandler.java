@@ -10,10 +10,7 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.MinecraftCapes;
-import org.apache.commons.codec.binary.Base64;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -40,6 +37,12 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
 
+    public PlayerHandler(UUID uuid) {
+        this.playerUUID = uuid;
+        PlayerHandler.instances.put(playerUUID, this);
+    }
+
+    @Deprecated
     public PlayerHandler(EntityPlayer player) {
         this.playerUUID = player.getUniqueID();
         PlayerHandler.instances.put(playerUUID, this);
@@ -47,37 +50,29 @@ public class PlayerHandler {
 
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param player
-     * @return
+     * @param uuid the players uuid
+     * @return The player handler
      */
-    public static PlayerHandler getFromPlayer(EntityPlayer player) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(player.getUniqueID());
-        return playerHandler == null ? new PlayerHandler(player) : playerHandler;
+    public static PlayerHandler get(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
+        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
     }
 
     /**
-     * Reads a base64 string and converts it to a NativeImage
-     * @param textureBase64
+     * Tries to get the PlayerHandler instance from a player
+     * @param player
      * @return
      */
-    private NativeImage readTexture(String textureBase64) {
-        try {
-            byte[] imgBytes = Base64.decodeBase64(textureBase64);
-            ByteArrayInputStream bias = new ByteArrayInputStream(imgBytes);
-            return NativeImage.read(bias);
-        } catch (IOException e) {
-            MinecraftCapes.getLogger().error(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+    @Deprecated
+    public static PlayerHandler getFromPlayer(EntityPlayer player) {
+        return get(player.getUniqueID());
     }
 
     /**
      * Gets the cape texture and resizes or splits it accordingly
-     * @param cape
+     * @param capeImage
      */
-    public void applyCape(String cape) {
-        NativeImage capeImage = readTexture(cape);
+    public void applyCape(NativeImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
             Int2ObjectMap<NativeImage> animatedCape = new Int2ObjectOpenHashMap<>();
@@ -106,15 +101,17 @@ public class PlayerHandler {
                 }
             }
 
-            capeImage.close();
             applyTexture(new ResourceLocation(MODID, "capes/" + playerUUID), imgNew);
             setHasStaticCape(true);
             MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
         }
     }
 
-    public void applyEars(String ears) {
-        NativeImage earImage = readTexture(ears);
+    /**
+     * Apply ears
+     * @param earImage The ear image
+     */
+    public void applyEars(NativeImage earImage) {
         applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
@@ -127,18 +124,19 @@ public class PlayerHandler {
         MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
         this.animatedCape = animatedCape;
         this.setHasAnimatedCape(true);
+        this.setHasStaticCape(false);
         this.loadFramesToResource();
     }
 
     /**
-     * Load all NativeImages into a ResourceLocation
+     * Load all BufferedImages into a ResourceLocation
      */
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
-        getAnimatedCape().forEach((integer, nativeImage) -> {
-            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, integer));
-            applyTexture(currentResource, nativeImage);
-        });
+        for(final HashMap.Entry<Integer, NativeImage> entry : getAnimatedCape().int2ObjectEntrySet()) {
+            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
+            applyTexture(currentResource, entry.getValue());
+        }
     }
 
     /**
@@ -179,8 +177,13 @@ public class PlayerHandler {
      * @param resourceLocation
      * @param nativeImage
      */
-    private void applyTexture(ResourceLocation resourceLocation, NativeImage nativeImage) {
-        Minecraft.getInstance().addScheduledTask(() -> Minecraft.getInstance().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(nativeImage)));
+    private void applyTexture(final ResourceLocation resourceLocation, final NativeImage nativeImage) {
+        Minecraft.getInstance().addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                Minecraft.getInstance().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(nativeImage));
+            }
+        });
     }
 
     /**

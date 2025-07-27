@@ -14,20 +14,18 @@ import org.apache.logging.log4j.Logger;
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";
+	public static final String MINECRAFT_VERSION = "1.13.2";
 
-	@Getter
-	private static final Logger logger = LogManager.getLogger();
+	@Getter private static final Logger logger = LogManager.getLogger();
 	public static IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
 	public MinecraftCapes() {
 		getLogger().info("[MinecraftCapes] Initialising");
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(proxy::clientSetup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(proxy::enqueueIMC);
 
 		proxy.init();
 
 		getLogger().info("[MinecraftCapes] Initialised");
 	}
-
 }
