@@ -14,7 +14,7 @@ public class MinecraftCapesConfig {
     private static File configFile = new File(runDirectory, "/config/minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static MinecraftCapesConfig.ConfigValues config = null;
+    @Getter private static ConfigValues config = null;
 
     /**
      * The config values
