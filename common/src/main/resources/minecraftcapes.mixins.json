@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.minecraftcapes.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "client": [
+    "MixinCapeLayer",
+    "MixinDeadmau5EarsLayer",
+    "MixinLivingEntityRenderer",
+    "MixinPlayerEarsModel",
+    "MixinPlayerInfo",
+    "MixinRenderBuffers",
+    "PlayerRendererMixin",
+    "PlayerRenderStateMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

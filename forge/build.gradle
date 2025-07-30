@@ -1,0 +1,145 @@
+plugins {
+    id 'multiloader-loader'
+    id 'io.freefair.lombok' version "8.13.1"
+    id 'net.minecraftforge.gradle' version '[6.0.36,6.2)'
+    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+}
+
+base {
+    archivesName = "${mod_name} Forge ${minecraft_version}"
+}
+
+mixin {
+    add(sourceSets.main, "${mod_id}.refmap.json")
+    config("${mod_id}.mixins.json")
+}
+
+repositories {
+    maven { url 'https://maven.covers1624.net/' }
+}
+
+// Automatically enable forge AccessTransformers if the file exists
+// This location is hardcoded in FML and can not be changed.
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+
+    // Tell FG to not automtically create the reobf tasks, as we now use Official mappings at runtime, If you don't use them at dev time then you'll have to fix your reobf yourself.
+    reobf = false
+
+    //Calls processResources when in dev
+    copyIdeResources = true
+
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformer = at
+    }
+
+    runs {
+        configureEach {
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'eventbus.api.strictRuntimeChecks', 'true'
+        }
+        client {
+            main 'net.covers1624.devlogin.DevLogin'
+            args '--launch_target', 'net.minecraftforge.bootstrap.ForgeBootstrap'
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+        }
+        server {
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+            args '--nogui'
+        }
+
+        gameTestServer {
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+    }
+}
+
+// As of 1.20.6 Forge no longer has reobf tasks. This has broken mixins adding configs correctly into the manifest file
+// See: https://github.com/SpongePowered/MixinGradle/blob/f800b26d2b180d98d9aa9355e5b3086d71218508/src/main/groovy/org/spongepowered/asm/gradle/plugins/MixinExtension.groovy#L184
+// Instead, we will do it ourselves.
+jar {
+    manifest {
+        attributes([
+                'MixinConfigs': "${mod_id}.mixins.json",
+        ])
+    }
+}
+
+processResources {
+    //Dont use common access transformer
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourcesJar {
+    //Dont use common access transformer
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    //annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.7'
+    //This currently causes a JDK compiler issue
+    //https://discord.com/channels/1129059589325852724/1249189448327889007/1384987979776397363
+
+    //Dev Login
+    runtimeOnly 'net.covers1624:DevLogin:0.1.0.5'
+
+    //Mixins
+    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+
+    //Mixins Extra
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
+        jarJar.ranged(it, "[0.4.1,)")
+    }
+
+    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+}
+
+// Implement mixinextras properly into the jar.
+tasks.named("assemble").configure {
+    dependsOn("jarJar")
+}
+
+tasks.register("mccShadowJar") {
+    //Delete jar
+    doLast {
+        def slimJarPath = "build/libs/${mod_name} Forge ${minecraft_version}-${version}.jar"
+        def shadedJarPath = "build/libs/${mod_name} Forge ${minecraft_version}-${version}-all.jar"
+
+        def slimJar = file(slimJarPath)
+        if (slimJar.exists()) {
+            slimJar.delete()
+            println "Deleted file: ${slimJarPath}"
+        }
+
+        def shadedJar = file(shadedJarPath)
+        if (shadedJar.exists()) {
+            shadedJar.renameTo(slimJarPath)
+            println "Renamed file to: ${slimJarPath}"
+        }
+    }
+}
+
+tasks.named("build").configure {
+    finalizedBy tasks.mccShadowJar
+}
+
+// Merge the resources and classes into the same directory.
+// This is done because java expects modules to be in a single directory.
+// And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
+// This will eventually be migrated to ForgeGradle so modders don't need to manually do it. But that is later.
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
+}
