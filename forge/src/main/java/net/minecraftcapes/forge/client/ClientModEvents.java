@@ -1,7 +1,7 @@
 package net.minecraftcapes.forge.client;
 
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ClientModEvents {
     

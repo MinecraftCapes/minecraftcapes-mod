@@ -8,7 +8,7 @@ import net.minecraftcapes.gui.MenuScreen;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
 public class ClientForgeEvents {
