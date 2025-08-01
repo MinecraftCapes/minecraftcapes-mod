@@ -4,14 +4,13 @@
   "package": "net.minecraftcapes.mixin",
   "refmap": "${mod_id}.refmap.json",
   "client": [
+    "MixinCapeGlint",
     "MixinCapeLayer",
     "MixinDeadmau5EarsLayer",
     "MixinLivingEntityRenderer",
     "MixinPlayerEarsModel",
     "MixinPlayerInfo",
-    "MixinRenderBuffers",
-    "PlayerRendererMixin",
-    "PlayerRenderStateMixin"
+    "MixinRenderBuffers"
   ],
   "injectors": {
     "defaultRequire": 1

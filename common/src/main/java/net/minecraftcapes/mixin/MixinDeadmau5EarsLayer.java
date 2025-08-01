@@ -37,7 +37,14 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
             VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entitySolid(playerHandler.getEarLocation()));
 
             int i = LivingEntityRenderer.getOverlayCoords(player, 0.0F);
+
+            poseStack.pushPose();
+            if(player.isCrouching()) {
+                poseStack.translate(0.0F, 0.25F, 0.0F);
+            }
+            poseStack.scale(1.3333334F, 1.3333334F, 1.3333334F);
             this.getParentModel().renderEars(poseStack, vertexconsumer, packedLight, i);
+            poseStack.popPose();
         }
     }
 

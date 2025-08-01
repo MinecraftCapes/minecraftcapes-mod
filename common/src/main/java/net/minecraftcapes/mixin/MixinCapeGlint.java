@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderType.class)
-public class MixinCapeClint extends RenderStateShard {
+public class MixinCapeGlint extends RenderStateShard {
 
-    public MixinCapeClint(String name, Runnable setupState, Runnable clearState) {
+    public MixinCapeGlint(String name, Runnable setupState, Runnable clearState) {
         super(name, setupState, clearState);
     }
 
