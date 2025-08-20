@@ -109,30 +109,9 @@ tasks.named("assemble").configure {
     dependsOn("jarJar")
 }
 
-tasks.register("mccShadowJar") {
-    doLast {
-        def slimJarPath = "build/libs/${mod_name} Forge ${minecraft_version}-${version}.jar"
-        def shadedJarPath = "build/libs/${mod_name} Forge ${minecraft_version}-${version}-all.jar"
-
-        def slimJar = file(slimJarPath)
-        def shadedJar = file(shadedJarPath)
-
-        // Rename shaded to slim (copy + delete)
-        if (shadedJar.exists()) {
-            Files.move(
-                    shadedJar.toPath(),
-                    slimJar.toPath(),
-                    StandardCopyOption.REPLACE_EXISTING
-            )
-            println "Renamed file to: ${slimJarPath}"
-        } else {
-            println "Shaded jar not found: ${shadedJarPath}"
-        }
-    }
-}
-
-tasks.named("build").configure {
-    finalizedBy tasks.mccShadowJar
+// Implement mixinextras properly into the jar.
+tasks.named("jarJar", Jar) {
+    archiveClassifier.set("")
 }
 
 // Merge the resources and classes into the same directory.
