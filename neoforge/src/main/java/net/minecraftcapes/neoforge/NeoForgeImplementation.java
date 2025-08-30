@@ -2,7 +2,6 @@ package net.minecraftcapes.neoforge;
 
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.neoforge.client.ClientForgeEvents;
-import net.minecraftcapes.neoforge.client.ClientModEvents;
 import net.minecraftcapes.neoforge.server.ServerModEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -16,7 +15,6 @@ public class NeoForgeImplementation {
     public NeoForgeImplementation(IEventBus modEventBus) {
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::serverSetup);
-        modEventBus.register(ClientModEvents.class);
     }
     
     /**
