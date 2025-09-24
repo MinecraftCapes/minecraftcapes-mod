@@ -16,7 +16,6 @@ public class NeoForgeImplementation {
     public NeoForgeImplementation(IEventBus modEventBus) {
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::serverSetup);
-        modEventBus.register(ClientModEvents.class);
     }
     
     /**
