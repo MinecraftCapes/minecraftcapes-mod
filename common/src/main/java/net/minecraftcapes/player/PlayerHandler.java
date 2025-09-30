@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class PlayerHandler {
 
-    private static HashMap<UUID, PlayerHandler> instances = new HashMap<>();
+    private static final HashMap<UUID, PlayerHandler> instances = new HashMap<>();
 
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
@@ -28,11 +28,6 @@ public class PlayerHandler {
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
-
-    /** Will be removed soon, no longer used */
-    @Deprecated @Getter @Setter private Boolean showCape = true;
-    @Deprecated @Getter @Setter private Boolean forceShowElytra = false;
-    @Deprecated @Getter @Setter private Boolean forceHideElytra = false;
 
     @Getter
     private Int2ObjectMap<NativeImage> animatedCape;
@@ -228,7 +223,6 @@ public class PlayerHandler {
                 "hasStaticCape=" + hasStaticCape +
                 ", hasEars=" + hasEars +
                 ", hasAnimatedCape=" + hasAnimatedCape +
-                ", showCape=" + showCape +
                 ", hasCapeGlint=" + hasCapeGlint +
                 ", upsideDown=" + upsideDown +
                 ", hasInfo=" + hasInfo +

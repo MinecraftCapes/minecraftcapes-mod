@@ -2,7 +2,7 @@ package net.minecraftcapes;
 
 import net.minecraftcapes.player.PlayerHandler;
 
-public interface ExtendedPlayerRenderState {
+public interface ExtendedAvatarRenderState {
 
     PlayerHandler getMinecraftCapes$playerHandler();
 

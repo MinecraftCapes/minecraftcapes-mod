@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.gui.MenuScreen;
 import org.lwjgl.glfw.GLFW;
@@ -21,7 +22,7 @@ public class FabricClient extends MinecraftCapes implements ClientModInitializer
 			"key.minecraftcapes.gui",
             InputConstants.Type.KEYSYM,
 			GLFW.GLFW_KEY_J,
-			"category.minecraftcapes.gui"
+			KeyMapping.Category.register(ResourceLocation.parse("minecraftcapes:gui"))
 		));
 
 		//React to key pressed

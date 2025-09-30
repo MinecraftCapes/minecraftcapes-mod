@@ -3,6 +3,7 @@ package net.minecraftcapes.neoforge.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.gui.MenuScreen;
 import net.neoforged.api.distmarker.Dist;
@@ -21,7 +22,7 @@ public class ClientForgeEvents {
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_J,
-            "category." + MinecraftCapes.MOD_ID + ".gui"
+            KeyMapping.Category.register(ResourceLocation.parse("minecraftcapes:gui"))
     ));
     
     /**
