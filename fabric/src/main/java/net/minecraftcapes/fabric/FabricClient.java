@@ -1,15 +1,12 @@
 package net.minecraftcapes.fabric;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.gui.MenuScreen;
-import org.lwjgl.glfw.GLFW;
 
 public class FabricClient extends MinecraftCapes implements ClientModInitializer {
 	private static KeyMapping keyBinding;
@@ -18,12 +15,7 @@ public class FabricClient extends MinecraftCapes implements ClientModInitializer
         MinecraftCapes.onEnable();
 
 		//Configure the KeyBind
-		keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-			"key.minecraftcapes.gui",
-            InputConstants.Type.KEYSYM,
-			GLFW.GLFW_KEY_J,
-			KeyMapping.Category.register(ResourceLocation.parse("minecraftcapes:gui"))
-		));
+		keyBinding = KeyBindingHelper.registerKeyBinding(MinecraftCapes.KEY_MAPPING.get());
 
 		//React to key pressed
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

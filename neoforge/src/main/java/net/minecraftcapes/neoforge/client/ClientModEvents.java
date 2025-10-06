@@ -14,6 +14,6 @@ public class ClientModEvents {
      */
     @SubscribeEvent
     public static void registerKeyBinding(RegisterKeyMappingsEvent event) {
-        event.register(ClientForgeEvents.KEY_MAPPING.get());
+        event.register(MinecraftCapes.KEY_MAPPING.get());
     }
 }

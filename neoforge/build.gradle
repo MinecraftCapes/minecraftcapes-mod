@@ -32,8 +32,7 @@ neoForge {
         }
         client {
             client()
-            mainClass = 'net.covers1624.devlogin.DevLogin'
-            programArguments.addAll('--launch_target', 'cpw.mods.bootstraplauncher.BootstrapLauncher')
+            devLogin = true
         }
         data {
             clientData()
