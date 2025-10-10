@@ -29,7 +29,7 @@ public class MinecraftCapes {
             RenderPipelines.GLINT,
             RenderType.CompositeState.builder()
                     .setTextureState(
-                            new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM,false))
+                            new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM))
                     .setTexturingState(RenderType.ENTITY_GLINT_TEXTURING)
                     .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
                     .createCompositeState(false));
