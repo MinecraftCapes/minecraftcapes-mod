@@ -6,6 +6,8 @@
   "client": [
     "AvatarRendererMixin",
     "AvatarRenderStateMixin",
+    "ClientMannequinMixin",
+    "MannequinInvoker",
     "MixinCapeLayer",
     "MixinClientPacketListener",
     "MixinDeadmau5EarsLayer",

@@ -3,7 +3,6 @@ package net.minecraftcapes.player;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.helpers.MinecraftApi;
 
@@ -21,39 +20,28 @@ public class DownloadManager {
 
     /**
      * Prepares the down
-     * @param playerUUID The players uuid
-     * @param playerName The players name
+     * @param uuid The entity uuid
+     * @param username The entity name
      * @param doRefresh Whether we are forcing an overwrite
      */
-    public static void prepareDownload(UUID playerUUID, String playerName, boolean doRefresh) {
-        LocalPlayer localPlayer = Minecraft.getInstance().player;
-
-        //Make sure player is online and not the local player in offline mode
-        if(playerUUID.version() != 4 && (localPlayer != null && !localPlayer.getUUID().equals(playerUUID))) return;
-
-        // Prep player handler
-        PlayerHandler playerHandler = PlayerHandler.get(playerUUID);
-
-        //Lets get the local players offline cape
-        if(playerUUID.version() != 4 && !playerHandler.getHasInfo() && !doRefresh) {
-            //Stop any more processing
-            playerHandler.setHasInfo(true);
-
-            //Get UUID from API off main thread
-            Thread playerDownload = new Thread(() -> {
-                UUID uuid = MinecraftApi.getUUID(playerName);
-                if(uuid == null) return;
-                playerHandler.setPlayerUUID(uuid);
-
-                //Download!
-                DownloadManager.downloadProfile(playerHandler);
-            });
-            playerDownload.setDaemon(true);
-            playerDownload.start();
-        } else if (!playerHandler.getHasInfo() || doRefresh){
-            //Download!
-            DownloadManager.downloadProfile(playerHandler);
+    public static void prepareDownload(UUID uuid, String username, boolean doRefresh) {
+        PlayerHandler playerHandler = PlayerHandler.get(uuid);
+        if (!playerHandler.getHasInfo() && !doRefresh) {
+            if (uuid.version() == 4) {
+                downloadProfile(playerHandler);
+            } else if (uuid.version() == 3) {
+                Thread prepareProfile = new Thread(() -> {
+                    UUID onlineUUID = MinecraftApi.getUUID(username);
+                    playerHandler.setPlayerUUID(onlineUUID);
+                    downloadProfile(playerHandler);
+                });
+                prepareProfile.start();
+            }
         }
+    }
+
+    public static void prepareDownload(PlayerHandler playerHandler) {
+        downloadProfile(playerHandler);
     }
 
     /**
@@ -62,8 +50,6 @@ public class DownloadManager {
      */
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
-            playerHandler.setHasInfo(true);
-
             byte[] playerDataBytes = downloadData("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
             if (playerDataBytes == null) return;
 

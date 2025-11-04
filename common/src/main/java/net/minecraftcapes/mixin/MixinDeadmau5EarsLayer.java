@@ -3,13 +3,13 @@ package net.minecraftcapes.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.Deadmau5EarsLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraftcapes.ExtendedAvatarRenderState;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
@@ -35,7 +35,7 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AvatarRenderSta
 
         if (playerHandler != null && playerHandler.getEarLocation() != null && !avatarRenderState.isInvisible && MinecraftCapesConfig.isEarsVisible()) {
             int i = LivingEntityRenderer.getOverlayCoords(avatarRenderState, 0.0F);
-            p_435533_.submitModel(this.model, avatarRenderState, p_433932_, RenderType.entitySolid(playerHandler.getEarLocation()), p_434365_, i, avatarRenderState.outlineColor, null);
+            p_435533_.submitModel(this.model, avatarRenderState, p_433932_, RenderTypes.entitySolid(playerHandler.getEarLocation()), p_434365_, i, avatarRenderState.outlineColor, null);
         }
     }
 
