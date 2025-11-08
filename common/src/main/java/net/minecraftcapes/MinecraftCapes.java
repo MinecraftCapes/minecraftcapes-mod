@@ -2,17 +2,23 @@ package net.minecraftcapes;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.rendertype.*;
+import net.minecraft.client.renderer.texture.SkinTextureDownloader;
 import net.minecraft.resources.Identifier;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Lazy;
 import org.lwjgl.glfw.GLFW;
+
+import java.io.File;
+import java.nio.file.Path;
 
 public class MinecraftCapes {
     
@@ -21,7 +27,11 @@ public class MinecraftCapes {
     public static final String MINECRAFT_VERSION = SharedConstants.getCurrentVersion().name();
 
     @Getter
+    private static Path configDir;
+
+    @Getter
     private static final Logger logger = LogManager.getLogger(MOD_NAME);
+
     @Getter
     protected static RenderType capeGlint = RenderType.create("cape_glint",
             RenderSetup.builder(RenderPipelines.GLINT)
@@ -36,11 +46,12 @@ public class MinecraftCapes {
             GLFW.GLFW_KEY_J,
             KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "gui"))
     ));
-    
-    public static void onEnable() {
+
+    public static void onEnable(Path configDir) {
         MinecraftCapes.getLogger().info("Initialising");
         
         //Loading Config
+        MinecraftCapes.configDir = configDir.resolve(MOD_ID);
         MinecraftCapesConfig.loadConfig();
     }
 }

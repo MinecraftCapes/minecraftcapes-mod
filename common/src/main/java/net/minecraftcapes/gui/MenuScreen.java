@@ -1,14 +1,20 @@
 package net.minecraftcapes.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
 import org.joml.Quaternionf;
@@ -65,37 +71,46 @@ public class MenuScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
-        renderPlayer(
+
+        renderEntity(
                 guiGraphics,
                 0,
                 0,
                 this.width / 3,
-                this.height + 90,
+                this.height,
                 60,
+                0.0625F,
                 this.minecraft.player
         );
     }
-    
-    public static void renderPlayer(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int size, LivingEntity livingEntiy) {
-        Quaternionf $$9 = (new Quaternionf()).rotateZ(3.1415927F);
-        Quaternionf $$10 = (new Quaternionf()).rotateX(0);
-        $$9.mul($$10);
-        float $$11 = livingEntiy.yBodyRot;
-        float $$12 = livingEntiy.getYRot();
-        float $$13 = livingEntiy.getXRot();
-        float $$14 = livingEntiy.yHeadRotO;
-        float $$15 = livingEntiy.yHeadRot;
-        livingEntiy.yBodyRot = 0;
-        livingEntiy.setYRot(0);
-        livingEntiy.setXRot(0);
-        livingEntiy.yHeadRot = livingEntiy.getYRot();
-        livingEntiy.yHeadRotO = livingEntiy.getYRot();
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x1, y1, x2, y2, size, livingEntiy.getBbHeight() / 4, 0, 0, livingEntiy);
-        livingEntiy.yBodyRot = $$11;
-        livingEntiy.setYRot($$12);
-        livingEntiy.setXRot($$13);
-        livingEntiy.yHeadRotO = $$14;
-        livingEntiy.yHeadRot = $$15;
+
+    private void renderEntity(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, LivingEntity entity) {
+        Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
+        Quaternionf quaternionf1 = (new Quaternionf()).rotateX(0f);
+        quaternionf.mul(quaternionf1);
+
+        EntityRenderState entityrenderstate = extractRenderState(entity);
+        if (entityrenderstate instanceof LivingEntityRenderState livingentityrenderstate) {
+            livingentityrenderstate.bodyRot = 0F;
+            livingentityrenderstate.yRot = 0f;
+            livingentityrenderstate.xRot = 0f;
+            livingentityrenderstate.boundingBoxWidth /= livingentityrenderstate.scale;
+            livingentityrenderstate.boundingBoxHeight /= livingentityrenderstate.scale;
+            livingentityrenderstate.scale = 1.0F;
+        }
+
+        Vector3f vector3f = new Vector3f(0.0F, entityrenderstate.boundingBoxHeight / 2.0F + yOffset, 0.0F);
+        guiGraphics.submitEntityRenderState(entityrenderstate, (float)scale, vector3f, quaternionf, quaternionf1, x1, y1, x2, y2);
+    }
+
+    private EntityRenderState extractRenderState(LivingEntity livingEntity) {
+        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        EntityRenderer<? super LivingEntity, ?> entityrenderer = entityrenderdispatcher.getRenderer(livingEntity);
+        EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
+        entityrenderstate.lightCoords = 15728880;
+        entityrenderstate.shadowPieces.clear();
+        entityrenderstate.outlineColor = 0;
+        return entityrenderstate;
     }
     
     private Component getButtonString(String buttonText) {

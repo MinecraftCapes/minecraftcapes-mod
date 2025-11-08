@@ -3,15 +3,18 @@ package net.minecraftcapes.player;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.SkinTextureDownloader;
+import net.minecraft.resources.Identifier;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.helpers.MinecraftApi;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.lang.annotation.Native;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
@@ -19,14 +22,14 @@ import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 public class DownloadManager {
 
     /**
-     * Prepares the down
+     * Prepares the download
      * @param uuid The entity uuid
      * @param username The entity name
      * @param doRefresh Whether we are forcing an overwrite
      */
     public static void prepareDownload(UUID uuid, String username, boolean doRefresh) {
         PlayerHandler playerHandler = PlayerHandler.get(uuid);
-        if (!playerHandler.getHasInfo() && !doRefresh) {
+        if (!playerHandler.getHasInfo() || doRefresh) {
             playerHandler.setHasInfo(true);
             if (uuid.version() == 4) {
                 downloadProfile(playerHandler);
@@ -41,6 +44,10 @@ public class DownloadManager {
         }
     }
 
+    /**
+     * Prepares the download
+     * @param playerHandler The player handler instance
+     */
     public static void prepareDownload(PlayerHandler playerHandler) {
         if(!playerHandler.getHasInfo()) {
             playerHandler.setHasInfo(true);
@@ -57,32 +64,26 @@ public class DownloadManager {
             byte[] playerDataBytes = downloadData("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
             if (playerDataBytes == null) return;
 
-            try {
-                String json = new String(playerDataBytes, StandardCharsets.UTF_8);
-                ProfileResult profileResult = new Gson().fromJson(json, ProfileResult.class);
+            String json = new String(playerDataBytes, StandardCharsets.UTF_8);
+            ProfileResult profileResult = new Gson().fromJson(json, ProfileResult.class);
 
-                playerHandler.setHasCapeGlint(profileResult.capeGlint);
-                playerHandler.setUpsideDown(profileResult.upsideDown);
+            playerHandler.setHasCapeGlint(profileResult.capeGlint);
+            playerHandler.setUpsideDown(profileResult.upsideDown);
 
-                // Download cape image if available
-                if (profileResult.cape_url != null) {
-                    byte[] capeBytes = downloadData(profileResult.cape_url);
-                    if (capeBytes != null) {
-                        NativeImage capeImage = NativeImage.read(new ByteArrayInputStream(capeBytes));
-                        playerHandler.applyCape(capeImage);
-                    }
+            // Download cape image if available
+            if (profileResult.cape_url != null) {
+                NativeImage capeImage = downloadOrLoad(profileResult.cape_url, "capes");
+                if(capeImage != null) {
+                    playerHandler.applyCape(capeImage);
                 }
+            }
 
-                // Download ears image if available
-                if (profileResult.ear_url != null) {
-                    byte[] earsBytes = downloadData(profileResult.ear_url);
-                    if (earsBytes != null) {
-                        NativeImage earsImage = NativeImage.read(new ByteArrayInputStream(earsBytes));
-                        playerHandler.applyEars(earsImage);
-                    }
+            // Download ears image if available
+            if (profileResult.ear_url != null) {
+                NativeImage earsImage = downloadOrLoad(profileResult.ear_url, "ears");
+                if(earsImage != null) {
+                    playerHandler.applyEars(earsImage);
                 }
-            } catch (IOException e) {
-                MinecraftCapes.getLogger().warn("Error downloading profile data", e);
             }
         });
 
@@ -90,7 +91,47 @@ public class DownloadManager {
         playerDownload.start();
     }
 
+    /**
+     * Try load the texture from cache or download it
+     * @param url
+     * @param type
+     * @return
+     */
+    private static NativeImage downloadOrLoad(String url, String type) {
+        String hash = url.substring(url.lastIndexOf('/') + 1);
+        Path cache = MinecraftCapes.getConfigDir().resolve(type).resolve(hash.length() > 2 ? hash.substring(0, 2) : "xx").resolve(hash);
 
+        NativeImage nativeImage = null;
+
+        if(cache.toFile().exists()) {
+            try(InputStream inputStream = new FileInputStream(cache.toFile())) {
+                nativeImage = NativeImage.read(inputStream);
+            } catch (IOException e) {
+                MinecraftCapes.getLogger().error("IOException with {}", cache);
+                MinecraftCapes.getLogger().error(e.getMessage());
+                if(cache.toFile().delete()) {
+                    return downloadOrLoad(url, type);
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            byte[] imageBytes = downloadData(url);
+            if (imageBytes != null) {
+                try {
+                    Files.createDirectories(cache.getParent());
+                    Files.write(cache, imageBytes);
+                    nativeImage = NativeImage.read(new ByteArrayInputStream(imageBytes));
+                } catch (IOException e) {
+                    MinecraftCapes.getLogger().error("IOException with {}", url);
+                    MinecraftCapes.getLogger().error(e.getMessage());
+                    return null;
+                }
+            }
+        }
+
+        return nativeImage;
+    }
 
     /**
      * Downloads the data for the profile

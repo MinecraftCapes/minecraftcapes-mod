@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinRenderBuffers {
     
     @Inject(method = "put", at = @At("RETURN"))
-    private static void put(Object2ObjectLinkedOpenHashMap<RenderType, ByteBufferBuilder> p_110102_, RenderType p_458948_, CallbackInfo ci) {
+    private static void put(Object2ObjectLinkedOpenHashMap<RenderType, ByteBufferBuilder> map, RenderType renderType, CallbackInfo ci) {
         RenderType CAPE_GLINT = MinecraftCapes.getCapeGlint();
-        if(CAPE_GLINT != null && !p_110102_.containsKey(CAPE_GLINT)) {
-            p_110102_.put(CAPE_GLINT, new ByteBufferBuilder(CAPE_GLINT.bufferSize()));
+        if(CAPE_GLINT != null && !map.containsKey(CAPE_GLINT)) {
+            map.put(CAPE_GLINT, new ByteBufferBuilder(CAPE_GLINT.bufferSize()));
         }
     }
 }

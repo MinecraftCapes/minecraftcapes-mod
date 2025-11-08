@@ -205,6 +205,11 @@ public class PlayerHandler {
         Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(identifier, new DynamicTexture(identifier::toString, nativeImage)));
     }
 
+    /**
+     * Create a player skin for with MinecraftCapes
+     * @param original
+     * @return
+     */
     public PlayerSkin getSkin(PlayerSkin original) {
         //Set initial values
         ClientAsset.Texture capeTexture = original.cape();

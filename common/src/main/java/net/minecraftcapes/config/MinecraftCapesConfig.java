@@ -14,9 +14,7 @@ import java.nio.file.Paths;
 public class MinecraftCapesConfig {
 
     //File locations
-    private static File runDirectory = Minecraft.getInstance().gameDirectory;
-    @Getter private static File modDirectory = new File(Minecraft.getInstance().gameDirectory + "/config/" + MinecraftCapes.MOD_ID);
-    private static Path configFile = Paths.get(runDirectory + "/config/minecraftcapes.json");
+    private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
     //The Config Instance
     @Getter private static MinecraftCapesConfig.ConfigValues config = null;
@@ -69,7 +67,7 @@ public class MinecraftCapesConfig {
     public static void loadConfig() {
         try {
             //Create mod directory
-            modDirectory.mkdir();
+            Files.createDirectories(configFile.getParent());
             
             if(!configFile.toFile().exists()) {
                 InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
