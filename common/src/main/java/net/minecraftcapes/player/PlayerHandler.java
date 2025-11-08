@@ -6,12 +6,15 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.core.ClientAsset;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.mixin.MannequinInvoker;
 
 import java.util.HashMap;
@@ -62,7 +65,7 @@ public class PlayerHandler {
             return get(avatar.getUUID());
         } else if(avatar instanceof Mannequin) {
             PlayerHandler playerHandler = get(avatar.getUUID());
-            playerHandler.setPlayerUUID(((MannequinInvoker) avatar).getProfile().partialProfile().id());
+            playerHandler.setPlayerUUID(((MannequinInvoker) avatar).minecraftcapes$getProfile().partialProfile().id());
             return playerHandler;
         } else {
             return get(avatar.getUUID());
@@ -202,4 +205,22 @@ public class PlayerHandler {
         Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(identifier, new DynamicTexture(identifier::toString, nativeImage)));
     }
 
+    public PlayerSkin getSkin(PlayerSkin original) {
+        //Set initial values
+        ClientAsset.Texture capeTexture = original.cape();
+        ClientAsset.Texture elytraTexture = original.elytra();
+
+        //If we have a cape, lets load it
+        if(MinecraftCapesConfig.isCapeVisible() && getCapeLocation() != null) {
+            capeTexture = new ClientAsset.ResourceTexture(getCapeLocation(), getCapeLocation());
+            elytraTexture = capeTexture;
+        }
+
+        //Return new player skin
+        return new PlayerSkin(
+                original.body(),
+                capeTexture, elytraTexture,
+                original.model(), original.secure()
+        );
+    }
 }

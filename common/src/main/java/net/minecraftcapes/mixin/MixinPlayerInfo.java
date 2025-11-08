@@ -28,30 +28,12 @@ public class MixinPlayerInfo {
         DownloadManager.prepareDownload(profile.id(), profile.name(), false);
     }
     
-    @Inject(method = "getSkin", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
     public void getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(profile.id());
-
         //Check player handler is loaded
         if(playerHandler.getHasInfo()) {
-            //Set initial values
-            PlayerSkin playerSkin = cir.getReturnValue();
-            ClientAsset.Texture capeTexture = playerSkin.cape();
-            ClientAsset.Texture elytraTexture = playerSkin.elytra();
-
-            //If we have a cape, lets load it
-            if(MinecraftCapesConfig.isCapeVisible() && playerHandler.getCapeLocation() != null) {
-                capeTexture = new ClientAsset.ResourceTexture(playerHandler.getCapeLocation(), playerHandler.getCapeLocation());
-                elytraTexture = capeTexture;
-            }
-
-            //Return new player skin
-            PlayerSkin newPlayerSkin = new PlayerSkin(
-                    playerSkin.body(),
-                    capeTexture, elytraTexture,
-                    playerSkin.model(), playerSkin.secure()
-            );
-            cir.setReturnValue(newPlayerSkin);
+            cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
         }
     }
     

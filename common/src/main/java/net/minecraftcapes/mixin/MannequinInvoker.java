@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface MannequinInvoker {
 
     @Invoker("getProfile")
-    ResolvableProfile getProfile();
+    ResolvableProfile minecraftcapes$getProfile();
 
 }

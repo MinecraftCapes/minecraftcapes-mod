@@ -90,8 +90,7 @@ public class MenuScreen extends Screen {
         livingEntiy.setXRot(0);
         livingEntiy.yHeadRot = livingEntiy.getYRot();
         livingEntiy.yHeadRotO = livingEntiy.getYRot();
-        Vector3f vector3f = new Vector3f(0.0F, livingEntiy.getBbHeight() / 4, 0.0F);
-        InventoryScreen.renderEntityInInventory(guiGraphics, x1, y1, x2, y2, size, vector3f, $$9, $$10, livingEntiy);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x1, y1, x2, y2, size, livingEntiy.getBbHeight() / 4, 0, 0, livingEntiy);
         livingEntiy.yBodyRot = $$11;
         livingEntiy.setYRot($$12);
         livingEntiy.setXRot($$13);

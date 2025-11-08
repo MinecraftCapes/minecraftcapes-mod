@@ -24,7 +24,9 @@ public class AvatarRendererMixin<AvatarlikeEntity extends Avatar & ClientAvatarE
     @Inject(method = "isEntityUpsideDown(Lnet/minecraft/world/entity/Avatar;)Z", at = @At("HEAD"), cancellable = true)
     private void isEntityUpsideDown(AvatarlikeEntity entity, CallbackInfoReturnable<Boolean> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(entity);
-        cir.setReturnValue(playerHandler.isUpsideDown() || cir.getReturnValue());
+        if(playerHandler.getHasInfo()) {
+            cir.setReturnValue(playerHandler.isUpsideDown());
+        }
     }
 
 }

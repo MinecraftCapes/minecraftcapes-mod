@@ -27,6 +27,7 @@ public class DownloadManager {
     public static void prepareDownload(UUID uuid, String username, boolean doRefresh) {
         PlayerHandler playerHandler = PlayerHandler.get(uuid);
         if (!playerHandler.getHasInfo() && !doRefresh) {
+            playerHandler.setHasInfo(true);
             if (uuid.version() == 4) {
                 downloadProfile(playerHandler);
             } else if (uuid.version() == 3) {
@@ -41,7 +42,10 @@ public class DownloadManager {
     }
 
     public static void prepareDownload(PlayerHandler playerHandler) {
-        downloadProfile(playerHandler);
+        if(!playerHandler.getHasInfo()) {
+            playerHandler.setHasInfo(true);
+            downloadProfile(playerHandler);
+        }
     }
 
     /**
