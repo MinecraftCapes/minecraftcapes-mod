@@ -23,7 +23,15 @@ public abstract class MixinPlayerInfo {
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void downloadCape(World worldIn, GameProfile playerProfile, CallbackInfo ci) {
-        DownloadManager.prepareDownload(playerProfile.getId(), false);
+        DownloadManager.prepareDownload(playerProfile.getId(), playerProfile.getName(), false);
+    }
+
+    @Inject(method = "hasPlayerInfo", at = @At(value = "HEAD"), cancellable = true)
+    private void hasPlayerInfo(CallbackInfoReturnable<Boolean> cir) {
+        PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayer) (Object) this).getUniqueID());
+        if(playerHandler.getHasInfo() || this.getPlayerInfo() != null) {
+            cir.setReturnValue(true);
+        }
     }
 
     @Inject(method = "getLocationCape", at = @At(value = "RETURN"), cancellable = true)
