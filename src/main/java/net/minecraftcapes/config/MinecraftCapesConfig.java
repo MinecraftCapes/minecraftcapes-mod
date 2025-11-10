@@ -2,19 +2,19 @@ package net.minecraftcapes.config;
 
 import com.google.gson.Gson;
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
-import org.apache.commons.io.FileUtils;
+import net.minecraftcapes.MinecraftCapes;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class MinecraftCapesConfig {
 
     //File locations
-    private static File runDirectory = Minecraft.getMinecraft().gameDir;
-    private static File configFile = new File(runDirectory, "/config/minecraftcapes.json");
+    private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static ConfigValues config = null;
+    @Getter private static MinecraftCapesConfig.ConfigValues config = null;
 
     /**
      * The config values
@@ -63,16 +63,21 @@ public class MinecraftCapesConfig {
      */
     public static void loadConfig() {
         try {
-            if(!configFile.exists()) {
+            //Create mod directory
+            Files.createDirectories(configFile.getParent());
+
+            if(!configFile.toFile().exists()) {
                 InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
-                FileUtils.copyInputStreamToFile(defaultConfigFile, configFile);
+                Files.copy(defaultConfigFile, configFile);
             }
 
-            Reader reader = new FileReader(configFile);
+            Reader reader = new FileReader(configFile.toFile());
             config = new Gson().fromJson(reader, ConfigValues.class);
             reader.close();
         } catch(IOException e) {
-            e.printStackTrace();
+            if(configFile.toFile().delete()) {
+                loadConfig();
+            }
         }
     }
 
@@ -81,7 +86,7 @@ public class MinecraftCapesConfig {
      */
     private static void saveConfig() {
         try {
-            Writer writer = new FileWriter(configFile);
+            Writer writer = new FileWriter(configFile.toFile());
             new Gson().toJson(config, writer);
             writer.flush();
             writer.close();
