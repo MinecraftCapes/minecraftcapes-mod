@@ -1,4 +1,4 @@
-package net.minecraftcapes.utils;
+package net.minecraftcapes.helpers;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -11,11 +11,12 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 public class ImageHandler {
 
-    public static BufferedImage legacyTransparencyFix(ByteArrayInputStream oldImage) throws IOException {
+    public static BufferedImage legacyTransparencyFix(InputStream oldImage) throws IOException {
         // Step 1: Create input streams
         ImageInputStream iis = ImageIO.createImageInputStream(oldImage);
 
