@@ -37,7 +37,7 @@ public abstract class MixinPlayerInfo {
     @Inject(method = "getLocationCape", at = @At(value = "RETURN"), cancellable = true)
     private void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
-        PlayerHandler playerHandler = PlayerHandler.get(networkplayerinfo.getGameProfile().getId());
+        PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayer) (Object) this).getUniqueID());
         if(playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
             cir.setReturnValue(playerHandler.getCapeLocation());
         } else if(networkplayerinfo != null) {
