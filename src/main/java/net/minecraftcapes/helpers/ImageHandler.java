@@ -1,4 +1,4 @@
-package net.minecraftcapes.utils;
+package net.minecraftcapes.helpers;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -9,15 +9,14 @@ import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 public class ImageHandler {
 
-    public static BufferedImage legacyTransparencyFix(ByteArrayInputStream oldImage) throws IOException {
-        // Step 1: Create input streams
-        ImageInputStream iis = ImageIO.createImageInputStream(oldImage);
+    public static BufferedImage legacyTransparencyFix(InputStream inputStream) throws IOException {
+        ImageInputStream iis = ImageIO.createImageInputStream(inputStream);
 
         Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
         if (!readers.hasNext()) throw new IOException("No image reader found");
