@@ -1,9 +1,6 @@
 package net.minecraftcapes.proxy;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EnumPlayerModelParts;
-import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.events.KeyHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;

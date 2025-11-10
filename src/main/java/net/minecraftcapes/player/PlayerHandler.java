@@ -177,11 +177,8 @@ public class PlayerHandler {
      * @param bufferedImage
      */
     private void applyTexture(final ResourceLocation resourceLocation, final BufferedImage bufferedImage) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage));
-            }
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage));
         });
     }
 

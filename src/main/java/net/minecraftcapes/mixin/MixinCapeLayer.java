@@ -10,6 +10,7 @@ import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,7 +22,8 @@ public class MixinCapeLayer {
     @Shadow
     private RenderPlayer playerRenderer;
 
-    private static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+    @Unique
+    private static final ResourceLocation minecraftcapes$ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/RenderPlayer;bindTexture(Lnet/minecraft/util/ResourceLocation;)V"))
     public void addBlend(AbstractClientPlayer entitylivingbaseIn, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale, CallbackInfo ci) {
@@ -36,15 +38,16 @@ public class MixinCapeLayer {
 
         // Redirect to custom buffer if player has cape glint, otherwise use the default buffer
         if (playerHandler.getHasCapeGlint()) {
-            renderEchantmentGlint(entitylivingbaseIn, partialTicks);
+            minecraftcapes$renderEchantmentGlint(entitylivingbaseIn, partialTicks);
         }
 
         GlStateManager.disableBlend();
     }
 
-    private void renderEchantmentGlint(EntityLivingBase entitylivingbaseIn, float p_177183_5_) {
+    @Unique
+    private void minecraftcapes$renderEchantmentGlint(EntityLivingBase entitylivingbaseIn, float p_177183_5_) {
         float f = (float)entitylivingbaseIn.ticksExisted + p_177183_5_;
-        this.playerRenderer.bindTexture(ENCHANTED_ITEM_GLINT_RES);
+        this.playerRenderer.bindTexture(minecraftcapes$ENCHANTED_ITEM_GLINT_RES);
         GlStateManager.enableBlend();
         GlStateManager.depthFunc(514);
         GlStateManager.depthMask(false);
