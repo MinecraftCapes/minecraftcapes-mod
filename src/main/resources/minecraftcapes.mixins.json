@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.minecraftcapes.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "MixinAbstractClientPlayer",
+    "MixinCapeLayer",
+    "MixinDeadmau5EarsLayer",
+    "MixinLivingEntityRenderer",
+    "MixinPlayerEarsModel"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
