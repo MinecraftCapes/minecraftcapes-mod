@@ -5,10 +5,11 @@
   "mixins": [
   ],
   "client": [
-    "MixinDinnerbone",
-    "MixinPlayerEntityRenderer",
-    "MixinPlayerJoinWorld",
-    "MixinPlayerModel"
+    "MixinAbstractClientPlayer",
+    "MixinCapeLayer",
+    "MixinDeadmau5EarsLayer",
+    "MixinLivingEntityRenderer",
+    "MixinPlayerEarsModel"
   ],
   "injectors": {
     "defaultRequire": 1

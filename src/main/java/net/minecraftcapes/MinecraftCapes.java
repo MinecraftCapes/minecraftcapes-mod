@@ -4,44 +4,49 @@ import lombok.Getter;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.TranslatableText;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.gui.MenuScreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.nio.file.Path;
+
 public class MinecraftCapes implements ClientModInitializer {
 
-	public static final String MODID = "minecraftcapes";
-	@Getter private static final Logger Logger = LogManager.getLogger(MODID);
-	private static KeyBinding keyBinding;
+    public static final String MOD_ID = "minecraftcapes";
+    public static final String MINECRAFT_VERSION = Minecraft.getInstance().getVersionType();
 
-	@Override
-	public void onInitializeClient() {
-		getLogger().info("[MinecraftCapes] Initialising");
+    @Getter private static final Logger logger = LogManager.getLogger();
+    @Getter private static final Path configDir = FabricLoaderImpl.INSTANCE.getConfigDir().resolve(MOD_ID);
 
-		//Loading Config
-		MinecraftCapesConfig.loadConfig();
+    private static KeyMapping keyBinding;
+    public static final KeyMapping keyMapping = new KeyMapping(
+            "key.minecraftcapes.gui",
+            GLFW.GLFW_KEY_J,
+            "category.minecraftcapes.gui"
+    );
 
-		//Configure the KeyBind
-		keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-			"key.minecraftcapes.gui",
-			InputUtil.Type.KEYSYM,
-			GLFW.GLFW_KEY_J,
-			"category.minecraftcapes.gui"
-		));
+    @Override
+    public void onInitializeClient() {
+        getLogger().info("[MinecraftCapes] Initialising");
 
-		//React to key pressed
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while(keyBinding.wasPressed()) {
-				MinecraftClient.getInstance().openScreen(new MenuScreen(new TranslatableText("category.minecraftcapes.gui")));
-			}
-		});
+        //Loading Config
+        MinecraftCapesConfig.loadConfig();
 
-		getLogger().info("[MinecraftCapes] Initialised");
-	}
+        //Configure the KeyBind
+        keyBinding = KeyBindingHelper.registerKeyBinding(keyMapping);
+
+        //React to key pressed
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while(keyBinding.isDown()) {
+                Minecraft.getInstance().setScreen(new MenuScreen());
+            }
+        });
+
+        getLogger().info("[MinecraftCapes] Initialised");
+    }
 }

@@ -1,65 +1,68 @@
 package net.minecraftcapes.gui;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.events.PlayerEventHandler;
-import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.DownloadManager;
 
 public class MenuScreen extends Screen {
-
-    public MenuScreen(Text title) {
-        super(title);
+    
+    public MenuScreen() {
+        super(new TranslatableComponent("category.minecraftcapes.gui"));
     }
-
-    protected void init() {
-        //net.minecraft.client.gui.screen.options.SkinOptionsScreen;
+    
+    @Override
+    public void init() {
+        //net.minecraft.client.gui.GuiCustomizeSkin;
         int i = 0;
 
         //Custom Capes
-        this.addButton(new ButtonWidget(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()), (button) -> {
+        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()), (button) -> {
             MinecraftCapesConfig.setCapeVisible(!MinecraftCapesConfig.isCapeVisible());
             button.setMessage(getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()));
         }));
         i++;
 
         //Custom Ears
-        this.addButton(new ButtonWidget(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()), (button) -> {
+        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()), (button -> {
             MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
             button.setMessage(getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()));
-        }));
+        })));
         i++;
 
         //Force Reload Profile to get an extra line
         i++;
 
         //Reload Profile
-        this.addButton(new ButtonWidget(this.width / 2 - 75, this.height / 6 + 24 * (i >> 1), 150, 20, "Reload Profile", (button) -> {
-            PlayerEventHandler.downloadProfile(PlayerHandler.getFromPlayer(this.minecraft.player));
-        }));
+        this.addButton(new Button(this.width / 2 - 75, this.height / 6 + 24 * (i >> 1), 150, 20, "Reload Profile", (button -> {
+            DownloadManager.prepareDownload(this.minecraft.player.getUUID(), this.minecraft.player.getName().getString(), true);
+        })));
         i++;
 
         //Done
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, I18n.translate("gui.done", new Object[0]), (button) -> {
-            this.minecraft.openScreen(null);
+        this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, new TranslatableComponent("gui.done").getColoredString(), (button) -> {
+            this.minecraft.setScreen(null);
         }));
     }
-
-    public void render(int mouseX, int mouseY, float delta) {
+    
+    @Override
+    public void render(int var1, int var2, float var3) {
         this.renderBackground();
-        this.drawCenteredString(this.font, this.title.asFormattedString(), this.width / 2, 20, 16777215);
-        super.render(mouseX, mouseY, delta);
+        this.drawCenteredString(this.font, this.title.getColoredString(), this.width / 2, 20, 16777215);
+        super.render(var1, var2, var3);
     }
+
 
     private String getButtonString(String buttonText, boolean value) {
         String onOff;
-        if(value) {
-            onOff = I18n.translate("options.on", new Object[0]);
+        if (value) {
+            onOff = I18n.get("options.on");
         } else {
-            onOff = I18n.translate("options.off", new Object[0]);
+            onOff = I18n.get("options.off");
         }
+        
         return buttonText + ": " + onOff;
     }
 }
