@@ -1,60 +1,63 @@
 package net.minecraftcapes.gui;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.events.PlayerEventHandler;
-import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.player.DownloadManager;
 
 public class MenuScreen extends Screen {
-
-    public MenuScreen(Text title) {
-        super(title);
+    
+    public MenuScreen() {
+        super(new TranslatableComponent("category.minecraftcapes.gui"));
     }
-
-    protected void init() {
-        //net.minecraft.client.gui.screen.option.SkinOptionsScreen;
+    
+    @Override
+    public void init() {
+        //net.minecraft.client.gui.GuiCustomizeSkin;
         int i = 0;
 
         //Custom Capes
-        this.addButton(new ButtonWidget(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()), (button) -> {
+        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()), (button) -> {
             MinecraftCapesConfig.setCapeVisible(!MinecraftCapesConfig.isCapeVisible());
             button.setMessage(getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()));
         }));
         i++;
 
         //Custom Ears
-        this.addButton(new ButtonWidget(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()), (button) -> {
+        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()), (button -> {
             MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
             button.setMessage(getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()));
-        }));
+        })));
         i++;
 
         //Force Reload Profile to get an extra line
         i++;
 
         //Reload Profile
-        this.addButton(new ButtonWidget(this.width / 2 - 75, this.height / 6 + 24 * (i >> 1), 150, 20, Text.of("Reload Profile"), (button) -> {
-            PlayerEventHandler.downloadProfile(PlayerHandler.getFromPlayer(client.player));
-        }));
+        this.addButton(new Button(this.width / 2 - 75, this.height / 6 + 24 * (i >> 1), 150, 20, Component.nullToEmpty("Reload Profile"), (button -> {
+            DownloadManager.prepareDownload(this.minecraft.player.getUUID(), this.minecraft.player.getName().getString(), true);
+        })));
         i++;
 
         //Done
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, ScreenTexts.DONE, (button) -> {
-            this.client.openScreen(null);
+        this.addButton(new Button(this.width / 2 - 100, this.height / 6 + 24 * (i >> 1), 200, 20, new TranslatableComponent("gui.done"), (button) -> {
+            this.minecraft.setScreen(null);
         }));
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
-        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
-        super.render(matrices, mouseX, mouseY, delta);
+    @Override
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(poseStack);
+        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 20, 16777215);
+        super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
-    private Text getButtonString(String buttonText, boolean value) {
-        return ScreenTexts.composeToggleText(Text.of(buttonText), value);
+    private Component getButtonString(String buttonText, boolean value) {
+        return CommonComponents.optionStatus(Component.nullToEmpty(buttonText), value);
     }
 }
