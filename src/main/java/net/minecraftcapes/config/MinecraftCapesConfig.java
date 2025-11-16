@@ -2,21 +2,24 @@ package net.minecraftcapes.config;
 
 import com.google.gson.Gson;
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
+import net.minecraftcapes.MinecraftCapes;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class MinecraftCapesConfig {
 
     //File locations
-    private static File runDirectory = Minecraft.getInstance().gameDir;
-    private static Path configFile = Paths.get(runDirectory + "/config/minecraftcapes.json");
+    private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static MinecraftCapesConfig.ConfigValues config = null;
+    @Getter private static ConfigValues config = null;
 
     /**
      * The config values
@@ -65,6 +68,9 @@ public class MinecraftCapesConfig {
      */
     public static void loadConfig() {
         try {
+            //Create mod directory
+            Files.createDirectories(configFile.getParent());
+
             if(!configFile.toFile().exists()) {
                 InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
                 Files.copy(defaultConfigFile, configFile);
@@ -74,7 +80,9 @@ public class MinecraftCapesConfig {
             config = new Gson().fromJson(reader, ConfigValues.class);
             reader.close();
         } catch(IOException e) {
-            e.printStackTrace();
+            if(configFile.toFile().delete()) {
+                loadConfig();
+            }
         }
     }
 
