@@ -14,12 +14,12 @@ public class MinecraftCapesConfig {
     private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static ConfigValues config = null;
+    @Getter private static ConfigValues config = new ConfigValues();
 
     /**
      * The config values
      */
-    class ConfigValues {
+    static class ConfigValues {
         private boolean capeVisible = true;
         private boolean earsVisible = true;
     }
