@@ -7,14 +7,9 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.helpers.ScheduleTask;
-import org.apache.commons.codec.binary.Base64;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -41,6 +36,12 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
 
+    public PlayerHandler(UUID uuid) {
+        this.playerUUID = uuid;
+        PlayerHandler.instances.put(playerUUID, this);
+    }
+
+    @Deprecated
     public PlayerHandler(EntityPlayer player) {
         this.playerUUID = player.getUniqueID();
         PlayerHandler.instances.put(playerUUID, this);
@@ -48,12 +49,22 @@ public class PlayerHandler {
 
     /**
      * Tries to get the PlayerHandler instance from a player
+     * @param uuid the players uuid
+     * @return The player handler
+     */
+    public static PlayerHandler get(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
+        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
+    }
+
+    /**
+     * Tries to get the PlayerHandler instance from a player
      * @param player
      * @return
      */
+    @Deprecated
     public static PlayerHandler getFromPlayer(EntityPlayer player) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(player.getUniqueID());
-        return playerHandler == null ? new PlayerHandler(player) : playerHandler;
+        return get(player.getUniqueID());
     }
 
     /**
@@ -101,11 +112,7 @@ public class PlayerHandler {
     }
 
     public void applyEars(BufferedImage earImage) {
-        BufferedImage imgNew = new BufferedImage(64, 32, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = imgNew.getGraphics();
-        g.drawImage(earImage, 24, 0, null);
-        g.dispose();
-        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), imgNew);
+        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
 
@@ -170,12 +177,8 @@ public class PlayerHandler {
      * @param bufferedImage
      */
     private void applyTexture(final ResourceLocation resourceLocation, final BufferedImage bufferedImage) {
-        ScheduleTask.getInstance().addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage));
-            }
-        });
+        //func_152344_a
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage)));
     }
 
     /**

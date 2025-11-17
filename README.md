@@ -1,7 +1,7 @@
 # MinecraftCapes Mod
-This respository contains the actual mod for MinecraftCapes. The mod itself is simple. It downloads textures from https://minecraftcapes.net and then applies them in game.
+This repository contains the actual mod for MinecraftCapes. The mod itself is simple. It downloads textures from https://minecraftcapes.net and then applies them in game.
 
-There are Forge and Fabric versions with Forge 1.8.9 and Forge 1.12.2 having LabyMod support.
+1.17.1+ is using the [MultiLoader-Template](https://github.com/jaredlll08/MultiLoader-Template) to simplify Forge, NeoForge and Fabric builds.
 
 ## Authors
 

@@ -1,24 +1,25 @@
 package net.minecraftcapes;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.client.Minecraft;
 import net.minecraftcapes.proxy.IProxy;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "11.2.0", acceptedMinecraftVersions = "1.7.10")
+import java.nio.file.Path;
+
+@Mod(modid = MinecraftCapes.MODID, name = "MinecraftCapes Mod", version = "1.0.0", acceptedMinecraftVersions = "1.7.10")
 public class MinecraftCapes {
 
 	public static final String MODID = "minecraftcapes";
-	public static final String MINECRAFT_VERSION = "1.7.10";
+	public static final String MINECRAFT_VERSION = MinecraftForge.MC_VERSION;
 
 	@Getter private static final Logger logger = LogManager.getLogger();
-
-	@Getter @Setter private static boolean isLabyMod = false;
+    @Getter private static final Path configDir = Loader.instance().getConfigDir().toPath().resolve(MODID);
 
 	@SidedProxy(clientSide = "net.minecraftcapes.proxy.ClientProxy", serverSide = "net.minecraftcapes.proxy.ServerProxy")
 	private static IProxy proxy;
