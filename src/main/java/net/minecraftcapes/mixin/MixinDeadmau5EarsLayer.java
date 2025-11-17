@@ -24,7 +24,7 @@ public abstract class MixinDeadmau5EarsLayer extends RendererLivingEntity {
         super(p_i1261_1_, p_i1261_2_);
     }
 
-    @Inject(method = "renderEquippedItems(Lnet/minecraft/client/entity/AbstractClientPlayer;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;getCommandSenderName()Ljava/lang/String;"))
+    @Inject(method = "renderEquippedItems(Lnet/minecraft/client/entity/AbstractClientPlayer;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;hasCape()Z"))
     public void renderEars(AbstractClientPlayer entitylivingbaseIn, float p_77029_2_, CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(entitylivingbaseIn.getUniqueID());
         if (playerHandler.getEarLocation() != null && !entitylivingbaseIn.isInvisible() && MinecraftCapesConfig.isEarsVisible()) {

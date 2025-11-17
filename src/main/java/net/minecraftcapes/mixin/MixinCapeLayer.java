@@ -22,6 +22,7 @@ public abstract class MixinCapeLayer extends RendererLivingEntity {
     @Shadow
     public ModelBiped modelBipedMain;
 
+    @Unique
     private static final ResourceLocation minecraftcapes$ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 
     public MixinCapeLayer(ModelBase p_i1261_1_, float p_i1261_2_) {

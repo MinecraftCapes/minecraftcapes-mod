@@ -12,17 +12,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinModelBiped {
 
     @Shadow
-    private ModelRenderer bipedEars;
+    public ModelRenderer bipedEars;
 
-    @Inject(method = "<init>", at = @At(value = "RETURN"))
-    public void createEarsLayer(CallbackInfo ci) {
+    @Inject(method = "<init>(FFII)V", at = @At(value = "RETURN"))
+    public void createEarsLayer(float p_i1149_1_, float p_i1149_2_, int p_i1149_3_, int p_i1149_4_, CallbackInfo ci) {
         ModelBiped modelBiped = (ModelBiped) (Object) this;
 
         bipedEars = new ModelRenderer(modelBiped, 0, 0);
         bipedEars.setTextureSize(14, 7);
         //X, Y, Z
-        bipedEars.addBox(-8.75F, -9.5F, 0.0F, 6, 6, 1, 0); //Right from back
-        bipedEars.addBox(2.75F, -9.5F, 0.0F, 6, 6, 1, 0); //Left from back
+        bipedEars.addBox(-8.75F, -9.5F, 0.0F, 6, 6, 1, p_i1149_1_); //Right from back
+        bipedEars.addBox(2.75F, -9.5F, 0.0F, 6, 6, 1, p_i1149_1_); //Left from back
     }
 
 }

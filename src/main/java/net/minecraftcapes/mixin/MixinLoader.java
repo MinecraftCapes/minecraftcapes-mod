@@ -8,15 +8,15 @@ import org.spongepowered.asm.mixin.Mixins;
 import java.util.Map;
 
 public class MixinLoader implements IFMLLoadingPlugin {
+
     public MixinLoader() {
         MixinBootstrap.init();
-        Mixins.addConfiguration("minecraftcapes.mixins.json");
-        MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
+        MixinEnvironment.getCurrentEnvironment().addConfiguration("minecraftcapes.mixins.json");
     }
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[0];
+        return null;
     }
 
     @Override
@@ -30,7 +30,9 @@ public class MixinLoader implements IFMLLoadingPlugin {
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {}
+    public void injectData(Map<String, Object> data) {
+
+    }
 
     @Override
     public String getAccessTransformerClass() {

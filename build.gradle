@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven { url "https://maven.minecraftforge.net" }
         maven { url 'https://repo.spongepowered.org/maven'}
     }
@@ -19,15 +20,19 @@ repositories {
 apply plugin: 'forge'
 
 // These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = targetCompatibility = 1.8
 
-version = "1.0.0"
+version = "${project.version}"
 group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "MinecraftCapes Forge 1.7.10"
+archivesBaseName = "${project.mod_name} Forge ${project.minecraft_version}"
 
 minecraft {
-    version = "1.7.10-10.13.4.1614-1.7.10"
+    version = project.forge_version
+
+    replace '@MOD_VERSION', project.version
+    replace '@MINECRAFT_VERSION', project.minecraft_version
+    replaceIn 'MinecraftCapes.java'
+
     runDir = "run"
     mappings = "stable_12"
 }
@@ -44,11 +49,11 @@ dependencies {
     shade group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT", changing: true
     shadeClient group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT", changing: true
 
-    compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    compileOnly 'org.projectlombok:lombok:1.18.42'
+    annotationProcessor 'org.projectlombok:lombok:1.18.42'
 }
 
-def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + "minecraftcapes.refmap.json"
+def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + "${project.mod_id}.refmap.json"
 
 jar {
     from sourceSets.main.output
@@ -62,17 +67,14 @@ jar {
 
     manifest.attributes (
             "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
-            "ForceLoadAsMod": true,
-            "TweakOrder": 0,
-            "ModSide": "CLIENT",
             'FMLCorePluginContainsFMLMod': true,
+            "TweakOrder": 0,
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            'MixinConfigs': 'minecraftcapes.mixins.json'
     )
 }
 
 runClient {
-    args("--username james090500")
+    args("--username=james090500")
 }
 
 def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
@@ -83,25 +85,17 @@ reobf {
 
 afterEvaluate {
     //https://github.com/TimeConqueror/SpongeMixins/raw/master/mixin-0.8-SNAPSHOT.jar
-    def fixedRelPathToAP = "libs/mixin-0.8-SNAPSHOT.jar"
-    if (fixedRelPathToAP.startsWith('./') || fixedRelPathToAP.startsWith('.\\')) {
-        fixedRelPathToAP = fixedRelPathToAP.substring(2)
-    } else if (fixedRelPathToAP.startsWith('/') || fixedRelPathToAP.startsWith('\\')) {
-        fixedRelPathToAP = fixedRelPathToAP.substring(1)
-    }
-
     tasks.compileJava {
         println "Path: " + projectDir.absolutePath
 
         // Use the 0.8 AP jar via annotationProcessorPath instead of -processorpath
-        def mixinAp = files(projectDir.absolutePath + '/' + fixedRelPathToAP)
+        def mixinAp = files(projectDir.absolutePath + "/libs/mixin-0.8-SNAPSHOT.jar")
         options.annotationProcessorPath = (options.annotationProcessorPath ?: configurations.annotationProcessor) + mixinAp
 
         options.compilerArgs += [
                 // There's a bug in the AnnotationProcessor for 0.7.11 that will generate the annotations pointing to the parent class instead of subclass
                 // resulting in the mixin not being applied.  This is fixed in 0.8, however 0.8 needs guava > 21.0, and minecraft ships with 17.0.
                 // So as a hacky workaround... ship with 0.7.11, but use the AP from 0.8 for compiling
-                "-processor", "org.spongepowered.tools.obfuscation.MixinObfuscationProcessorInjection,org.spongepowered.tools.obfuscation.MixinObfuscationProcessorTargets",
                 "-Xlint:-sunapi", "-XDenableSunApiLintControl", "-XDignore.symbol.file",
                 "-AreobfSrgFile=${tasks.reobf.srg}",
                 "-AoutSrgFile=${mixinSrg}",
@@ -112,6 +106,29 @@ afterEvaluate {
 
 sourceSets {
     main {
-        ext.refMap = "minecraftcapes.refmap.json"
+        ext.refMap = "${project.mod_id}.refmap.json"
     }
+}
+
+processResources {
+    var expandProps = [
+            "version": version,
+            "group": project.group, //Else we target the task's group.
+            "minecraft_version": minecraft_version,
+            "mod_name": mod_name,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "license": license,
+            "description": project.description,
+            "forge_version": forge_version,
+            "forge_loader_version_range": forge_loader_version_range,
+            "credits": credits,
+            "java_version": java_version
+    ]
+
+    filesMatching(['mcmod.info']) {
+        expand expandProps
+    }
+
+    inputs.properties(expandProps)
 }

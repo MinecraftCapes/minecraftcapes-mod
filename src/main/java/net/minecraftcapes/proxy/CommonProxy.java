@@ -1,6 +1,6 @@
 package net.minecraftcapes.proxy;
 
-public interface IProxy {
+public interface CommonProxy {
 
     void init();
 

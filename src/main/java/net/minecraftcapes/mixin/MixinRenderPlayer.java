@@ -23,7 +23,7 @@ public abstract class MixinRenderPlayer extends RendererLivingEntity {
         super(p_i1261_1_, p_i1261_2_);
     }
 
-    @Inject(method = "rotateCorpse", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/EnumChatFormatting;getTextWithoutFormattingCodes(Ljava/lang/String;)Ljava/lang/String;"))
+    @Inject(method = "rotateCorpse(Lnet/minecraft/client/entity/AbstractClientPlayer;FFF)V", at = @At(value = "HEAD"))
     public void renderUpsidedown(AbstractClientPlayer p_77043_1_, float p_77043_2_, float p_77043_3_, float p_77043_4_, CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(p_77043_1_.getUniqueID());
         if(playerHandler.isUpsideDown()) {

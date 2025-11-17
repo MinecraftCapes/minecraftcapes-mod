@@ -67,8 +67,7 @@ public class MinecraftCapesConfig {
             Files.createDirectories(configFile.getParent());
 
             if(!configFile.toFile().exists()) {
-                InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
-                Files.copy(defaultConfigFile, configFile);
+                saveConfig();
             }
 
             Reader reader = new FileReader(configFile.toFile());
