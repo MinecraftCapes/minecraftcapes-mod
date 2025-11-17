@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,13 +30,13 @@ public abstract class MixinCapeLayer extends RendererLivingEntity {
         super(p_i1261_1_, p_i1261_2_);
     }
 
-    @Inject(method = "renderEquippedItems(Lnet/minecraft/client/entity/AbstractClientPlayer;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelBiped;renderCloak(F)V", shift = At.Shift.AFTER), cancellable = true)
+    @Inject(method = "renderEquippedItems(Lnet/minecraft/client/entity/AbstractClientPlayer;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelBiped;renderCloak(F)V", shift = At.Shift.AFTER))
     public void addCapeGlint(AbstractClientPlayer entitylivingbaseIn, float partialTicks, CallbackInfo ci) {
         // Retrieve the player handler from playerRenderState
         PlayerHandler playerHandler = PlayerHandler.get(entitylivingbaseIn.getUniqueID());
 
         // Redirect to custom buffer if player has cape glint, otherwise use the default buffer
-        if (playerHandler.getHasCapeGlint()) {
+        if (MinecraftCapesConfig.isCapeVisible() && playerHandler.getHasCapeGlint()) {
             minecraftcapes$renderEnchantmentGlint(entitylivingbaseIn, partialTicks);
         }
     }

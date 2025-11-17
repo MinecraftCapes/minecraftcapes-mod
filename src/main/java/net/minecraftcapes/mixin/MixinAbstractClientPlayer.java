@@ -28,8 +28,10 @@ public abstract class MixinAbstractClientPlayer {
     @Inject(method = "hasCape", at = @At(value = "HEAD"), cancellable = true)
     private void hasCape(CallbackInfoReturnable<Boolean> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayer) (Object) this).getUniqueID());
-        if(playerHandler.getCapeLocation() != null || this.locationCape != null) {
-            cir.setReturnValue(true);
+        if(MinecraftCapesConfig.isCapeVisible()) {
+            if(playerHandler.getCapeLocation() != null) {
+                cir.setReturnValue(true);
+            }
         }
     }
 

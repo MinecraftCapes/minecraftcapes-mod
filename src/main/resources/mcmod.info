@@ -7,7 +7,7 @@
     "version": "${version}",
     "updateUrl": "",
     "authorList": ["james090500", "Siriuo"],
-    "logoFile": "/logo.png",
+    "logoFile": "logo.png",
     "screenshots": [],
     "dependencies": []
   }

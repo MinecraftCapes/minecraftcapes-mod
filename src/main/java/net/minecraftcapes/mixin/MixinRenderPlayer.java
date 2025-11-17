@@ -2,16 +2,11 @@ package net.minecraftcapes.mixin;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

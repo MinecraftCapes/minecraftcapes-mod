@@ -50,10 +50,6 @@ configurations {
     implementation.extendsFrom(shade)
 }
 
-tasks.named('shadowJar', ShadowJar) {
-    relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
-}
-
 dependencies {
     shade('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
         exclude module: 'launchwrapper'
@@ -65,36 +61,44 @@ dependencies {
 }
 
 def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + "${project.mod_id}.refmap.json"
+tasks.withType(Jar).configureEach {
+    from(refMap)
+}
 
 jar {
     from sourceSets.main.output
 
-    from refMap
-
     manifest.attributes (
             "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
             'FMLCorePluginContainsFMLMod': true,
+            'ForceLoadAsMod': true,
             "TweakOrder": 0,
             'TweakClass': 'net.minecraftcapes.spongepowered.asm.launch.MixinTweaker',
     )
-}
-
-tasks.named("build") {
-    dependsOn(tasks.named("shadowJar"))
 }
 
 runClient {
     args("--username=james090500")
 }
 
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-
 // This is the configuration for the shadow plugin, which is used to add libraries to the jar.
-shadowJar {
-    configurations = [project.configurations.shade] // Adds the gradle configuration "shade" so we can use it.
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE // Prevents duplicates
-    classifier ""
+tasks.named('shadowJar', ShadowJar) {
+    configurations = [project.configurations.shade]
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier.set("") // make it the “main” jar name
+
+    relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
+
+    mergeServiceFiles {
+        include 'META-INF/services/*'
+    }
 }
+
+tasks.named('reobf') {
+    dependsOn tasks.named('shadowJar')
+}
+
+def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
 
 reobf {
     addExtraSrgFile mixinSrg
@@ -103,8 +107,6 @@ reobf {
 afterEvaluate {
     //https://github.com/TimeConqueror/SpongeMixins/raw/master/mixin-0.8-SNAPSHOT.jar
     tasks.compileJava {
-        println "Path: " + projectDir.absolutePath
-
         // Use the 0.8 AP jar via annotationProcessorPath instead of -processorpath
         def mixinAp = files(projectDir.absolutePath + "/libs/mixin-0.8-SNAPSHOT.jar")
         options.annotationProcessorPath = (options.annotationProcessorPath ?: configurations.annotationProcessor) + mixinAp
@@ -118,12 +120,6 @@ afterEvaluate {
                 "-AoutSrgFile=${mixinSrg}",
                 "-AoutRefMapFile=${refMap}"
         ]
-    }
-}
-
-sourceSets {
-    main {
-        ext.refMap = "${project.mod_id}.refmap.json"
     }
 }
 
@@ -143,7 +139,7 @@ processResources {
             "java_version": java_version
     ]
 
-    filesMatching(['mcmod.info']) {
+    filesMatching(['mcmod.info', 'pack.mcmeta']) {
         expand expandProps
     }
 
