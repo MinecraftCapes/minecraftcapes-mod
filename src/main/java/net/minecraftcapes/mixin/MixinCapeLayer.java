@@ -27,8 +27,8 @@ public class MixinCapeLayer {
 
     @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/RenderPlayer;bindTexture(Lnet/minecraft/util/ResourceLocation;)V"))
     public void addBlend(AbstractClientPlayer entitylivingbaseIn, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale, CallbackInfo ci) {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(1, 0);
+//        GlStateManager.enableBlend();
+//        GlStateManager.blendFunc(1, 0);
     }
 
     @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPlayer;renderCape(F)V", shift = At.Shift.AFTER), cancellable = true)
@@ -41,7 +41,7 @@ public class MixinCapeLayer {
             minecraftcapes$renderEchantmentGlint(entitylivingbaseIn, partialTicks);
         }
 
-        GlStateManager.disableBlend();
+        //GlStateManager.disableBlend();
     }
 
     @Unique

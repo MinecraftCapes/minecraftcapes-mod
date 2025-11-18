@@ -1,119 +1,139 @@
 buildscript {
     repositories {
+        mavenCentral()
+        gradlePluginPortal()
         maven { url "https://maven.minecraftforge.net" }
         maven { url 'https://repo.spongepowered.org/maven'}
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath("com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:4.0.0")
+        classpath("io.freefair.lombok:io.freefair.lombok.gradle.plugin:2.9.5")
     }
 }
 
-plugins {
-    id "java"
-    id "com.github.johnrengelman.shadow" version "2.0.4"
+repositories {
+    maven {
+        url = "https://repo.spongepowered.org/maven/"
+    }
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
-apply plugin: 'org.spongepowered.mixin'
-
-version = "1.0.0"
-group= "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "MinecraftCapes Forge 1.8.9"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "io.freefair.lombok"
 
 sourceCompatibility = targetCompatibility = 1.8 // Java version to compile for.
 
+version = "${project.version}"
+group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${project.mod_name} Forge ${project.minecraft_version}"
+
 minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9" // Version 1.8.9
-    runDir = "run" // Where to put the forge run data (mods, configs, etc.), in a normal minecraft installation this is .minecraft
-    mappings = "stable_22" // The mappings for 1.8.9
-    makeObfSourceJar = false // Disables the creation of a source jar
+    version = "${project.minecraft_version}-${project.forge_version}-${project.minecraft_version}"
+
+    replace '@MOD_VERSION', project.version
+    replace '@MINECRAFT_VERSION', project.minecraft_version
+    replaceIn 'MinecraftCapes.java'
+
+    runDir = "run"
+    mappings = "stable_22"
 }
 
 // This is the configuration for the shadow plugin, which is used to add libraries to the jar.
 configurations {
     shade
-    compile.extendsFrom(shade)
-}
-
-// Configures the SpongePowered Repository
-repositories {
-    maven { url 'https://repo.spongepowered.org/maven/' }
+    compileOnly.extendsFrom(shade)
 }
 
 dependencies {
-    shade('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
+    shade('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
         exclude module: 'launchwrapper'
         exclude module: 'guava'
         exclude module: 'gson'
         exclude module: 'commons-io'
         exclude module: 'log4j-core'
     }
-
-    //compile files('lib/lm_api_mc1.8.9.jar')
-    compile "org.projectlombok:lombok:1.18.12"
 }
 
-mixin {
-
+def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + "${project.mod_id}.refmap.json"
+tasks.withType(Jar).configureEach {
+    from(refMap)
 }
 
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // Replaces version in mcmod.info with the project version.
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-
-        //replace version and mcversion
-        expand "version":project.version, "mcversion":project.minecraft.version
-    }
-
-    // Copies all other resources.
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
-    }
-
-    rename '(.+_at.cfg)', 'META-INF/$1'
-}
-
-// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
-shadowJar {
-    dependencies {}
-    configurations = [project.configurations.shade] // Adds the gradle configuration "shade" so we can use it.
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE // Prevents duplicates
-    classifier ""
-}
-
-reobf {
-    // Reobfuscates the jar.
-    shadowJar {}
-}
-
-/**
- * Adds the manifest values
- * FMLCorePlugin -> Put the Mixin Loader here
- * ModSide -> Client or Server
- * TweakClass -> Mixin tweaker
- * MixinConfigs -> Put your mixin config here (mixins.MODID.json)
- */
 jar {
-    manifest.attributes(
+    from sourceSets.main.output
+
+    manifest.attributes (
             "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
-            "ForceLoadAsMod": true,
-            "TweakOrder": 0,
-            "ModSide": "CLIENT",
             'FMLCorePluginContainsFMLMod': true,
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            'MixinConfigs': 'minecraftcapes.mixins.json'
+            'ForceLoadAsMod': true,
+            "TweakOrder": 0,
+            'TweakClass': 'net.minecraftcapes.spongepowered.asm.launch.MixinTweaker',
     )
 }
 
-// This adds the refmap.
-// (You do not need to create the refmap, it is created automatically by the mixin plugin)
-sourceSets {
-    main {
-        ext.refMap = "minecraftcapes.refmap.json"
+runClient {
+    args("--username=james090500")
+}
+
+// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
+tasks.shadowJar {
+    configurations = [project.configurations.shade]
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
+
+    mergeServiceFiles {
+        include 'META-INF/services/*'
     }
+}
+
+tasks.reobfJar.dependsOn shadowJar
+
+def mixinSrg = "${tasks.reobfJar.temporaryDir}" + File.separator + "mixins.srg"
+
+reobfJar {
+    addSecondarySrgFile mixinSrg
+}
+
+afterEvaluate {
+    //https://github.com/TimeConqueror/SpongeMixins/raw/master/mixin-0.8-SNAPSHOT.jar
+    tasks.compileJava {
+        // Use the 0.8 AP jar via annotationProcessorPath instead of -processorpath
+        def mixinAp = files(projectDir.absolutePath + "/libs/mixin-0.8-SNAPSHOT.jar")
+        options.annotationProcessorPath = (options.annotationProcessorPath ?: configurations.annotationProcessor) + mixinAp
+
+        options.compilerArgs += [
+                // There's a bug in the AnnotationProcessor for 0.7.11 that will generate the annotations pointing to the parent class instead of subclass
+                // resulting in the mixin not being applied.  This is fixed in 0.8, however 0.8 needs guava > 21.0, and minecraft ships with 17.0.
+                // So as a hacky workaround... ship with 0.7.11, but use the AP from 0.8 for compiling
+                "-Xlint:-sunapi", "-XDenableSunApiLintControl", "-XDignore.symbol.file",
+                "-AreobfSrgFile=${tasks.reobfJar.primarySrg}",
+                "-AoutSrgFile=${mixinSrg}",
+                "-AoutRefMapFile=${refMap}"
+        ]
+    }
+}
+
+processResources {
+    def expandProps = [
+            "version": version,
+            "group": project.group, //Else we target the task's group.
+            "minecraft_version": minecraft_version,
+            "mod_name": mod_name,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "license": license,
+            "description": project.description,
+            "forge_version": forge_version,
+            "forge_loader_version_range": forge_loader_version_range,
+            "credits": credits,
+            "java_version": java_version
+    ]
+
+    filesMatching(['mcmod.info', 'pack.mcmeta']) {
+        expand expandProps
+    }
+
+    inputs.properties(expandProps)
 }

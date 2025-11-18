@@ -15,7 +15,7 @@ public class MenuScreen extends GuiScreen {
     public void initGui() {
         //net.minecraft.client.gui.GuiCustomizeSkin;
         int i = 0;
-        this.title = I18n.format("category.minecraftcapes.gui");
+        this.title = "MinecraftCapes";
 
         //Custom Capes
         this.buttonList.add(new GuiButton(0, this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible())));

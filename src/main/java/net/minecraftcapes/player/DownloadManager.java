@@ -3,10 +3,10 @@ package net.minecraftcapes.player;
 import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.helpers.ImageHandler;
 import net.minecraftcapes.helpers.MinecraftApi;
 import org.apache.commons.io.IOUtils;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -95,9 +95,9 @@ public class DownloadManager {
 
         if(cache.toFile().exists()) {
             try(InputStream inputStream = Files.newInputStream(cache.toFile().toPath())) {
-                bufferedImage = ImageIO.read(inputStream);
+                bufferedImage = ImageHandler.legacyTransparencyFix(inputStream);
             } catch (IOException e) {
-                MinecraftCapes.getLogger().error("IOException with {}", cache);
+                MinecraftCapes.getLogger().error("IOException loading from cache {}", cache);
                 MinecraftCapes.getLogger().error(e.getMessage());
                 if(cache.toFile().delete()) {
                     return downloadOrLoad(url, type);
@@ -111,9 +111,9 @@ public class DownloadManager {
                 try {
                     Files.createDirectories(cache.getParent());
                     Files.write(cache, imageBytes);
-                    bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+                    bufferedImage = ImageHandler.legacyTransparencyFix(new ByteArrayInputStream(imageBytes));
                 } catch (IOException e) {
-                    MinecraftCapes.getLogger().error("IOException with {}", url);
+                    MinecraftCapes.getLogger().error("IOException saving cache {}", url);
                     MinecraftCapes.getLogger().error(e.getMessage());
                     return null;
                 }
