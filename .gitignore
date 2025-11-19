@@ -13,6 +13,7 @@ libs
 *.iws
 *.iml
 .idea
+!.idea/runConfigurations/Minecraft_Client.xml
 
 # gradle
 build

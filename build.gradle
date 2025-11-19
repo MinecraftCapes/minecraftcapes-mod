@@ -1,4 +1,5 @@
 import dev.architectury.pack200.java.Pack200Adapter
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id "gg.essential.loom" version "1.11.37+"
@@ -22,14 +23,13 @@ loom {
     // Silence mappings license warning
     silentMojangMappingsLicense()
 
-    // Forge
+    //Runs must be done via the "Application" called "Minecraft Client" not gradlew
+    //<option name="PROGRAM_PARAMETERS" value="--username=james090500 --tweakClass=org.spongepowered.asm.launch.MixinTweaker" />
+
+            // Forge
     forge {
         // Forge extractor for legacy versions
         pack200Provider = new Pack200Adapter()
-
-//        replace '@MOD_VERSION', project.version
-//        replace '@MINECRAFT_VERSION', project.minecraft_version
-//        replaceIn 'MinecraftCapes.java'
 
         // Mixins
         mixinConfigs = [
