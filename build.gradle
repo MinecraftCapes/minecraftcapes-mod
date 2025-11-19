@@ -1,74 +1,71 @@
-import dev.architectury.pack200.java.Pack200Adapter
-import org.apache.tools.ant.filters.ReplaceTokens
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://maven.minecraftforge.net" }
+        maven { url 'https://repo.spongepowered.org/maven'}
+    }
+    dependencies {
+        classpath("net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT")
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
+}
 
 plugins {
-    id "gg.essential.loom" version "1.11.37+"
-    id "com.gradleup.shadow" version "9.2.2"
-    id "io.freefair.lombok" version "9.1.0"
-}
-
-base {
-    archivesName = "${project.mod_name} Forge ${project.minecraft_version}"
-}
-
-version = project.version
-group = "net.minecraftcapes"
-
-java {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-}
-
-loom {
-    // Silence mappings license warning
-    silentMojangMappingsLicense()
-
-    //Runs must be done via the "Application" called "Minecraft Client" not gradlew
-    //<option name="PROGRAM_PARAMETERS" value="--username=james090500 --tweakClass=org.spongepowered.asm.launch.MixinTweaker" />
-
-            // Forge
-    forge {
-        // Forge extractor for legacy versions
-        pack200Provider = new Pack200Adapter()
-
-        // Mixins
-        mixinConfigs = [
-            "${project.mod_id}.mixins.json"
-        ]
-    }
-
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
-}
-
-configurations {
-    implementation.extendsFrom(shadowImpl)
+    id "java"
+    id "com.github.johnrengelman.shadow" version "2.0.4"
+    id "io.freefair.lombok" version "2.9.5"
 }
 
 repositories {
-    maven {url = "https://repo.spongepowered.org/maven/" }
+    maven {
+        url = "https://repo.spongepowered.org/maven/"
+    }
 }
 
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: 'org.spongepowered.mixin'
+
+// These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
+sourceCompatibility = targetCompatibility = 1.8
+
+version = "${project.version}"
+group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${project.mod_name} Forge ${project.minecraft_version}"
+
+minecraft {
+    version = "${minecraft_version}-${forge_version}-${minecraft_version}"
+
+    replace '@MOD_VERSION', project.version
+    replace '@MINECRAFT_VERSION', project.minecraft_version
+    replaceIn 'MinecraftCapes.java'
+
+    runDir = "run"
+    mappings = "stable_22"
+    makeObfSourceJar = false
+}
+
+// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
+configurations {
+    shade
+    compile.extendsFrom(shade)
+}
+
+def systemOs = System.getProperty("os.name").toLowerCase(Locale.ENGLISH)
+
 dependencies {
-    // Minecraft
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-
-    // Mappings
-    mappings "de.oceanlabs.mcp:mcp_stable:22-1.8.9"
-
-    // Forge
-    forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}-${project.minecraft_version}"
-
-    // Mixin
-    shadowImpl ("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
-        transitive = false
+    shade('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'log4j-core'
     }
-    //annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
+
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
 jar {
-    // Setup Mixin
     manifest.attributes (
         "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
         'FMLCorePluginContainsFMLMod': true,
@@ -78,41 +75,29 @@ jar {
     )
 }
 
-processResources {
-    // Fill in data
-    def expandProps = [
-        "version": version,
-        "group": project.group, //Else we target the task's group.
-        "minecraft_version": minecraft_version,
-        "mod_name": mod_name,
-        "mod_author": mod_author,
-        "mod_id": mod_id,
-        "license": license,
-        "description": project.description,
-        "forge_version": forge_version,
-        "forge_loader_version_range": forge_loader_version_range,
-        "credits": credits,
-        "java_version": java_version
-    ]
-
-    filesMatching(['mcmod.info', 'pack.mcmeta']) {
-        expand expandProps
+sourceSets {
+    main {
+        ext.refMap = "${mod_id}.refmap.json"
     }
-
-    inputs.properties(expandProps)
 }
 
+runClient {
+    args("--username=james090500")
+}
+
+// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
 shadowJar {
-    configurations = [project.configurations.shadowImpl]
-    archiveClassifier.set('deobf')
+    configurations = [project.configurations.shade]
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    classifier ""
+
     relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
+
+    mergeServiceFiles {
+        include 'META-INF/services/*'
+    }
 }
 
-remapJar {
-    from shadowJar
-    inputFile.set(tasks.shadowJar.archiveFile)
-}
-
-assemble {
-    dependsOn remapJar
+reobf {
+    shadowJar { }
 }
