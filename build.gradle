@@ -27,6 +27,10 @@ loom {
         // Forge extractor for legacy versions
         pack200Provider = new Pack200Adapter()
 
+//        replace '@MOD_VERSION', project.version
+//        replace '@MINECRAFT_VERSION', project.minecraft_version
+//        replaceIn 'MinecraftCapes.java'
+
         // Mixins
         mixinConfigs = [
             "${project.mod_id}.mixins.json"
