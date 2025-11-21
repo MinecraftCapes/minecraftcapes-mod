@@ -36,10 +36,6 @@ archivesBaseName = "${project.mod_name} Forge ${project.minecraft_version}"
 minecraft {
     version = "${minecraft_version}-${forge_version}"
 
-    replace '@MOD_VERSION', project.version
-    replace '@MINECRAFT_VERSION', project.minecraft_version
-    replaceIn 'MinecraftCapes.java'
-
     runDir = "run"
     mappings = "stable_32"
     makeObfSourceJar = false
@@ -71,6 +67,30 @@ jar {
         "TweakOrder": 0,
         'TweakClass': 'net.minecraftcapes.spongepowered.asm.launch.MixinTweaker',
     )
+}
+
+processResources {
+    // Fill in data
+    def expandProps = [
+            "version": version,
+            "group": project.group, //Else we target the task's group.
+            "minecraft_version": minecraft_version,
+            "mod_name": mod_name,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "license": license,
+            "description": project.description,
+            "forge_version": forge_version,
+            "forge_loader_version_range": forge_loader_version_range,
+            "credits": credits,
+            "java_version": java_version
+    ]
+
+    filesMatching(['mcmod.info', 'pack.mcmeta']) {
+        expand expandProps
+    }
+
+    inputs.properties(expandProps)
 }
 
 sourceSets {
