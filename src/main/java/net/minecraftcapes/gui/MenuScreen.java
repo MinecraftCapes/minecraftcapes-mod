@@ -1,5 +1,6 @@
 package net.minecraftcapes.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -14,7 +15,7 @@ public class MenuScreen extends GuiScreen {
     public void initGui() {
         //net.minecraft.client.gui.GuiCustomizeSkin;
         int i = 0;
-        this.title = I18n.format("category.minecraftcapes.gui");
+        this.title = "MinecraftCapes";
 
         //Custom Capes
         this.buttonList.add(new GuiButton(0, this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible())));
@@ -45,7 +46,7 @@ public class MenuScreen extends GuiScreen {
                 MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
                 button.displayString = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
             } else if(button.id == 2) {
-                DownloadManager.prepareDownload(this.mc.thePlayer.getUniqueID(), this.mc.thePlayer.getName(), true);
+                DownloadManager.prepareDownload(Minecraft.getMinecraft().thePlayer.getUniqueID(), Minecraft.getMinecraft().thePlayer.getName(), true);
             } else if(button.id == 3) {
                 this.mc.displayGuiScreen(null);
             }

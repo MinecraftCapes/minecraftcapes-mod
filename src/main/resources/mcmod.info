@@ -1,13 +1,13 @@
 [
   {
-    "modid": "minecraftcapes",
-    "name": "MinecraftCapes Mod",
-    "description": "Custom Cape, Elytras and Deadmau5 textures for minecraft which everyone with the mod can see!",
+    "modid": "${mod_id}",
+    "name": "${mod_name}",
+    "description": "${description}",
     "url": "https://minecraftcapes.net",
-    "version": "11.2.0",
+    "version": "${version}",
     "updateUrl": "",
     "authorList": ["james090500", "Siriuo"],
-    "logoFile": "/logo.png",
+    "logoFile": "logo.png",
     "screenshots": [],
     "dependencies": []
   }

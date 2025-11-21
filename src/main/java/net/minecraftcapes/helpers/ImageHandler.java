@@ -46,6 +46,10 @@ public class ImageHandler {
                         String green = attrs.getNamedItem("green").getNodeValue();
                         String blue = attrs.getNamedItem("blue").getNodeValue();
                         transparentRGB = red + "," + green + "," + blue;
+                    } else if("tRNS_Grayscale".equals(rgbNode.getNodeName())) {
+                        NamedNodeMap attrs = rgbNode.getAttributes();
+                        String gray = attrs.getNamedItem("gray").getNodeValue();
+                        transparentRGB = gray + "," + gray + "," + gray;
                     }
                 }
             }

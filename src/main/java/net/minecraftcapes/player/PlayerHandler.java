@@ -1,7 +1,5 @@
 package net.minecraftcapes.player;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -15,7 +13,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static net.minecraftcapes.MinecraftCapes.MODID;
+import static net.minecraftcapes.MinecraftCapes.MOD_ID;
 
 public class PlayerHandler {
 
@@ -31,7 +29,7 @@ public class PlayerHandler {
     @Setter @Getter private UUID playerUUID;
 
     @Getter
-    private Int2ObjectMap<BufferedImage> animatedCape;
+    private HashMap<Integer, BufferedImage> animatedCape;
 
     //Animated Cape Settings
     private long lastFrameTime = 0;
@@ -76,11 +74,11 @@ public class PlayerHandler {
     public void applyCape(BufferedImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
-            Int2ObjectMap<BufferedImage> animatedCape = new Int2ObjectOpenHashMap<BufferedImage>();
+            HashMap<Integer, BufferedImage> animatedCape = new HashMap<Integer, BufferedImage>();
             int totalFrames = capeImage.getHeight() / (capeImage.getWidth() / 2);
             for(int currentFrame = 0; currentFrame < totalFrames; currentFrame++) {
                 BufferedImage frame = new BufferedImage(capeImage.getWidth(), capeImage.getWidth() / 2, BufferedImage.TYPE_INT_ARGB);
-                Graphics frameGraphics = frame.createGraphics();
+                Graphics frameGraphics = frame.getGraphics();
                 frameGraphics.drawImage(capeImage,
                         0,
                         0,
@@ -107,14 +105,14 @@ public class PlayerHandler {
             g.drawImage(capeImage, 0, 0, null);
             g.dispose();
 
-            applyTexture(new ResourceLocation(MODID, "capes/" + playerUUID), imgNew);
+            applyTexture(new ResourceLocation(MOD_ID, "capes/" + playerUUID), imgNew);
             setHasStaticCape(true);
             MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
         }
     }
 
     public void applyEars(BufferedImage earImage) {
-        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
+        applyTexture(new ResourceLocation(MOD_ID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
 
@@ -122,11 +120,10 @@ public class PlayerHandler {
      * Sets the animated cape textures and loads all resources to memory
      * @param animatedCape
      */
-    public void setAnimatedCape(Int2ObjectMap<BufferedImage> animatedCape) {
+    public void setAnimatedCape(HashMap<Integer, BufferedImage> animatedCape) {
         MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
         this.animatedCape = animatedCape;
         this.setHasAnimatedCape(true);
-        this.setHasStaticCape(false);
         this.loadFramesToResource();
     }
 
@@ -136,7 +133,7 @@ public class PlayerHandler {
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
         for(final HashMap.Entry<Integer, BufferedImage> entry : getAnimatedCape().entrySet()) {
-            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
+            ResourceLocation currentResource = new ResourceLocation(MOD_ID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
             applyTexture(currentResource, entry.getValue());
         }
     }
@@ -153,9 +150,9 @@ public class PlayerHandler {
             lastFrame = currentFrameNo;
             lastFrameTime = time;
 
-            return new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, currentFrameNo));
+            return new ResourceLocation(MOD_ID, String.format("capes/%s/%d", playerUUID, currentFrameNo));
         }
-        return new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, lastFrame));
+        return new ResourceLocation(MOD_ID, String.format("capes/%s/%d", playerUUID, lastFrame));
     }
 
     /**
@@ -163,7 +160,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getCapeLocation() {
-        return hasStaticCape ? new ResourceLocation(MODID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
+        return hasStaticCape ? new ResourceLocation(MOD_ID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -171,7 +168,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getEarLocation() {
-        return hasEars ? new ResourceLocation(MODID, "ears/" + playerUUID) : null;
+        return hasEars ? new ResourceLocation(MOD_ID, "ears/" + playerUUID) : null;
     }
 
     /**
@@ -180,11 +177,8 @@ public class PlayerHandler {
      * @param bufferedImage
      */
     private void applyTexture(final ResourceLocation resourceLocation, final BufferedImage bufferedImage) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage));
-            }
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage));
         });
     }
 
