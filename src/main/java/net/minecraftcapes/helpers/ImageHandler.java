@@ -15,9 +15,8 @@ import java.util.Iterator;
 
 public class ImageHandler {
 
-    public static BufferedImage legacyTransparencyFix(InputStream oldImage) throws IOException {
-        // Step 1: Create input streams
-        ImageInputStream iis = ImageIO.createImageInputStream(oldImage);
+    public static BufferedImage legacyTransparencyFix(InputStream inputStream) throws IOException {
+        ImageInputStream iis = ImageIO.createImageInputStream(inputStream);
 
         Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
         if (!readers.hasNext()) throw new IOException("No image reader found");
@@ -47,6 +46,10 @@ public class ImageHandler {
                         String green = attrs.getNamedItem("green").getNodeValue();
                         String blue = attrs.getNamedItem("blue").getNodeValue();
                         transparentRGB = red + "," + green + "," + blue;
+                    } else if("tRNS_Grayscale".equals(rgbNode.getNodeName())) {
+                        NamedNodeMap attrs = rgbNode.getAttributes();
+                        String gray = attrs.getNamedItem("gray").getNodeValue();
+                        transparentRGB = gray + "," + gray + "," + gray;
                     }
                 }
             }

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractClientPlayer.class)
-public abstract class MixinPlayerInfo {
+public abstract class MixinAbstractClientPlayer {
 
     @Shadow
     protected abstract NetworkPlayerInfo getPlayerInfo();

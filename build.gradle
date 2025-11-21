@@ -1,110 +1,112 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-        mavenCentral()
-        maven { url 'https://repo.spongepowered.org/maven'}
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-    id "java"
-    id "com.github.johnrengelman.shadow" version "2.0.4"
+    id 'io.freefair.lombok' version "8.13.1"
+    id 'net.minecraftforge.gradle' version '6.+'
+    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id "com.gradleup.shadow" version "9.2.2"
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
+// These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+compileJava {
+    sourceCompatibility = "8"
+    targetCompatibility = "8"
+}
 
-version = "1.0.0"
-group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "MinecraftCapes Forge 1.12.2"
+base {
+    archivesName = "${mod_name} Forge ${minecraft_version}"
+}
 
-sourceCompatibility = targetCompatibility = 1.8 // Java version to compile for.
+mixin {
+    add(sourceSets.main, "${mod_id}.refmap.json")
+    config("${mod_id}.mixins.json")
+}
 
 minecraft {
-    mappings channel: 'snapshot', version: '20180814-1.12'
+    mappings channel: "stable", version: "39-1.12"
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            workingDirectory file('run')
             property 'forge.logging.console.level', 'debug'
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
+            args('-torg.spongepowered.asm.launch.MixinTweaker', '--username=james090500')
+            jvmArgs '-Dfml.coreMods.load="net.minecraftcapes.mixin.MixinLoader"', '-Dmixin.hotSwap=true', '-Dmixin.checks.interfaces=true'
         }
+    }
 
-        server {
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
-        }
+    legacy {
+        fixClasspath = true
     }
 }
 
 // This is the configuration for the shadow plugin, which is used to add libraries to the jar.
 configurations {
-    shade
-    compile.extendsFrom(shade)
+    implementation.extendsFrom(shadowImpl)
 }
 
-assemble.dependsOn shadowJar
-
-// Configures the SpongePowered Repository
 repositories {
-    maven { url 'https://repo.spongepowered.org/maven/' }
+    maven {url = "https://repo.spongepowered.org/maven/" }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    shade('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
-        exclude module: 'guava'
-        exclude module: 'commons-io'
-        exclude module: 'gson'
+    shadowImpl ("org.spongepowered:mixin:0.8.5-SNAPSHOT") {
+        transitive = false
     }
 
-    //Project Lombok
-    compile "org.projectlombok:lombok:1.18.12"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT'
+
+    // Required for Dev
+    annotationProcessor 'com.google.code.gson:gson:2.8.9'
+    annotationProcessor 'com.google.guava:guava:32.1.2-jre'
+    annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
-    manifest {
-        attributes([
-                "Specification-Title"        : "minecraftcapes",
-                "Specification-Vendor"       : "minecraftcapes",
-                "Specification-Version"      : "${version}", // We are version 1 of ourselves
-                "Implementation-Title"       : project.name,
-                "Implementation-Version"     : "${version}",
-                "Implementation-Vendor"      : "minecraftcapes",
-                "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "ForceLoadAsMod"             : true,
-                "TweakOrder"                 : 0,
-                'FMLCorePluginContainsFMLMod': true,
-                'TweakClass'                 : 'org.spongepowered.asm.launch.MixinTweaker',
-        ])
+    manifest.attributes (
+        "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
+        'FMLCorePluginContainsFMLMod': true,
+        'ForceLoadAsMod': true,
+        "TweakOrder": 0,
+        'TweakClass': 'net.minecraftcapes.spongepowered.asm.launch.MixinTweaker',
+    )
+}
+
+processResources {
+    // Fill in data
+    def expandProps = [
+            "version": version,
+            "group": project.group, //Else we target the task's group.
+            "minecraft_version": minecraft_version,
+            "mod_name": mod_name,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "license": license,
+            "description": project.description,
+            "forge_version": forge_version,
+            "forge_loader_version_range": forge_loader_version_range,
+            "credits": credits,
+            "java_version": java_version
+    ]
+
+    filesMatching(['mcmod.info', 'pack.mcmeta']) {
+        expand expandProps
     }
+
+    inputs.properties(expandProps)
 }
 
 // This is the configuration for the shadow plugin, which is used to add libraries to the jar.
 shadowJar {
-    configurations = [project.configurations.shade] // Adds the gradle configuration "shade" so we can use it.
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE // Prevents duplicates
-
-    classifier ""
-
-    from('build/tmp/compileJava') {
-        include 'minecraftcapes.refmap.json' // replace if needed
-    }
+    configurations = [project.configurations.shadowImpl]
+    archiveClassifier.set('')
+    relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
 }
 
-mixin {
-    add sourceSets.main, "minecraftcapes.refmap.json"
-    config "minecraftcapes.mixins.json"
+tasks.matching { it.name in ["reobfJar"] }.configureEach {
+    dependsOn tasks.shadowJar
 }
 
-shadowJar.finalizedBy('reobfJar')
+//When Forge 1.12 loads mods from a directory that's been put on the classpath, it expects to find resources in the same directory.
+//Default Gradle behavior puts resources in ./build/resources/main instead of ./build/classes/main/java. Let's change that.
+sourceSets.configureEach { it.output.resourcesDir = it.output.classesDirs.getFiles().iterator().next() }
