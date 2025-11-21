@@ -1,11 +1,12 @@
 buildscript {
     repositories {
-        jcenter()
-        maven { url = "https://maven.minecraftforge.net/" }
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://maven.minecraftforge.net" }
         maven { url 'https://repo.spongepowered.org/maven'}
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath("net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT")
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
@@ -13,22 +14,35 @@ buildscript {
 plugins {
     id "java"
     id "com.github.johnrengelman.shadow" version "2.0.4"
+    id "io.freefair.lombok" version "2.9.5"
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+repositories {
+    maven {
+        url = "https://repo.spongepowered.org/maven/"
+    }
+}
+
+apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.0.0"
-group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "MinecraftCapes Forge 1.11.2"
+// These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
+sourceCompatibility = targetCompatibility = 1.8
 
-sourceCompatibility = targetCompatibility = 1.8 // Java version to compile for.
+version = "${project.version}"
+group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${project.mod_name} Forge ${project.minecraft_version}"
 
 minecraft {
-    version = "1.11.2-13.20.1.2588"
+    version = "${minecraft_version}-${forge_version}"
+
+    replace '@MOD_VERSION', project.version
+    replace '@MINECRAFT_VERSION', project.minecraft_version
+    replaceIn 'MinecraftCapes.java'
+
     runDir = "run"
-    mappings = "snapshot_20170612"
-    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    mappings = "stable_32"
+    makeObfSourceJar = false
 }
 
 // This is the configuration for the shadow plugin, which is used to add libraries to the jar.
@@ -37,13 +51,8 @@ configurations {
     compile.extendsFrom(shade)
 }
 
-// Configures the SpongePowered Repository
-repositories {
-    maven { url 'https://repo.spongepowered.org/maven/' }
-}
-
 dependencies {
-    shade('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
+    shade('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
         exclude module: 'launchwrapper'
         exclude module: 'guava'
         exclude module: 'gson'
@@ -51,66 +60,42 @@ dependencies {
         exclude module: 'log4j-core'
     }
 
-    compile "org.projectlombok:lombok:1.18.12"
-
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+jar {
+    manifest.attributes (
+        "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
+        'FMLCorePluginContainsFMLMod': true,
+        'ForceLoadAsMod': true,
+        "TweakOrder": 0,
+        'TweakClass': 'net.minecraftcapes.spongepowered.asm.launch.MixinTweaker',
+    )
+}
 
-    // Replaces version in mcmod.info with the project version.
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-
-        //replace version and mcversion
-        expand "version":project.version, "mcversion":project.minecraft.version
+sourceSets {
+    main {
+        ext.refMap = "${mod_id}.refmap.json"
     }
+}
 
-    // Copies all other resources.
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
-    }
-
-    rename '(.+_at.cfg)', 'META-INF/$1'
+runClient {
+    args("--username=james090500")
 }
 
 // This is the configuration for the shadow plugin, which is used to add libraries to the jar.
 shadowJar {
-    dependencies {}
-    configurations = [project.configurations.shade] // Adds the gradle configuration "shade" so we can use it.
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE // Prevents duplicates
+    configurations = [project.configurations.shade]
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     classifier ""
+
+    relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
+
+    mergeServiceFiles {
+        include 'META-INF/services/*'
+    }
 }
 
 reobf {
-    // Reobfuscates the jar.
-    shadowJar {}
-}
-
-/**
- * Adds the manifest values
- * FMLCorePlugin -> Put the Mixin Loader here
- * ModSide -> Client or Server
- * TweakClass -> Mixin tweaker
- * MixinConfigs -> Put your mixin config here (mixins.MODID.json)
- */
-jar {
-    manifest.attributes(
-            "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
-            "ForceLoadAsMod": true,
-            "TweakOrder": 0,
-            "ModSide": "CLIENT",
-            'FMLCorePluginContainsFMLMod': true,
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            'MixinConfigs': 'minecraftcapes.mixins.json'
-    )
-}
-
-// This adds the refmap.
-// (You do not need to create the refmap, it is created automatically by the mixin plugin)
-sourceSets {
-    main {
-        ext.refMap = "minecraftcapes.refmap.json"
-    }
+    shadowJar { }
 }

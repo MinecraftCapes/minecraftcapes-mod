@@ -97,7 +97,7 @@ public class DownloadManager {
             try(InputStream inputStream = Files.newInputStream(cache.toFile().toPath())) {
                 bufferedImage = ImageHandler.legacyTransparencyFix(inputStream);
             } catch (IOException e) {
-                MinecraftCapes.getLogger().error("IOException with {}", cache);
+                MinecraftCapes.getLogger().error("IOException loading from cache {}", cache);
                 MinecraftCapes.getLogger().error(e.getMessage());
                 if(cache.toFile().delete()) {
                     return downloadOrLoad(url, type);
@@ -113,7 +113,7 @@ public class DownloadManager {
                     Files.write(cache, imageBytes);
                     bufferedImage = ImageHandler.legacyTransparencyFix(new ByteArrayInputStream(imageBytes));
                 } catch (IOException e) {
-                    MinecraftCapes.getLogger().error("IOException with {}", url);
+                    MinecraftCapes.getLogger().error("IOException saving cache {}", url);
                     MinecraftCapes.getLogger().error(e.getMessage());
                     return null;
                 }

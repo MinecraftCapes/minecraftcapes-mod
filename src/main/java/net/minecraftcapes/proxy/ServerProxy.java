@@ -2,13 +2,17 @@ package net.minecraftcapes.proxy;
 
 import net.minecraftcapes.MinecraftCapes;
 
-public class ServerProxy implements IProxy {
+public class ServerProxy implements CommonProxy {
 
     @Override
     public void init() {}
 
     @Override
     public void postInit() {
-        MinecraftCapes.getLogger().error("MinecraftCapes has been loaded on server side. MinecraftCapes is a client only mod. No need to worry about this. You can delete the mod if you wish!");
+        MinecraftCapes.getLogger().error("=============================================");
+        MinecraftCapes.getLogger().error("MinecraftCapes only needs to be on the client");
+        MinecraftCapes.getLogger().error("     You'll still see each others capes!");
+        MinecraftCapes.getLogger().error("     Please remove this from your server!");
+        MinecraftCapes.getLogger().error("=============================================");
     }
 }
