@@ -63,6 +63,30 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
+processResources {
+    // Fill in data
+    def expandProps = [
+            "version": version,
+            "group": project.group, //Else we target the task's group.
+            "minecraft_version": minecraft_version,
+            "mod_name": mod_name,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "license": license,
+            "description": project.description,
+            "forge_version": forge_version,
+            "forge_loader_version_range": forge_loader_version_range,
+            "credits": credits,
+            "java_version": java_version
+    ]
+
+    filesMatching(['mcmod.info', 'pack.mcmeta']) {
+        expand expandProps
+    }
+
+    inputs.properties(expandProps)
+}
+
 jar {
     manifest.attributes (
         "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
