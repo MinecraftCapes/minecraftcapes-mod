@@ -99,8 +99,14 @@ processResources {
 // This is the configuration for the shadow plugin, which is used to add libraries to the jar.
 shadowJar {
     configurations = [project.configurations.shadowImpl]
+    duplicatesStrategy = DuplicatesStrategy.WARN
     archiveClassifier.set('')
+
     relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
+
+    mergeServiceFiles {
+        include 'META-INF/services/*'
+    }
 }
 
 tasks.matching { it.name in ["reobfJar"] }.configureEach {
