@@ -38,14 +38,14 @@ public abstract class MixinCapeLayer extends LayerRenderer<AbstractClientPlayerE
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
     }
-    
+
     @Inject(method = "render(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;popMatrix()V"))
     public void minecraftcapes$renderGlint(AbstractClientPlayerEntity var1, float var2, float var3, float var4, float var5, float var6, float var7, float var8, CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(var1.getUUID());
         if (playerHandler.getHasCapeGlint()) {
             ArmorLayer.renderFoil(this::bindTexture, var1, minecraftcapes$capeModel, var2, var3, var4, var5, var6, var7, var8);
         }
-        
+
         GlStateManager.disableBlend();
     }
 }
