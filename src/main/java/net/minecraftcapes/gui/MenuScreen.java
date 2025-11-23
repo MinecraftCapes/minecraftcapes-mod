@@ -12,6 +12,11 @@ import net.minecraftcapes.player.DownloadManager;
 
 public class MenuScreen extends Screen {
 
+    private enum GuiOption {
+        CAPE,
+        EARS
+    }
+
     public MenuScreen() {
         super(new StringTextComponent("MinecraftCapes"));
     }
@@ -21,14 +26,16 @@ public class MenuScreen extends Screen {
         int i = 0;
 
         //Custom Capes
-        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible()), (button) -> {
+        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getMessage(GuiOption.CAPE), (button) -> {
             MinecraftCapesConfig.setCapeVisible(!MinecraftCapesConfig.isCapeVisible());
+            button.setMessage(getMessage(GuiOption.CAPE));
         }));
         i++;
 
         //Custom Ears
-        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible()), (button -> {
+        this.addButton(new Button(this.width / 2 - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getMessage(GuiOption.EARS), (button -> {
             MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
+            button.setMessage(getMessage(GuiOption.EARS));
         })));
         i++;
 
@@ -54,8 +61,19 @@ public class MenuScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    private ITextComponent getButtonString(String buttonText, boolean value) {
+    private ITextComponent getMessage(GuiOption option) {
         String onOff;
+
+        String buttonText = option.name();
+        boolean value = false;
+        if(option.equals(GuiOption.CAPE)) {
+            buttonText = "Custom Capes";
+            value = MinecraftCapesConfig.isCapeVisible();
+        } else if(option.equals(GuiOption.EARS)) {
+            buttonText = "Custom Ears";
+            value = MinecraftCapesConfig.isEarsVisible();
+        }
+
         if(value) {
             onOff = I18n.get("options.on");
         } else {
