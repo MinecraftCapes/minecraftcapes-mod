@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftcapes.config.MinecraftCapesConfig;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -26,7 +27,7 @@ public class MinecraftCapes {
     @Getter private static final Logger logger = LogManager.getLogger(MOD_NAME);
     @Getter private static final Path configDir = FMLPaths.CONFIGDIR.get().resolve(MOD_ID);
 
-    public static KeyBinding menuKey;
+    public static Lazy<KeyBinding> menuKey;
 
 	public MinecraftCapes() {
         getLogger().info("[MinecraftCapes] Initialising");
@@ -41,18 +42,18 @@ public class MinecraftCapes {
         // Set the version
         MINECRAFT_VERSION = Minecraft.getInstance().getVersionType();
 
-        // Set the key binding
-        menuKey = new KeyBinding(
-                "Open GUI",
-                GLFW.GLFW_KEY_J,
-                "MinecraftCapes"
-        );
-
         //Prep the config
         MinecraftCapesConfig.loadConfig();
 
+        //Key Mapping
+        menuKey = Lazy.of(() -> new KeyBinding(
+                "Open GUI",
+                GLFW.GLFW_KEY_J,
+                "MinecraftCapes"
+        ));
+
         //Register the keybinds
-        ClientRegistry.registerKeyBinding(menuKey);
+        ClientRegistry.registerKeyBinding(menuKey.get());
     }
 
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
