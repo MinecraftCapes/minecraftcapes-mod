@@ -29,9 +29,6 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             args('--username=james090500')
         }
-        server {
-            workingDirectory file('runserver')
-        }
     }
 }
 
