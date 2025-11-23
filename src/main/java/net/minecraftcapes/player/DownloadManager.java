@@ -36,8 +36,10 @@ public class DownloadManager {
             } else if (uuid.version() == 3) {
                 Thread prepareProfile = new Thread(() -> {
                     UUID onlineUUID = MinecraftApi.getUUID(username);
-                    playerHandler.setPlayerUUID(onlineUUID);
-                    downloadProfile(playerHandler);
+                    if(onlineUUID != null) {
+                        playerHandler.setPlayerUUID(onlineUUID);
+                        downloadProfile(playerHandler);
+                    }
                 });
                 prepareProfile.start();
             }
@@ -89,14 +91,14 @@ public class DownloadManager {
     private static NativeImage downloadOrLoad(String url, String type) {
         String hash = url.substring(url.lastIndexOf('/') + 1);
         Path cache = MinecraftCapes.getConfigDir().resolve(type).resolve(hash.length() > 2 ? hash.substring(0, 2) : "xx").resolve(hash);
-        
+
         NativeImage nativeImage = null;
 
         if(cache.toFile().exists()) {
             try(InputStream inputStream = Files.newInputStream(cache.toFile().toPath())) {
                 nativeImage = NativeImage.read(inputStream);
             } catch (IOException e) {
-                MinecraftCapes.getLogger().error("IOException with {}", cache);
+                MinecraftCapes.getLogger().error("IOException loading from cache {}", cache);
                 MinecraftCapes.getLogger().error(e.getMessage());
                 if(cache.toFile().delete()) {
                     return downloadOrLoad(url, type);
@@ -112,7 +114,7 @@ public class DownloadManager {
                     Files.write(cache, imageBytes);
                     nativeImage = NativeImage.read(new ByteArrayInputStream(imageBytes));
                 } catch (IOException e) {
-                    MinecraftCapes.getLogger().error("IOException with {}", url);
+                    MinecraftCapes.getLogger().error("IOException saving cache {}", url);
                     MinecraftCapes.getLogger().error(e.getMessage());
                     return null;
                 }

@@ -22,13 +22,13 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         super(p_i46179_1_);
     }
 
-    @Inject(method = "setupRotations", at = @At("TAIL"))
-    public void renderUpsidedown(T livingEntity, MatrixStack poseStack, float p_225621_3_, float p_225621_4_, float p_225621_5_, CallbackInfo ci) {
-        if(livingEntity instanceof PlayerEntity) {
-            PlayerHandler playerHandler = PlayerHandler.get(livingEntity.getUUID());
+    @Inject(method = "setupRotations", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/text/TextFormatting;stripFormatting(Ljava/lang/String;)Ljava/lang/String;"))
+    public void renderUpsidedown(T entity, MatrixStack matrixStack, float p_225621_3_, float p_225621_4_, float p_225621_5_, CallbackInfo ci) {
+        if(entity instanceof PlayerEntity) {
+            PlayerHandler playerHandler = PlayerHandler.get(entity.getUUID());
             if(playerHandler.isUpsideDown()) {
-                poseStack.translate(0.0F, livingEntity.getBbHeight() + 0.1F, 0.0F);
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+                matrixStack.translate(0.0F, entity.getBbHeight() + 0.1F, 0.0F);
+                matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
             }
         }
     }
