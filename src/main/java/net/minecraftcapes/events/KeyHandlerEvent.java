@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 public class KeyHandlerEvent {
 
     @SubscribeEvent
-    public void onKeyPress(TickEvent.ClientTickEvent event) {
+    public static void onKeyPress(TickEvent.ClientTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
             if (MinecraftCapes.menuKey.get().consumeClick()) {
                 Minecraft.getInstance().setScreen(new MenuScreen());
