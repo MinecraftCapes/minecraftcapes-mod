@@ -5,11 +5,11 @@
   "refmap": "minecraftcapes.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "MixinAbstractClientPlayer",
     "MixinCapeLayer",
     "MixinDeadmau5EarsLayer",
     "MixinLivingEntityRenderer",
-    "MixinPlayerEarsModel",
-    "MixinAbstractClientPlayer"
+    "MixinPlayerEarsModel"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -14,7 +14,7 @@ public class KeyHandlerEvent {
     @SubscribeEvent
     public static void onKeyPress(TickEvent.ClientTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
-            if (MinecraftCapes.menuKey.isDown()) {
+            if (MinecraftCapes.menuKey.get().consumeClick()) {
                 Minecraft.getInstance().setScreen(new MenuScreen());
             }
         }
