@@ -10,7 +10,7 @@
     "issues": "https://minecraftcapes.net/discord"
   },
   "license": "${license}",
-  "icon": "assets/minecraftcapes/logo.png",
+  "icon": "logo.png",
   "entrypoints": {
     "client": [
       "net.minecraftcapes.MinecraftCapes"

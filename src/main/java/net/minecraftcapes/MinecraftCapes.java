@@ -25,9 +25,9 @@ public class MinecraftCapes implements ClientModInitializer {
 
     private static KeyMapping keyBinding;
     public static final KeyMapping keyMapping = new KeyMapping(
-            "key.minecraftcapes.gui",
+            "Open GUI",
             GLFW.GLFW_KEY_J,
-            "category.minecraftcapes.gui"
+            "MinecraftCapes"
     );
 
     @Override
