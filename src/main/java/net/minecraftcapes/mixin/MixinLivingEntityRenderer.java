@@ -1,6 +1,5 @@
 package net.minecraftcapes.mixin;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.model.EntityModel;
@@ -23,7 +22,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         super(entityRenderDispatcher);
     }
 
-    @Inject(method = "setupRotations", at = @At("TAIL"))
+    @Inject(method = "setupRotations", at = @At(value = "INVOKE", target = "Lnet/minecraft/ChatFormatting;stripFormatting(Ljava/lang/String;)Ljava/lang/String;"))
     public void renderUpsidedown(T livingEntity, PoseStack poseStack, float f, float g, float h, CallbackInfo ci) {
         if(livingEntity instanceof Player) {
             PlayerHandler playerHandler = PlayerHandler.get(livingEntity.getUUID());

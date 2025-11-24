@@ -36,8 +36,10 @@ public class DownloadManager {
             } else if (uuid.version() == 3) {
                 Thread prepareProfile = new Thread(() -> {
                     UUID onlineUUID = MinecraftApi.getUUID(username);
-                    playerHandler.setPlayerUUID(onlineUUID);
-                    downloadProfile(playerHandler);
+                    if(onlineUUID != null) {
+                        playerHandler.setPlayerUUID(onlineUUID);
+                        downloadProfile(playerHandler);
+                    }
                 });
                 prepareProfile.start();
             }

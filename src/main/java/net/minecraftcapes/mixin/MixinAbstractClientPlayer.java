@@ -26,6 +26,14 @@ public abstract class MixinAbstractClientPlayer {
         DownloadManager.prepareDownload(gameProfile.getId(), gameProfile.getName(), false);
     }
 
+    @Inject(method = "isCapeLoaded", at = @At(value = "HEAD"), cancellable = true)
+    private void isCapeLoaded(CallbackInfoReturnable<Boolean> cir) {
+        PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayer) (Object) this).getUUID());
+        if(playerHandler.getHasInfo() || this.getPlayerInfo() != null) {
+            cir.setReturnValue(true);
+        }
+    }
+
     @Inject(method = "getCloakTextureLocation", at = @At(value = "RETURN"), cancellable = true)
     private void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
         PlayerInfo networkplayerinfo = this.getPlayerInfo();
