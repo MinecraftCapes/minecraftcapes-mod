@@ -21,7 +21,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         super(entityRenderDispatcher);
     }
 
-    @Inject(method = "setupRotations", at = @At("TAIL"))
+    @Inject(method = "setupRotations", at = @At(value = "INVOKE", target = "Lnet/minecraft/ChatFormatting;stripFormatting(Ljava/lang/String;)Ljava/lang/String;"))
     public void renderUpsidedown(T var1, float var2, float var3, float var4, CallbackInfo ci) {
         if(var1 instanceof Player) {
             PlayerHandler playerHandler = PlayerHandler.get(var1.getUUID());
