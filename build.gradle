@@ -1,148 +1,112 @@
-buildscript {
-	repositories {
-		maven {
-			name = "Fabric"
-			url = "https://maven.fabricmc.net/"
-		}
-		mavenCentral()
-		jcenter()
-		maven {
-			name = "Jitpack"
-			url 'https://jitpack.io/'
-		}
-	}
-	dependencies {
-		classpath 'com.github.Chocohead:Fabric-Loom:0d0261a'
-	}
-}
-
 plugins {
 	id 'maven-publish'
+	id 'fabric-loom' version "1.13.3"
+	id 'babric-loom-extension' version "1.13.3"
 }
 
-apply plugin: "fabric-loom"
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
-
-idea {
-	module {
-		downloadJavadoc = true
-	}
+base {
+    archivesName = "${project.mod_name} Fabric ${project.minecraft_version}"
 }
 
-eclipse {
-	classpath {
-		downloadJavadoc = true
-	}
+version = project.version
+group = project.group
+
+loom {
+    runs {
+        client {
+            client()
+            programArgs(["--username", "james090500", "--uuid", "ba4161c0-3a42-496c-8ae0-7d13372f3371"])
+        }
+    }
+
 }
 
 repositories {
-	maven {
-		name = "Jitpack"
-		url "https://jitpack.io/"
-	}
-}
-
-minecraft {
-}
-
-dependencies {
-	// fabric loader requires log4j, guava, and gson
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.1'
-	annotationProcessor group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.1'
-	annotationProcessor group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.1'
-	implementation 'com.google.guava:guava:28.0-jre'
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
-
-	// mixin and fabric loader need asm 9
-	implementation 'org.ow2.asm:asm:9.0'
-	implementation 'org.ow2.asm:asm-analysis:9.0'
-	implementation 'org.ow2.asm:asm-commons:9.0'
-	implementation 'org.ow2.asm:asm-tree:9.0'
-	implementation 'org.ow2.asm:asm-util:9.0'
-
-	implementation "com.github.jhalterman:typetools:87240d6"
-	implementation "com.github.mineLdiver:expressions:2fa66db"
-	implementation "com.github.mineLdiver:UnsafeEvents:7efec57"
-
-	// to change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-
-	mappings loom.fromCommit("calmilamsy/BIN-Mappings", "${project.yarn_mappings}") {spec ->
-		spec.version = "b1.7.3-${project.yarn_mappings}"
-	}
-
-	// convenience stuff
-	// adds some useful annotations for data classes. does not add any dependencies
-	compileOnly 'org.projectlombok:lombok:1.18.16'
-	annotationProcessor 'org.projectlombok:lombok:1.18.16'
-
-	// adds some useful annotations for miscellaneous uses. does not add any dependencies, though people without the lib will be missing some useful context hints.
-	compile 'org.jetbrains:annotations:16.0.2'
-
-	modImplementation "com.github.minecraft-cursed-legacy:cursed-fabric-loader:${project.loader_version}"
-
-	modImplementation "com.github.ModificationStation:StationAPI:${project.stapi_version}"
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
-}
-
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
-}
-
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-	from javadoc
-	classifier = 'javadoc'
-}
-
-tasks.publishToMavenLocal.dependsOn(tasks.remapJar)
-
-publishing {
-	repositories {
-		mavenLocal()
-	}
-
-	publications {
-		mavenJava(MavenPublication) {
-			artifactId project.archives_base_name
-			artifact ("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar") {
-				classifier null
-				builtBy remapJar
-			}
-
-			artifact ("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}-dev.jar") {
-				classifier 'dev'
-				builtBy remapJar
-			}
+	maven {url = "https://maven.glass-launcher.net/snapshots/" }
+	maven { url = "https://maven.glass-launcher.net/releases/" }
+	maven { url = "https://maven.glass-launcher.net/babric" }
+	maven { url = "https://maven.minecraftforge.net/" }
+	maven { url = "https://jitpack.io/" }
+	mavenCentral()
+	exclusiveContent {
+		forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+		}
+		filter {
+            includeGroup "maven.modrinth"
 		}
 	}
 }
+
+dependencies {
+	minecraft("com.mojang:minecraft:b1.7.3")
+	mappings("net.glasslauncher:biny:${project.properties["yarn_mappings"]}:v2")
+	modImplementation("net.fabricmc:fabric-loader:${project.properties["loader_version"]}")
+
+	implementation("org.apache.logging.log4j:log4j-core:2.17.2")
+
+	implementation("org.slf4j:slf4j-api:1.8.0-beta4")
+	implementation("org.apache.logging.log4j:log4j-slf4j18-impl:2.17.1")
+
+	// convenience stuff
+	// adds some useful annotations for data classes. does not add any dependencies
+	compileOnly("org.projectlombok:lombok:1.18.42")
+	annotationProcessor("org.projectlombok:lombok:1.18.42")
+
+	// adds some useful annotations for miscellaneous uses. does not add any dependencies, though people without the lib will be missing some useful context hints.
+	implementation("org.jetbrains:annotations:23.0.0")
+	implementation("com.google.guava:guava:33.2.1-jre")
+
+	// StAPI itself.
+	// transitiveImplementation tells babric loom that you want this dependency to be pulled into other mod's development workspaces. Best used ONLY for required dependencies.
+	modImplementation("net.modificationstation:StationAPI:${project.properties["stationapi_version"]}")
+
+	// Extra mods.
+	// https://github.com/calmilamsy/glass-config-api
+	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${project.properties["gcapi_version"]}")
+	// https://github.com/calmilamsy/modmenu
+	modImplementation("net.danygames2014:modmenu:${project.properties["modmenu_version"]}")
+	// https://github.com/Glass-Series/Always-More-Items
+	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${project.properties["alwaysmoreitems_version"]}")
+}
+
+configurations.configureEach {
+    exclude group: "babric"
+}
+
+processResources {
+    var expandProps = [
+            "version": version,
+            "group": project.group, //Else we target the task's group.
+            "minecraft_version": minecraft_version,
+            "mod_name": mod_name,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "license": license,
+            "description": project.description,
+            "credits": credits,
+    ]
+
+    filesMatching(['fabric.mod.json', '*.mixins.json']) {
+        expand expandProps
+    }
+
+    inputs.properties(expandProps)
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = "UTF-8"
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.properties["archivesBaseName"]}" }
+	}
+}
+

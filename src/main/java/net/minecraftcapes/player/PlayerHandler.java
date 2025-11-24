@@ -1,86 +1,70 @@
 package net.minecraftcapes.player;
 
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.entity.player.PlayerBase;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.helpers.GetMinecraftInstance;
-import net.minecraftcapes.helpers.MinecraftApi;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerHandler {
-
-    private static final HashMap<String, PlayerHandler> instances = new HashMap<>();
-
-    @Getter private BufferedImage cape;
-    @Getter private BufferedImage ears;
-
-    @Getter @Setter private Boolean hasStaticCape = false;
-    @Getter @Setter private Boolean hasAnimatedCape = false;
-    @Getter @Setter private Boolean showCape = true;
-    @Getter @Setter private Boolean forceShowElytra = false;
-    @Getter @Setter private Boolean forceHideElytra = false;
+    
+    private static final HashMap<UUID, PlayerHandler> instances = new HashMap<>();
+    
+    @Setter private boolean hasStaticCape = false;
+    @Setter private boolean hasEars = false;
+    @Setter private boolean hasAnimatedCape = false;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
 
-    @Getter
-    private HashMap<Integer, BufferedImage> animatedCape;
+    private Int2IntArrayMap animatedCape;
+    private int cape;
+    private int ears;
 
+    
     //Animated Cape Settings
     private long lastFrameTime = 0;
     private int lastFrame = 0;
-
-    public PlayerHandler(PlayerBase player) {
-        this.playerUUID = MinecraftApi.getUUID(player.name);
-        PlayerHandler.instances.put(player.name, this);
+    private int capeInterval = 100;
+    
+    public PlayerHandler(UUID uuid) {
+        this.playerUUID = uuid;
+        PlayerHandler.instances.put(playerUUID, this);
     }
-
+    
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param player The player entity
-     * @return Returns the current instance of PlayerHandler
+     * @param uuid the players uuid
+     * @return The player handler
      */
-    public static PlayerHandler getFromPlayer(PlayerBase player) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(player.name);
-        return playerHandler == null ? new PlayerHandler(player) : playerHandler;
+    public static PlayerHandler get(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
+        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
     }
-
+    
     /**
-     * Reads a base64 string and converts it to a NativeImage
-     * @param textureBase64 The base64 texture to read
-     * @return Returns a Buffered Image
+     * Remove a player
+     * @param uuid
      */
-    private BufferedImage readTexture(String textureBase64) {
-        try {
-            byte[] imgBytes = Base64.getDecoder().decode(textureBase64);
-            ByteArrayInputStream bias = new ByteArrayInputStream(imgBytes);
-            return ImageIO.read(bias);
-        } catch (IOException e) {
-            MinecraftCapes.getLogger().error(e.getMessage());
-            e.printStackTrace();
-        }
-        return new BufferedImage(0, 0, BufferedImage.TYPE_INT_ARGB);
+    public static void remove(UUID uuid) {
+        instances.remove(uuid);
     }
-
+    
     /**
      * Gets the cape texture and resizes or splits it accordingly
-     * @param cape The Cape base64 texture to parse
+     * @param capeImage
      */
-    public void applyCape(String cape) {
-        BufferedImage capeImage = readTexture(cape);
+    public void applyCape(BufferedImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
-            HashMap<Integer, BufferedImage> animatedCapeFrames = new HashMap<>();
+            Int2IntArrayMap animatedCape = new Int2IntArrayMap();
             int totalFrames = capeImage.getHeight() / (capeImage.getWidth() / 2);
             for(int currentFrame = 0; currentFrame < totalFrames; currentFrame++) {
                 BufferedImage frame = new BufferedImage(capeImage.getWidth(), capeImage.getWidth() / 2, BufferedImage.TYPE_INT_ARGB);
@@ -96,76 +80,92 @@ public class PlayerHandler {
                         ((currentFrame + 1) * (capeImage.getWidth() / 2)),
                         null);
                 frameGraphics.dispose();
-                animatedCapeFrames.put(currentFrame, frame);
+                animatedCape.put(currentFrame, this.applyTexture(frame));
             }
-
-            MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
-            this.cape = animatedCapeFrames.get(0);
-            this.animatedCape = animatedCapeFrames;
-            this.setHasAnimatedCape(true);
+            setAnimatedCape(animatedCape);
+            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", playerUUID);
         } else {
             int imageWidth = 64;
             int imageHeight = 32;
-
-            int srcWidth = capeImage.getWidth(), srcHeight = capeImage.getHeight();
-            while (imageWidth < srcWidth || imageHeight < srcHeight) {
-                imageWidth *= 2;
-                imageHeight *= 2;
-            }
+            
+            for (int srcWidth = capeImage.getWidth(), srcHeight = capeImage.getHeight(); imageWidth < srcWidth || imageHeight < srcHeight; imageWidth *= 2, imageHeight *= 2) {}
 
             final BufferedImage imgNew = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics g = imgNew.getGraphics();
             g.drawImage(capeImage, 0, 0, null);
             g.dispose();
 
-            this.cape = imgNew;
+            this.cape = this.applyTexture(imgNew);
             this.setHasStaticCape(true);
             this.setHasAnimatedCape(false);
             MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
         }
     }
-
-
-    public void applyEars(String ears) {
-        BufferedImage earImage = readTexture(ears);
-        BufferedImage imgNew = new BufferedImage(64, 32, BufferedImage.TYPE_INT_ARGB);
+    
+    /**
+     * Load the ears to the profile
+     * @param earImage
+     */
+    public void applyEars(BufferedImage earImage) {
+        final BufferedImage imgNew = new BufferedImage(64, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics g = imgNew.getGraphics();
         g.drawImage(earImage, 24, 0, null);
         g.dispose();
-        this.ears = imgNew;
+        this.ears = applyTexture(imgNew);
+        this.setHasEars(true);
     }
 
+    /**
+     * Sets the animated cape textures and loads all resources to memory
+     * @param animatedCape
+     */
+    public void setAnimatedCape(Int2IntArrayMap animatedCape) {
+        MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
+        this.animatedCape = animatedCape;
+        this.setHasStaticCape(false);
+        this.setHasAnimatedCape(true);
+    }
+    
     /**
      * Gets the current frame for the player
-     * @return Identifier
+     *
+     * @return resourcelocation
      */
-    private BufferedImage getCapeFrame() {
-        if(this.hasAnimatedCape) {
-            final long time = System.currentTimeMillis();
-            int capeInterval = 100;
-            if (time > lastFrameTime + capeInterval) {
-                int currentFrameNo = (lastFrame + 1 > getAnimatedCape().size() - 1) ? 0 : lastFrame + 1;
+    private int getFrame() {
+        final long time = System.currentTimeMillis();
+        if(time > lastFrameTime + capeInterval) {
+            int currentFrameNo = (lastFrame + 1 > animatedCape.size() - 1) ? 0 : lastFrame + 1;
+            
+            lastFrame = currentFrameNo;
+            lastFrameTime = time;
 
-                lastFrame = currentFrameNo;
-                lastFrameTime = time;
-
-                this.cape = getAnimatedCape().get(currentFrameNo);
-            }
+            return animatedCape.get(currentFrameNo);
         }
-        return this.cape;
+        return animatedCape.get(lastFrame);
     }
-
+    
     /**
-     * Returns the player's current cape resource
+     * Returns the player current cape resource
+     * @return
      */
-    public void bindCape() {
-        GetMinecraftInstance.getMinecraftInstance().textureManager.method_1088(this.getCapeFrame());
+    public int getCapeLocation() {
+        return hasStaticCape ? cape : hasAnimatedCape ? getFrame() : -1;
     }
-
+    
     /**
-     * Returns the player's ear resource
+     * Returns the players ear resource
+     * @return
      */
-    public void bindEars() {
-        GetMinecraftInstance.getMinecraftInstance().textureManager.method_1088(this.ears);
+    public int getEarLocation() {
+        return hasEars ? ears : -1;
+    }
+    
+    /**
+     * Applys a texture on the render thread
+     * @param bufferedImage
+     */
+    private int applyTexture(BufferedImage bufferedImage) {
+        Minecraft gameInstance = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
+        return gameInstance.textureManager.load(bufferedImage);
     }
 }

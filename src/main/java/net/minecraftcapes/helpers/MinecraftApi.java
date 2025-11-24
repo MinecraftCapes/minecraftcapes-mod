@@ -3,12 +3,15 @@ package net.minecraftcapes.helpers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraftcapes.MinecraftCapes;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.util.UUID;
+
+import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
 public class MinecraftApi {
 
@@ -19,14 +22,16 @@ public class MinecraftApi {
      * @return Players uuid
      */
     public static UUID getUUID(String username) {
+        MinecraftCapes.getLogger().debug("Making an API call for {}", username);
         JsonObject playerElement = getApiData(username);
         if (playerElement != null) {
             JsonElement playerUUID = playerElement.get("full_uuid");
             if (playerUUID != null && !playerUUID.isJsonNull()) {
+                MinecraftCapes.getLogger().debug("{} ({}) was found", username, playerUUID);
                 return UUID.fromString(playerUUID.getAsString());
             }
         }
-
+        MinecraftCapes.getLogger().debug("{} was not found", username);
         return null;
     }
 
@@ -38,8 +43,9 @@ public class MinecraftApi {
      */
     private static JsonObject getApiData(String data) {
         try {
-            URL url = new URL("https://minecraftapi.net/api/v1/profile/" + data);
-            HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection();
+            URI uri = URI.create("https://api.minecraftapi.net/api/v2/profile/" + data);
+            HttpURLConnection httpurlconnection = (HttpURLConnection) uri.toURL().openConnection();
+            httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
             httpurlconnection.setDoInput(true);
             httpurlconnection.setDoOutput(false);
             httpurlconnection.connect();
@@ -52,7 +58,7 @@ public class MinecraftApi {
 
                 //Read response
                 while ((inputLine = in.readLine()) != null)
-                response.append(inputLine);
+                    response.append(inputLine);
 
                 //Convert response to JSON
                 return JsonParser.parseString(response.toString()).getAsJsonObject();
