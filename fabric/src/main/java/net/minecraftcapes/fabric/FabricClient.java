@@ -21,7 +21,7 @@ public class FabricClient extends MinecraftCapes implements ClientModInitializer
 
 		//React to key pressed
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while(keyBinding.isDown()) {
+			while(keyBinding.consumeClick()) {
 				Minecraft.getInstance().setScreen(new MenuScreen());
 			}
 		});
