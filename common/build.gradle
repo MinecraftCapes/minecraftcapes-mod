@@ -1,11 +1,11 @@
 plugins {
     id "multiloader-common"
-    id "org.spongepowered.gradle.vanilla" version "0.2.1"
-    id "io.freefair.lombok" version "8.13.1"
+    id 'net.neoforged.moddev.legacyforge'
+    id "io.freefair.lombok"
 }
 
-minecraft {
-    version(minecraft_version)
+legacyForge {
+    mcpVersion = minecraft_version
 }
 
 dependencies {

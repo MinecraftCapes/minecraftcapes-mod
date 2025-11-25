@@ -1,7 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom' version "${fabric_loom_version}"
-    id "io.freefair.lombok" version "8.13.1"
+    id "io.freefair.lombok"
 }
 
 base {
@@ -27,7 +27,9 @@ repositories {
 dependencies {
     //Fabirc and Minecraft
     minecraft "com.mojang:minecraft:${minecraft_version}"
+
     mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
@@ -39,13 +41,6 @@ dependencies {
 }
 
 loom {
-    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
     runs {
         client {
             client()
