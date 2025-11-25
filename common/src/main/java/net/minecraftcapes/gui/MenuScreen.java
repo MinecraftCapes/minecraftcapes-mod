@@ -5,65 +5,94 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
 import org.spongepowered.asm.mixin.Unique;
 
 public class MenuScreen extends Screen {
-
-    private enum GuiOption {
-        CAPE,
-        EARS
-    }
-
+    
     public MenuScreen() {
         super(new TextComponent("MinecraftCapes"));
     }
-
+    
     @Override
     public void init() {
         int xOffset = this.width / 6 * 4;
+        int yOffset = this.height / 3;
         int i = 0;
-
-        //Custom Capes
-        this.addRenderableWidget(new Button(xOffset - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getMessage(GuiOption.CAPE), (button) -> {
-            MinecraftCapesConfig.setCapeVisible(!MinecraftCapesConfig.isCapeVisible());
-            button.setMessage(getMessage(GuiOption.CAPE));
+        
+        //Open MinecraftCapes
+        this.addRenderableWidget(new Button(xOffset - 75, yOffset, 150, 20, Component.nullToEmpty("Open MinecraftCapes"), (button) -> {
+            this.minecraft.setScreen(new ConfirmLinkScreen((openUrl) -> {
+                if(openUrl) {
+                    Util.getPlatform().openUri("https://minecraftcapes.net");
+                }
+                
+                this.minecraft.setScreen(this);
+            }, "https://minecraftcapes.net", true));
         }));
         i++;
-
-        //Custom Ears
-        this.addRenderableWidget(new Button(xOffset - 155 + i % 2 * 160, this.height / 6 + 24 * (i >> 1), 150, 20, getMessage(GuiOption.EARS), (button -> {
-            MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
-            button.setMessage(getMessage(GuiOption.EARS));
-        })));
+        
+        //For custom cape/ears onto new line
         i++;
-
+        
+        //Custom Capes
+        this.addRenderableWidget(
+                CycleButton
+                        .onOffBuilder(MinecraftCapesConfig.isCapeVisible())
+                        .create(
+                                xOffset - 155 + i % 2 * 160,
+                                yOffset + 24 * (i >> 1),
+                                150,
+                                20,
+                                Component.nullToEmpty("Custom Capes"),
+                                (button, value) -> MinecraftCapesConfig.setCapeVisible(value)
+                        )
+        );
+        i++;
+        
+        //Custom Ears
+        this.addRenderableWidget(
+                CycleButton
+                        .onOffBuilder(MinecraftCapesConfig.isEarsVisible())
+                        .create(
+                                xOffset - 155 + i % 2 * 160,
+                                yOffset + 24 * (i >> 1),
+                                150,
+                                20,
+                                Component.nullToEmpty("Custom Ears"),
+                                (button, value) -> MinecraftCapesConfig.setEarsVisible(value)
+                        )
+        );
+        i++;
+        
         //Force Reload Profile to get an extra line
         i++;
-
+        
         //Reload Profile
-        this.addRenderableWidget(new Button(xOffset - 75, this.height / 6 + 24 * (i >> 1), 150, 20, Component.nullToEmpty("Reload Profile"), (button -> {
+        this.addRenderableWidget(new Button(xOffset - 75, yOffset + 24 * (i >> 1), 150, 20, Component.nullToEmpty("Reload Profile"), (button -> {
             DownloadManager.prepareDownload(this.minecraft.player.getUUID(), this.minecraft.player.getName().getString(), true);
         })));
         i++;
-
+        
         //Done
-        this.addRenderableWidget(new Button(xOffset - 100, this.height / 6 + 24 * (i >> 1), 200, 20, new TranslatableComponent("gui.done"), (button) -> {
+        this.addRenderableWidget(new Button(xOffset - 100, yOffset + 24 * (i >> 1), 200, 20, CommonComponents.GUI_DONE, (button) -> {
             this.minecraft.setScreen(null);
         }));
     }
-
+    
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(poseStack);
@@ -79,29 +108,6 @@ public class MenuScreen extends Screen {
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
-    @Unique
-    private Component getMessage(GuiOption option) {
-        String onOff;
-
-        String buttonText = option.name();
-        boolean value = false;
-        if(option.equals(GuiOption.CAPE)) {
-            buttonText = "Custom Capes";
-            value = MinecraftCapesConfig.isCapeVisible();
-        } else if(option.equals(GuiOption.EARS)) {
-            buttonText = "Custom Ears";
-            value = MinecraftCapesConfig.isEarsVisible();
-        }
-
-        if(value) {
-            onOff = I18n.get("options.on");
-        } else {
-            onOff = I18n.get("options.off");
-        }
-
-        return Component.nullToEmpty(buttonText + ": " + onOff);
-    }
-    
     @Unique
     private void renderPlayer(int x, int y, int scale, LivingEntity param5) {
         PoseStack var2 = RenderSystem.getModelViewStack();

@@ -37,6 +37,6 @@ public class MinecraftCapes {
         MinecraftCapes.configDir = configDir.resolve(MOD_ID);
         MinecraftCapesConfig.loadConfig();
         
-        MinecraftCapes.getLogger().info("[MinecraftCapes] Initialised");
+        MinecraftCapes.getLogger().info("Initialised");
     }
 }
