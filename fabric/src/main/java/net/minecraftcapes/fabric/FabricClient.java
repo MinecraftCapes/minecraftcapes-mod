@@ -25,24 +25,5 @@ public class FabricClient extends MinecraftCapes implements ClientModInitializer
 				Minecraft.getInstance().setScreen(new MenuScreen());
 			}
 		});
-        
-        MinecraftCapes.getLogger().info("Initialised");
 	}
-
-	/**
-	 * Checks if a class exists or not
-	 * @param name
-	 * @return
-	 */
-	private boolean doesClassExist(String name) {
-		try {
-			Class c = Class.forName(name);
-			System.out.println(c);
-			if (c != null) {
-				return true;
-			}
-		} catch (ClassNotFoundException e) {}
-		return false;
-	}
-    
 }

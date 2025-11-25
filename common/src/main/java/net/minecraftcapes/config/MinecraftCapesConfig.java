@@ -7,7 +7,6 @@ import net.minecraftcapes.MinecraftCapes;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -19,12 +18,12 @@ public class MinecraftCapesConfig {
     private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static ConfigValues config = null;
+    @Getter private static ConfigValues config = new ConfigValues();
 
     /**
      * The config values
      */
-    class ConfigValues {
+    static class ConfigValues {
         private boolean capeVisible = true;
         private boolean earsVisible = true;
     }
@@ -72,8 +71,7 @@ public class MinecraftCapesConfig {
             Files.createDirectories(configFile.getParent());
 
             if(!configFile.toFile().exists()) {
-                InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
-                Files.copy(defaultConfigFile, configFile);
+                saveConfig();
             }
 
             Reader reader = new FileReader(configFile.toFile());

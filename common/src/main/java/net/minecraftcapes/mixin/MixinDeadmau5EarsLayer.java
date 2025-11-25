@@ -19,13 +19,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Deadmau5EarsLayer.class)
 public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-    
-    public MixinDeadmau5EarsLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> param0) {
-        super(param0);
+
+    public MixinDeadmau5EarsLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderLayerParent) {
+        super(renderLayerParent);
     }
-    
+
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V", at = @At("HEAD"), cancellable = true)
-    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, AbstractClientPlayer abstractClientPlayer, float param4, float param5, float param6, float param7, float param8, float param9, CallbackInfo ci) {
+    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
         //Cancel default render
         if(!abstractClientPlayer.getName().toString().equalsIgnoreCase("deadmau5")) {
             ci.cancel();
@@ -33,16 +33,16 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
 
         PlayerHandler playerHandler = PlayerHandler.get(abstractClientPlayer.getUUID());
         if (playerHandler.getEarLocation() != null && !abstractClientPlayer.isInvisible() && MinecraftCapesConfig.isEarsVisible()) {
-            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entitySolid(playerHandler.getEarLocation()));
-
-            int i = LivingEntityRenderer.getOverlayCoords(abstractClientPlayer, 0.0F);
+            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(playerHandler.getEarLocation()));
+            int overlayCoords = LivingEntityRenderer.getOverlayCoords(abstractClientPlayer, 0.0F);
 
             poseStack.pushPose();
+            float f2 = 1.3333334F;
+            poseStack.scale(f2, f2, f2);
             if(abstractClientPlayer.isCrouching()) {
                 poseStack.translate(0.0F, 0.2F, 0.0F);
             }
-            poseStack.scale(1.3333334F, 1.3333334F, 1.3333334F);
-            this.getParentModel().renderEars(poseStack, vertexConsumer, packedLightIn, i);
+            this.getParentModel().renderEars(poseStack, vertexConsumer, i, overlayCoords);
             poseStack.popPose();
         }
     }
