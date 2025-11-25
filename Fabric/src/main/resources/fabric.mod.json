@@ -1,27 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "minecraftcapes",
+  "id": "${mod_id}",
   "version": "${version}",
-  "name": "MinecraftCapes Mod",
-  "description": "Custom Cape, Elytras and Deadmau5 textures for Minecraft which everyone with the mod can see!",
-  "authors": [
-    "james090500",
-    "Siriuo"
-  ],
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": [ "james090500", "Siriuo" ],
   "contact": {
     "homepage": "https://minecraftcapes.net/",
     "issues": "https://minecraftcapes.net/discord"
   },
-  "license": "All Rights Reserved",
+  "license": "${license}",
   "icon": "logo.png",
-  "environment": "client",
   "entrypoints": {
     "client": [
-      "net.minecraftcapes.fabric.FabricImplementation"
+      "net.minecraftcapes.fabric.FabricClient"
+    ],
+    "server" : [
+      "net.minecraftcapes.fabric.FabricServer"
     ]
   },
   "mixins": [
-    "minecraftcapes.mixin.json"
+    {
+      "config": "${mod_id}.mixins.json",
+      "environment": "client"
+    }
   ],
   "depends": {
     "fabric-key-binding-api-v1": "*"

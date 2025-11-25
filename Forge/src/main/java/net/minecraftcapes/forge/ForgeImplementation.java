@@ -1,21 +1,21 @@
 package net.minecraftcapes.forge;
 
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.forge.events.KeyHandlerEvent;
 import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation extends MinecraftCapes {
-    public static KeyMapping keyMapping;
+    
     public ForgeImplementation() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
     }
     
     /**
@@ -23,19 +23,25 @@ public class ForgeImplementation extends MinecraftCapes {
      * @param event
      */
     public void clientSetup(FMLClientSetupEvent event) {
-        MinecraftCapes.onEnable();
+        MinecraftCapes.onEnable(FMLPaths.CONFIGDIR.get());
         
         //Register the events
         MinecraftForge.EVENT_BUS.register(new KeyHandlerEvent());
-        
-        //Try turn on capes
-        Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);
-    
+
         //Register the key
-        ForgeImplementation.keyMapping = new KeyMapping("key.minecraftcapes.gui", 74, "category.minecraftcapes.gui");
-        ClientRegistry.registerKeyBinding(keyMapping);
-        
-        MinecraftCapes.getLogger().info("Initialised");
+        ClientRegistry.registerKeyBinding(MinecraftCapes.KEY_MAPPING);
+    }
+    
+    /**
+     * This is the server setup event
+     * @param event
+     */
+    public void serverSetup(FMLDedicatedServerSetupEvent event) {
+        MinecraftCapes.getLogger().error("=============================================");
+        MinecraftCapes.getLogger().error("MinecraftCapes only needs to be on the client");
+        MinecraftCapes.getLogger().error("     You'll still see each others capes!");
+        MinecraftCapes.getLogger().error("     Please remove this from your server!");
+        MinecraftCapes.getLogger().error("=============================================");
     }
     
 }

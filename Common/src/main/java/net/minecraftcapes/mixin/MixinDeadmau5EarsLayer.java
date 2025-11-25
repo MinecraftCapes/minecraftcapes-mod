@@ -19,33 +19,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Deadmau5EarsLayer.class)
 public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-    public MixinDeadmau5EarsLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> p_116860_) {
-        super(p_116860_);
+
+    public MixinDeadmau5EarsLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderLayerParent) {
+        super(renderLayerParent);
     }
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V", at = @At("HEAD"), cancellable = true)
-    public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, AbstractClientPlayer abstractClientPlayer, float f, float g, float h, float j, float k, float l, CallbackInfo ci) {
         //Cancel default render
-        ci.cancel();
+        if(!abstractClientPlayer.getName().toString().equalsIgnoreCase("deadmau5")) {
+            ci.cancel();
+        }
 
-        PlayerHandler playerHandler = PlayerHandler.get(player);
-        if((playerHandler.getEarLocation() != null && !player.isInvisible() && MinecraftCapesConfig.isEarsVisible()) || player.getName().toString().equalsIgnoreCase("deadmau5")) {
-            //Check for Deadmau5
-            VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(playerHandler.getEarLocation()));
-            if(player.getName().toString().equalsIgnoreCase("deadmau5")) {
-                vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(player.getSkinTextureLocation()));
-            }
-
-            int i = LivingEntityRenderer.getOverlayCoords(player, 0.0F);
+        PlayerHandler playerHandler = PlayerHandler.get(abstractClientPlayer.getUUID());
+        if (playerHandler.getEarLocation() != null && !abstractClientPlayer.isInvisible() && MinecraftCapesConfig.isEarsVisible()) {
+            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(playerHandler.getEarLocation()));
+            int overlayCoords = LivingEntityRenderer.getOverlayCoords(abstractClientPlayer, 0.0F);
 
             poseStack.pushPose();
-            if(player.isCrouching()) {
-                poseStack.translate(0.0F, 0.25F, 0.0F);
+            float f2 = 1.3333334F;
+            poseStack.scale(f2, f2, f2);
+            if(abstractClientPlayer.isCrouching()) {
+                poseStack.translate(0.0F, 0.2F, 0.0F);
             }
-            poseStack.scale(1.3333334F, 1.3333334F, 1.3333334F);
-            this.getParentModel().renderEars(poseStack, vertexConsumer, packedLightIn, i);
+            this.getParentModel().renderEars(poseStack, vertexConsumer, i, overlayCoords);
             poseStack.popPose();
         }
     }
-
 }

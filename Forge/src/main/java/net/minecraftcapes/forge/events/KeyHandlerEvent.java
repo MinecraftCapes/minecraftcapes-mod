@@ -2,7 +2,6 @@ package net.minecraftcapes.forge.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.forge.ForgeImplementation;
 import net.minecraftcapes.gui.MenuScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -15,7 +14,7 @@ public class KeyHandlerEvent {
     @SubscribeEvent
     public static void onKeyPress(TickEvent.ClientTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
-            if (ForgeImplementation.keyMapping.isDown()) {
+            if (MinecraftCapes.KEY_MAPPING.consumeClick()) {
                 Minecraft.getInstance().setScreen(new MenuScreen());
             }
         }
