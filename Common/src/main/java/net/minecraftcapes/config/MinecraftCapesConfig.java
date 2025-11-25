@@ -2,35 +2,28 @@ package net.minecraftcapes.config;
 
 import com.google.gson.Gson;
 import lombok.Getter;
-import net.minecraft.CrashReport;
-import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class MinecraftCapesConfig {
 
     //File locations
-    private static File runDirectory = Minecraft.getInstance().gameDirectory;
-    @Getter private static File modDirectory = new File(Minecraft.getInstance().gameDirectory + "/config/" + MinecraftCapes.MOD_ID);
-    private static Path configFile = Paths.get(runDirectory + "/config/minecraftcapes.json");
+    private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static MinecraftCapesConfig.ConfigValues config = null;
+    @Getter private static ConfigValues config = new ConfigValues();
 
     /**
      * The config values
      */
-    class ConfigValues {
+    static class ConfigValues {
         private boolean capeVisible = true;
         private boolean earsVisible = true;
     }
@@ -74,22 +67,20 @@ public class MinecraftCapesConfig {
      */
     public static void loadConfig() {
         try {
-            if(!configFile.toFile().exists()) {
-                InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
-                Files.copy(defaultConfigFile, configFile);
-            }
-
             //Create mod directory
-            modDirectory.mkdir();
+            Files.createDirectories(configFile.getParent());
+
+            if(!configFile.toFile().exists()) {
+                saveConfig();
+            }
 
             Reader reader = new FileReader(configFile.toFile());
             config = new Gson().fromJson(reader, ConfigValues.class);
             reader.close();
         } catch(IOException e) {
-            CrashReport crashreport = new CrashReport("Config error", e);
-            configFile.toFile().delete();
-            Minecraft.crash(crashreport);
-            e.printStackTrace();
+            if(configFile.toFile().delete()) {
+                loadConfig();
+            }
         }
     }
 

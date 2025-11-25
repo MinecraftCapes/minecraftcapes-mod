@@ -8,43 +8,36 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapes;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerHandler {
-
-    private static HashMap<UUID, PlayerHandler> instances = new HashMap<>();
-
+    
+    private static final HashMap<UUID, PlayerHandler> instances = new HashMap<>();
+    
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
     @Setter private boolean hasAnimatedCape = false;
-    @Getter @Setter private Boolean showCape = true;
-    @Getter @Setter private Boolean forceShowElytra = false;
-    @Getter @Setter private Boolean forceHideElytra = false;
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
-
+    
     @Getter
     private Int2ObjectMap<NativeImage> animatedCape;
-
+    
     //Animated Cape Settings
     private long lastFrameTime = 0;
     private int lastFrame = 0;
     private int capeInterval = 100;
-
+    
     public PlayerHandler(UUID uuid) {
         this.playerUUID = uuid;
         PlayerHandler.instances.put(playerUUID, this);
     }
-
+    
     /**
      * Tries to get the PlayerHandler instance from a player
      * @param uuid the players uuid
@@ -54,25 +47,6 @@ public class PlayerHandler {
         PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
         return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
     }
-
-    /**
-     * Tries to get the PlayerHandler instance from a player
-     * @param player the player
-     * @return The player handler
-     */
-    public static PlayerHandler get(Player player) {
-        return get(player.getUUID());
-    }
-    
-    /**
-     * Tries to get the PlayerHandler instance from a player
-     * @param player the player
-     * @return The player handler
-     */
-    @Deprecated
-    public static PlayerHandler getFromPlayer(Player player) {
-        return get(player.getUUID());
-    }
     
     /**
      * Remove a player
@@ -81,30 +55,12 @@ public class PlayerHandler {
     public static void remove(UUID uuid) {
         instances.remove(uuid);
     }
-
-    /**
-     * Reads a base64 string and converts it to a NativeImage
-     * @param textureBase64
-     * @return
-     */
-    private NativeImage readTexture(String textureBase64) {
-        try {
-            byte[] imgBytes = Base64.getDecoder().decode(textureBase64);
-            ByteArrayInputStream bias = new ByteArrayInputStream(imgBytes);
-            return NativeImage.read(bias);
-        } catch (IOException e) {
-            MinecraftCapes.getLogger().error(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
-
+    
     /**
      * Gets the cape texture and resizes or splits it accordingly
-     * @param cape
+     * @param capeImage
      */
-    public void applyCape(String cape) {
-        NativeImage capeImage = readTexture(cape);
+    public void applyCape(NativeImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
             Int2ObjectMap<NativeImage> animatedCapeFrames = new Int2ObjectOpenHashMap<>();
@@ -123,16 +79,16 @@ public class PlayerHandler {
         } else {
             int imageWidth = 64;
             int imageHeight = 32;
-
+            
             for (int srcWidth = capeImage.getWidth(), srcHeight = capeImage.getHeight(); imageWidth < srcWidth || imageHeight < srcHeight; imageWidth *= 2, imageHeight *= 2) {}
-
+            
             final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
             for (int x = 0; x < capeImage.getWidth(); x++) {
                 for (int y = 0; y < capeImage.getHeight(); y++) {
                     imgNew.setPixelRGBA(x, y, capeImage.getPixelRGBA(x, y));
                 }
             }
-
+            
             capeImage.close();
             this.applyTexture(new ResourceLocation(MinecraftCapes.MOD_ID, "capes/" + playerUUID), imgNew);
             this.setHasStaticCape(true);
@@ -140,17 +96,16 @@ public class PlayerHandler {
             MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
         }
     }
-
+    
     /**
      * Load the ears to the profile
-     * @param ears
+     * @param earImage
      */
-    public void applyEars(String ears) {
-        NativeImage earImage = readTexture(ears);
+    public void applyEars(NativeImage earImage) {
         applyTexture(new ResourceLocation(MinecraftCapes.MOD_ID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);
     }
-
+    
     /**
      * Sets the animated cape textures and loads all resources to memory
      * @param animatedCape
@@ -162,9 +117,9 @@ public class PlayerHandler {
         this.setHasAnimatedCape(true);
         this.loadFramesToResource();
     }
-
+    
     /**
-     * Load all NativeImages into a ResourceLocation
+     * Load all NativeImages into a resourcelocation
      */
     private void loadFramesToResource() {
         MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
@@ -173,24 +128,24 @@ public class PlayerHandler {
             applyTexture(currentResource, nativeImage);
         });
     }
-
+    
     /**
      * Gets the current frame for the player
-     * @return ResourceLocation
+     * @return resourcelocation
      */
     private ResourceLocation getFrame() {
         final long time = System.currentTimeMillis();
         if(time > lastFrameTime + capeInterval) {
             int currentFrameNo = (lastFrame + 1 > getAnimatedCape().size() - 1) ? 0 : lastFrame + 1;
-
+            
             lastFrame = currentFrameNo;
             lastFrameTime = time;
-
+            
             return new ResourceLocation(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, currentFrameNo));
         }
         return new ResourceLocation(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, lastFrame));
     }
-
+    
     /**
      * Returns the player current cape resource
      * @return
@@ -198,7 +153,7 @@ public class PlayerHandler {
     public ResourceLocation getCapeLocation() {
         return hasStaticCape ? new ResourceLocation(MinecraftCapes.MOD_ID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
     }
-
+    
     /**
      * Returns the players ear resource
      * @return
@@ -206,37 +161,13 @@ public class PlayerHandler {
     public ResourceLocation getEarLocation() {
         return hasEars ? new ResourceLocation(MinecraftCapes.MOD_ID, "ears/" + playerUUID) : null;
     }
-
+    
     /**
      * Applys a texture on the render thread
-     * @param resourceLocation
+     * @param resourcelocation
      * @param nativeImage
      */
-    private void applyTexture(ResourceLocation resourceLocation, NativeImage nativeImage) {
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(resourceLocation, new DynamicTexture(nativeImage)));
+    private void applyTexture(ResourceLocation resourcelocation, NativeImage nativeImage) {
+        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(resourcelocation, new DynamicTexture(nativeImage)));
     }
-
-    /**
-     * A nice to string thing
-     * @return
-     */
-    @Override
-    public String toString() {
-
-        return "PlayerHandler{" +
-                "hasStaticCape=" + hasStaticCape +
-                ", hasEars=" + hasEars +
-                ", hasAnimatedCape=" + hasAnimatedCape +
-                ", showCape=" + showCape +
-                ", hasCapeGlint=" + hasCapeGlint +
-                ", upsideDown=" + upsideDown +
-                ", hasInfo=" + hasInfo +
-                ", playerUUID=" + playerUUID +
-                ", animatedCape=" + animatedCape +
-                ", lastFrameTime=" + lastFrameTime +
-                ", lastFrame=" + lastFrame +
-                ", capeInterval=" + capeInterval +
-                '}';
-    }
-
 }
