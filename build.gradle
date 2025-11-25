@@ -8,7 +8,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
 
 base {
-    archivesName = "${project.mod_name} Fabric ${project.minecraft_version}"
+    archivesName = "${project.mod_name} Babric ${project.minecraft_version}"
 }
 
 version = project.version
