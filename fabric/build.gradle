@@ -1,0 +1,61 @@
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom' version "${fabric_loom_version}"
+    id "io.freefair.lombok"
+}
+
+base {
+    archivesName = "${mod_name} Fabric ${minecraft_version}"
+}
+
+repositories {
+    //Modrinth
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+    maven { url 'https://maven.covers1624.net/' }
+}
+
+dependencies {
+    //Fabirc and Minecraft
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+
+    mappings loom.officialMojangMappings()
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    // Auth
+    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
+
+    //Mod Menu
+    modLocalRuntime "maven.modrinth:modmenu:8.0.1"
+}
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run/client")
+            programArgs '--username=james090500'
+//            programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+//            mainClass.set 'net.covers1624.devlogin.DevLogin'
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("run/server")
+        }
+    }
+}

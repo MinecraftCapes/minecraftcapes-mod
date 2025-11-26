@@ -1,0 +1,31 @@
+plugins {
+    id 'multiloader-loader'
+    id 'io.freefair.lombok'
+    id 'net.neoforged.gradle.userdev' version '7.1.4'
+    id 'net.neoforged.gradle.mixin' version '7.0.0-SNAPSHOT'
+}
+
+base {
+    archivesName = "${mod_name} NeoForge ${minecraft_version}"
+}
+
+mixin {
+    config "${mod_id}.mixins.json"
+}
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neoforge_version}"
+}
+
+runs {
+    configureEach { run ->
+        run.modSource sourceSets.main
+    }
+
+    client {
+        client()
+        arguments "--username=james090500"
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
