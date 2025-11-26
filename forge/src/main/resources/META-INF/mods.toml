@@ -1,0 +1,15 @@
+modLoader="javafml" #mandatory
+loaderVersion="${forge_loader_version_range}" #mandatory
+license="${license}"#mandatory
+
+issueTrackerURL="https://minecraftcapes.net/discord"
+displayURL="https://minecraftcapes.net/"
+
+logoFile="logo.png"
+authors="james090500, Siriuo"
+
+[[mods]]
+modId="${mod_id}" #mandatory
+version="${version}"
+displayName="${mod_name}"
+description='''${description}'''
