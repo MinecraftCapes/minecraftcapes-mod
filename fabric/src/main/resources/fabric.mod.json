@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": [ "james090500", "Siriuo" ],
+  "contact": {
+    "homepage": "https://minecraftcapes.net/",
+    "issues": "https://minecraftcapes.net/discord"
+  },
+  "license": "${license}",
+  "icon": "logo.png",
+  "entrypoints": {
+    "client": [
+      "net.minecraftcapes.fabric.FabricClient"
+    ],
+    "server" : [
+      "net.minecraftcapes.fabric.FabricServer"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "${mod_id}.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabric-key-binding-api-v1": "*"
+  }
+}

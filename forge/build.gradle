@@ -1,0 +1,64 @@
+plugins {
+    id 'multiloader-loader'
+    id 'io.freefair.lombok'
+    id 'net.neoforged.moddev.legacyforge'
+}
+
+base {
+    archivesName = "${mod_name} Forge ${minecraft_version}"
+}
+
+mixin {
+    add(sourceSets.main, "${mod_id}.refmap.json")
+    config("${mod_id}.mixins.json")
+}
+
+repositories {
+    maven { url 'https://maven.covers1624.net/' }
+}
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    runs {
+        client {
+            client()
+            programArgument "--username=james090500"
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+jar {
+    finalizedBy('reobfJar')
+    manifest {
+        attributes([
+                'MixinConfigs': "${mod_id}.mixins.json",
+        ])
+    }
+}
+
+processResources {
+    //Dont use common access transformer
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourcesJar {
+    //Dont use common access transformer
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+dependencies {
+    //Dev Login
+    runtimeOnly 'net.covers1624:DevLogin:0.1.0.5'
+
+    //Mixins
+    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+}
