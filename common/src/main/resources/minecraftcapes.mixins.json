@@ -7,7 +7,6 @@
   "client" : [
     "MixinCapeLayer",
     "MixinDeadmau5EarsLayer",
-    "MixinLivingEntityRenderer",
     "MixinPlayerEarsModel",
     "MixinPlayerInfo",
     "MixinPlayerRenderer",

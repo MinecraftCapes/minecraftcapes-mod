@@ -3,6 +3,7 @@ package net.minecraftcapes.mixin;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraftcapes.player.ExtendedRenderState;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,11 +16,14 @@ public class MixinPlayerRenderer {
     
     @Inject(method = "extractRenderState(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V", at = @At(value = "TAIL"))
     public void extractRenderState(AbstractClientPlayer abstractClientPlayer, PlayerRenderState playerRenderState, float p_364121_, CallbackInfo ci) {
-        ExtendedRenderState minecraftcapes$playerRenderState = (ExtendedRenderState) playerRenderState;
+        ExtendedRenderState extendedRenderState = (ExtendedRenderState) playerRenderState;
         PlayerHandler playerHandler = PlayerHandler.get(abstractClientPlayer.getUUID());
-        
-        playerRenderState.isUpsideDown = playerHandler.isUpsideDown();
-        minecraftcapes$playerRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
-        minecraftcapes$playerRenderState.minecraftcapes$setGapeGlint(playerHandler.getHasCapeGlint());
+        if(playerHandler.getHasInfo()) {
+            playerRenderState.isUpsideDown = playerHandler.isUpsideDown();
+            extendedRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
+            extendedRenderState.minecraftcapes$setGapeGlint(playerHandler.getHasCapeGlint());
+            extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
+            extendedRenderState.minecraftcapes$setEarsTexture(playerHandler.getEarLocation());
+        }
     }
 }

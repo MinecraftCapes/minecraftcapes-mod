@@ -1,4 +1,4 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.player;
 
 import net.minecraft.resources.ResourceLocation;
 

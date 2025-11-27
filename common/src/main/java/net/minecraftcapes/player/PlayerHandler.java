@@ -71,7 +71,7 @@ public class PlayerHandler {
                 NativeImage frame = new NativeImage(capeImage.getWidth(), capeImage.getWidth() / 2, true);
                 for (int x = 0; x < frame.getWidth(); x++) {
                     for (int y = 0; y < frame.getHeight(); y++) {
-                        frame.setPixelRGBA(x, y, capeImage.getPixelRGBA(x, y + (currentFrame * (capeImage.getWidth() / 2))));
+                        frame.setPixel(x, y, capeImage.getPixel(x, y + (currentFrame * (capeImage.getWidth() / 2))));
                     }
                 }
                 animatedCapeFrames.put(currentFrame, frame);
@@ -87,7 +87,7 @@ public class PlayerHandler {
             final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
             for (int x = 0; x < capeImage.getWidth(); x++) {
                 for (int y = 0; y < capeImage.getHeight(); y++) {
-                    imgNew.setPixelRGBA(x, y, capeImage.getPixelRGBA(x, y));
+                    imgNew.setPixel(x, y, capeImage.getPixel(x, y));
                 }
             }
             
