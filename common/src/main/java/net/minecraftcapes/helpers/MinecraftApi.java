@@ -3,12 +3,13 @@ package net.minecraftcapes.helpers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.util.UUID;
 
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
@@ -22,16 +23,16 @@ public class MinecraftApi {
      * @return Players uuid
      */
     public static UUID getUUID(String username) {
-        MinecraftCapes.getLogger().warn("Making an API call for {}", username);
+        MinecraftCapes.getLogger().debug("Making an API call for {}", username);
         JsonObject playerElement = getApiData(username);
         if (playerElement != null) {
             JsonElement playerUUID = playerElement.get("full_uuid");
             if (playerUUID != null && !playerUUID.isJsonNull()) {
-                MinecraftCapes.getLogger().warn("{} ({}) was found", username, playerUUID);
+                MinecraftCapes.getLogger().debug("{} ({}) was found", username, playerUUID);
                 return UUID.fromString(playerUUID.getAsString());
             }
         }
-        MinecraftCapes.getLogger().warn("{} was not found", username);
+        MinecraftCapes.getLogger().debug("{} was not found", username);
         return null;
     }
 
@@ -43,8 +44,8 @@ public class MinecraftApi {
      */
     private static JsonObject getApiData(String data) {
         try {
-            URL url = new URL("https://api.minecraftapi.net/api/v2/profile/" + data);
-            HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection();
+            URI uri = URI.create("https://api.minecraftapi.net/api/v2/profile/" + data);
+            HttpURLConnection httpurlconnection = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
             httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
             httpurlconnection.setDoInput(true);
             httpurlconnection.setDoOutput(false);

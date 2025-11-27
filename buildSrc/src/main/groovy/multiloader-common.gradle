@@ -9,6 +9,7 @@ base {
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    sourceCompatibility = targetCompatibility = java_version
     withSourcesJar()
     withJavadocJar()
 }
@@ -33,19 +34,6 @@ repositories {
             }
         }
         filter { includeGroupAndSubgroups("org.spongepowered") }
-    }
-    exclusiveContent {
-        forRepositories(
-                maven {
-                    name = 'ParchmentMC'
-                    url = 'https://maven.parchmentmc.org/'
-                },
-                maven {
-                    name = "NeoForge"
-                    url = 'https://maven.neoforged.net/releases'
-                }
-        )
-        filter { includeGroup('org.parchmentmc.data') }
     }
     maven {
         name = 'BlameJared'
@@ -103,10 +91,10 @@ processResources {
             "mod_id": mod_id,
             "license": license,
             "description": project.description,
-            "neoforge_version": neoforge_version,
-            "neoforge_loader_version_range": neoforge_loader_version_range,
             "forge_version": forge_version,
             "forge_loader_version_range": forge_loader_version_range,
+            "neoforge_version": neoforge_version,
+            "neoforge_loader_version_range": neoforge_loader_version_range,
             "credits": credits,
             "java_version": java_version
     ]
@@ -115,18 +103,4 @@ processResources {
         expand expandProps
     }
     inputs.properties(expandProps)
-}
-
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url System.getenv("local_maven_url")
-        }
-    }
 }
