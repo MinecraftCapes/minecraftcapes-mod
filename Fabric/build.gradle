@@ -1,9 +1,7 @@
 plugins {
-    id 'java'
-    id 'idea'
-    id 'maven-publish'
-    id 'fabric-loom' version '1.3-SNAPSHOT'
-    id "io.freefair.lombok" version "8.4"
+    id 'multiloader-loader'
+    id 'fabric-loom' version "${fabric_loom_version}"
+    id "io.freefair.lombok"
 }
 
 base {
@@ -23,89 +21,41 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
-
-    // Trinkets
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-    }
-    maven {
-        name = "Ladysnake Libs"
-        url = "https://maven.ladysnake.org/releases"
-    }
+    maven { url 'https://maven.covers1624.net/' }
 }
 
 dependencies {
-    //Fabric and Minecraft
+    //Fabirc and Minecraft
     minecraft "com.mojang:minecraft:${minecraft_version}"
+
     mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    //Common
-    implementation project(":Common")
+    // Auth
+    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
 
-    //Auth and Mod Menu
-    modLocalRuntime "maven.modrinth:sodium:mc1.20.3-0.5.4"
-
-    modLocalRuntime "maven.modrinth:modmenu:9.0.0-pre.1"
-    modLocalRuntime "maven.modrinth:auth-me:8.0.0+1.20.2"
-    modLocalRuntime "maven.modrinth:cloth-config:12.0.109+fabric"
-
-    //Libs
-    modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.1.0"
-    modCompileOnly "maven.modrinth:armor-visibility:9.0.1+1.20.1-fabric"
-    modCompileOnly "dev.emi:trinkets:3.8.0"
-
+    //Mod Menu
+    modLocalRuntime "maven.modrinth:modmenu:9.0.0"
 }
 
 loom {
-    if (project(":Common").file("src/main/resources/${mod_id}.accesswidener").exists()) {
-        accessWidenerPath.set(project(":Common").file("src/main/resources/${mod_id}.accesswidener"))
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
     runs {
         client {
             client()
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
-            runDir("run")
+            runDir("run/client")
+            programArgs '--username=james090500'
+//            programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+//            mainClass.set 'net.covers1624.devlogin.DevLogin'
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir("run")
-        }
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    source(project(":Common").sourceSets.main.allSource)
-}
-tasks.withType(Javadoc).configureEach {
-    source(project(":Common").sourceSets.main.allJava)
-}
-tasks.named("sourcesJar", Jar) {
-    from(project(":Common").sourceSets.main.allSource)
-}
-
-processResources {
-    from project(":Common").sourceSets.main.resources
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
+            runDir("run/server")
         }
     }
 }

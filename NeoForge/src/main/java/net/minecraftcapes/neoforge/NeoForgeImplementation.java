@@ -1,16 +1,14 @@
 package net.minecraftcapes.neoforge;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.neoforge.client.ClientForgeEvents;
-import net.minecraftcapes.neoforge.client.ClientModEvents;
-import net.minecraftcapes.neoforge.server.ServerModEvents;
+import net.minecraftcapes.neoforge.events.KeyHandlerEvent;
+import net.minecraftcapes.neoforge.events.RegisterKeyEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(MinecraftCapes.MOD_ID)
@@ -26,28 +24,22 @@ public class NeoForgeImplementation {
      */
     @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MinecraftCapes.onEnable();
-            
-            //Try turn on capes
-            Minecraft.getInstance().options.toggleModelPart(PlayerModelPart.CAPE, true);
-            
-            //Register the events
-            NeoForge.EVENT_BUS.register(ClientForgeEvents.class);
-            NeoForge.EVENT_BUS.register(ClientModEvents.class);
-            
-            MinecraftCapes.getLogger().info("Initialised");
-        });
+        MinecraftCapes.onEnable(FMLPaths.CONFIGDIR.get());
+        
+        //Register the events
+        NeoForge.EVENT_BUS.register(KeyHandlerEvent.class);
+        NeoForge.EVENT_BUS.register(RegisterKeyEvent.class);
     }
     
     /**
-     * This client setup event
+     * This is the server setup event
+     * @param event
      */
-    @SubscribeEvent
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
-        event.enqueueWork(() -> {
-            //Register the events
-            NeoForge.EVENT_BUS.register(ServerModEvents.class);
-        });
+        MinecraftCapes.getLogger().error("=============================================");
+        MinecraftCapes.getLogger().error("MinecraftCapes only needs to be on the client");
+        MinecraftCapes.getLogger().error("     You'll still see each others capes!");
+        MinecraftCapes.getLogger().error("     Please remove this from your server!");
+        MinecraftCapes.getLogger().error("=============================================");
     }
 }
