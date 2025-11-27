@@ -1,24 +1,22 @@
 package net.minecraftcapes.forge;
 
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.forge.client.ClientForgeEvents;
-import net.minecraftcapes.forge.client.ClientModEvents;
-import net.minecraftcapes.forge.server.ServerModEvents;
+import net.minecraftcapes.forge.events.KeyHandlerEvent;
+import net.minecraftcapes.forge.events.RegisterKeyEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
-import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation {
-
-    private BusGroup busGroup;
+    
+    private final BusGroup busGroup;
     
     public ForgeImplementation(FMLJavaModLoadingContext context) {
         busGroup = context.getModBusGroup();
@@ -28,28 +26,26 @@ public class ForgeImplementation {
     
     /**
      * This client setup event
+     * @param event
      */
-    @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MinecraftCapes.onEnable();
-
-            //Register the events
-            TickEvent.ClientTickEvent.Pre.BUS.addListener(ClientForgeEvents::onClickTick);
-            RegisterKeyMappingsEvent.getBus(busGroup).addListener(ClientModEvents::registerKeyBinding);
-            
-            MinecraftCapes.getLogger().info("Initialised");
-        });
+        MinecraftCapes.onEnable(FMLPaths.CONFIGDIR.get());
+        
+        //Register the events
+        TickEvent.ClientTickEvent.Post.BUS.addListener(KeyHandlerEvent::onKeyPress);
+        RegisterKeyMappingsEvent.getBus(busGroup).addListener(RegisterKeyEvent::registerKeyBinding);
     }
     
     /**
-     * This client setup event
+     * This is the server setup event
+     * @param event
      */
-    @SubscribeEvent
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
-        event.enqueueWork(() -> {
-            //Register the events
-            MinecraftForge.EVENT_BUS.register(ServerModEvents.class);
-        });
+        MinecraftCapes.getLogger().error("=============================================");
+        MinecraftCapes.getLogger().error("MinecraftCapes only needs to be on the client");
+        MinecraftCapes.getLogger().error("     You'll still see each others capes!");
+        MinecraftCapes.getLogger().error("     Please remove this from your server!");
+        MinecraftCapes.getLogger().error("=============================================");
     }
+    
 }
