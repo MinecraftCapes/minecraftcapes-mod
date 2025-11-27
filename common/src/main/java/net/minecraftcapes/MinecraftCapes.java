@@ -24,10 +24,10 @@ public class MinecraftCapes {
     private static final Logger logger = LoggerFactory.getLogger(MOD_NAME);
     
     public static final KeyMapping KEY_MAPPING = new KeyMapping(
-            "Open GUI",
+            "key.minecraftcapes.gui",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_J,
-            "MinecraftCapes"
+            "category.minecraftcapes.gui"
     );
     
     public static void onEnable(Path configDir) {
