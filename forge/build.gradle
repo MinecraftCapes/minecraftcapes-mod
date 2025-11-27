@@ -1,7 +1,7 @@
 plugins {
     id 'multiloader-loader'
-    id 'io.freefair.lombok' version "8.6"
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'io.freefair.lombok'
+    id 'net.minecraftforge.gradle' version '[6.0.36,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
@@ -14,54 +14,35 @@ mixin {
     config("${mod_id}.mixins.json")
 }
 
-repositories {
-    maven { url 'https://maven.covers1624.net/' }
-}
-
 // Automatically enable forge AccessTransformers if the file exists
 // This location is hardcoded in FML and can not be changed.
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
-    // Tell FG to not automtically create the reobf tasks, as we now use Official mappings at runtime, If you don't use them at dev time then you'll have to fix your reobf yourself.
-    reobf = false
-
     //Calls processResources when in dev
     copyIdeResources = true
 
-    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformer = at
-    }
+    // Forge 1.20.6+ uses official mappings at runtime, so we shouldn't reobf from official to SRG
+    reobf = false
 
     runs {
         configureEach {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            property 'eventbus.api.strictRuntimeChecks', 'true'
         }
         client {
-            main 'net.covers1624.devlogin.DevLogin'
-            args '--launch_target', 'net.minecraftforge.bootstrap.ForgeBootstrap'
             property 'forge.enabledGameTestNamespaces', project.mod_id
-        }
-        server {
-            property 'forge.enabledGameTestNamespaces', project.mod_id
-            args '--nogui'
-        }
-
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        data {
-            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            arg("--username=james090500")
+            mods {
+                modClientRun {
+                    source sourceSets.main
+                }
+            }
         }
     }
 }
 
-// As of 1.20.6 Forge no longer has reobf tasks. This has broken mixins adding configs correctly into the manifest file
-// See: https://github.com/SpongePowered/MixinGradle/blob/f800b26d2b180d98d9aa9355e5b3086d71218508/src/main/groovy/org/spongepowered/asm/gradle/plugins/MixinExtension.groovy#L184
-// Instead, we will do it ourselves.
 jar {
     manifest {
         attributes([
@@ -70,45 +51,22 @@ jar {
     }
 }
 
-processResources {
-    //Dont use common access transformer
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-sourcesJar {
-    //Dont use common access transformer
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    //Dev Login
-    runtimeOnly 'net.covers1624:DevLogin:0.1.0.5'
-
     //Mixins
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    //Mixins Extra
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
-        jarJar.ranged(it, "[0.4.1,)")
+    //Mixin Extras
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")) {
+        jarJar.ranged(it, "[0.5.0,)")
     }
 
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
-}
-
-// Implement mixinextras properly into the jar.
-tasks.named("assemble").configure {
-    dependsOn("jarJar")
-}
-
-// Implement mixinextras properly into the jar.
-tasks.named("jarJar", Jar) {
-    archiveClassifier.set("")
 }
 
 // Merge the resources and classes into the same directory.
@@ -119,4 +77,23 @@ sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
+}
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'forge')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'forge')
+            }
+        }
+    }
 }
