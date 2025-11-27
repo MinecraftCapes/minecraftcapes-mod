@@ -1,80 +1,66 @@
 plugins {
     id 'multiloader-loader'
-    id 'io.freefair.lombok' version "8.6"
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom'
+    id "io.freefair.lombok"
 }
 
 base {
     archivesName = "${mod_name} Fabric ${minecraft_version}"
 }
 
-repositories {
-    //Modrinth
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-        }
-        filter {
-            includeGroup "maven.modrinth"
-        }
-    }
-
-    // Trinkets
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-    }
-    maven {
-        name = "Ladysnake Libs"
-        url = "https://maven.ladysnake.org/releases"
-    }
-    maven { url 'https://maven.covers1624.net/' }
-}
-
 dependencies {
+    //Fabirc and Minecraft
     minecraft "com.mojang:minecraft:${minecraft_version}"
+
     mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    //Auth
-    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
-
-    //Auth, Mod Menu and Sodium
-    modLocalRuntime "maven.modrinth:sodium:mc1.21-0.5.11"
-    modLocalRuntime "maven.modrinth:modmenu:11.0.0"
-
-    //Libs
-    //modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:6.1.0"
-    //modCompileOnly "maven.modrinth:armor-visibility:20.4.1-fabric"
-    modCompileOnly "dev.emi:trinkets:3.9.0"
+    //Mod Menu
+    modLocalRuntime "maven.modrinth:modmenu:11.0.3"
 }
 
 loom {
-    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
     runs {
         client {
             client()
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
-            programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
-            mainClass.set 'net.covers1624.devlogin.DevLogin'
-            runDir("runs/client")
+            runDir("run/client")
+            programArgs '--username=james090500'
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir("runs/server")
+            runDir("run/server")
+        }
+    }
+}
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'fabric')
+            }
+        }
+    }
+}
+loom.remapConfigurations.configureEach {
+    configurations.named(it.name) {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
         }
     }
 }
