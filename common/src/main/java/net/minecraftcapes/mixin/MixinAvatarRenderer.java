@@ -32,7 +32,6 @@ public abstract class MixinAvatarRenderer<AvatarlikeEntity extends Avatar & Clie
             avatarRenderState.showExtraEars = MinecraftCapesConfig.isEarsVisible() && playerHandler.getEarLocation() != null;
             extendedRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
             extendedRenderState.minecraftcapes$setGapeGlint(playerHandler.getHasCapeGlint());
-            extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
             extendedRenderState.minecraftcapes$setEarsTexture(playerHandler.getEarLocation());
         }
     }

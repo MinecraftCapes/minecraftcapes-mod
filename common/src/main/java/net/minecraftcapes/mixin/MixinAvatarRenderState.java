@@ -16,9 +16,6 @@ public class MixinAvatarRenderState implements ExtendedRenderState {
     private boolean minecraftcapes$capeGlint;
     
     @Unique
-    private boolean minecraftcapes$earsEnabled;
-    
-    @Unique
     private ResourceLocation minecraftcapes$earsTexture;
     
     @Override
@@ -39,16 +36,6 @@ public class MixinAvatarRenderState implements ExtendedRenderState {
     @Override
     public boolean minecraftcapes$hasCapeGlint() {
         return this.minecraftcapes$capeGlint;
-    }
-    
-    @Override
-    public void minecraftcapes$setEarsEnabled(boolean value) {
-        this.minecraftcapes$earsEnabled = value;
-    }
-    
-    @Override
-    public boolean minecraftcapes$getEarsEnabled() {
-        return this.minecraftcapes$earsEnabled;
     }
     
     @Override

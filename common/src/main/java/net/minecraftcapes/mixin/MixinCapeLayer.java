@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.entity.layers.CapeLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraftcapes.player.ExtendedRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,20 +27,20 @@ public abstract class MixinCapeLayer extends RenderLayer<AvatarRenderState, Play
     private void submit(SubmitNodeCollector instance, Model model, Object object, PoseStack poseStack, RenderType renderType, int p_432874_, int overlay, int outlineColor, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, @Local AvatarRenderState avatarRenderState) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
         if(extendedRenderState.minecraftcapes$getCapeEnabled()) {
-            instance.order(0).submitModel(model, object, poseStack, RenderType.armorCutoutNoCull(avatarRenderState.skin.cape().texturePath()), p_432874_, overlay, -1, null, outlineColor, null);
+            instance.order(0).submitModel(model, object, poseStack, RenderType.armorCutoutNoCull(avatarRenderState.skin.cape().texturePath()), p_432874_, overlay, -1, null, outlineColor, crumblingOverlay);
             if(extendedRenderState.minecraftcapes$hasCapeGlint()) {
-                instance.order(1).submitModel(model, object, poseStack,  RenderType.armorEntityGlint(), p_432874_, OverlayTexture.NO_OVERLAY, -1, null, outlineColor, null);
+                instance.order(1).submitModel(model, object, poseStack,  RenderType.armorEntityGlint(), p_432874_, overlay, -1, null, outlineColor, crumblingOverlay);
             }
         } else {
             instance.submitModel(
                     model,
                     avatarRenderState,
                     poseStack,
-                    RenderType.entitySolid(avatarRenderState.skin.cape().texturePath()),
+                    renderType,
                     p_432874_,
-                    OverlayTexture.NO_OVERLAY,
-                    avatarRenderState.outlineColor,
-                    null
+                    overlay,
+                    outlineColor,
+                    crumblingOverlay
             );
         }
     }
