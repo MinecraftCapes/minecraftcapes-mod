@@ -37,15 +37,9 @@ public class MenuScreen extends Screen {
         int i = 0;
         
         //Open MinecraftCapes
-        this.addRenderableWidget(Button.builder(Component.nullToEmpty("Open MinecraftCapes"), (button) -> {
-            this.minecraft.setScreen(new ConfirmLinkScreen((openUrl) -> {
-                if(openUrl) {
-                    Util.getPlatform().openUri("https://minecraftcapes.net");
-                }
-                
-                this.minecraft.setScreen(this);
-            }, "https://minecraftcapes.net", true));
-        }).bounds(xOffset - 75, yOffset, 150, 20).build());
+        this.addRenderableWidget(Button.builder(Component.nullToEmpty("Open MinecraftCapes"),
+                ConfirmLinkScreen.confirmLink(this, "https://minecraftcapes.net")
+        ).bounds(xOffset - 75, yOffset, 150, 20).build());
         i++;
         
         //For custom cape/ears onto new line
