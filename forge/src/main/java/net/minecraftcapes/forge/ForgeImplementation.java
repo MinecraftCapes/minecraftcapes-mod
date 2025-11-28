@@ -1,11 +1,6 @@
 package net.minecraftcapes.forge;
 
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.forge.events.KeyHandlerEvent;
-import net.minecraftcapes.forge.events.RegisterKeyEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
