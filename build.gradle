@@ -42,6 +42,7 @@ processResources {
             "version": version,
             "group": project.group, //Else we target the task's group.
             "minecraft_version": minecraft_version,
+            "pack_format": pack_format,
             "fabric_version": fabric_version,
             "mod_name": mod_name,
             "mod_author": mod_author,
