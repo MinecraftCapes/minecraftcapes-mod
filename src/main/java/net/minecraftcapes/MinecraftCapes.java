@@ -1,5 +1,6 @@
 package net.minecraftcapes;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import lombok.Getter;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -18,21 +19,23 @@ import java.nio.file.Path;
 public class MinecraftCapes implements ClientModInitializer {
 
     public static final String MOD_ID = "minecraftcapes";
+    public static final String MOD_NAME = "MinecraftCapes";
     public static final String MINECRAFT_VERSION = Minecraft.getInstance().getVersionType();
 
-    @Getter private static final Logger logger = LogManager.getLogger();
+    @Getter private static final Logger logger = LogManager.getLogger(MOD_NAME);
     @Getter private static final Path configDir = FabricLoaderImpl.INSTANCE.getConfigDir().resolve(MOD_ID);
 
     private static KeyMapping keyBinding;
     public static final KeyMapping keyMapping = new KeyMapping(
-            "Open GUI",
+            "key.minecraftcapes.gui",
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_J,
-            "MinecraftCapes"
+            "category.minecraftcapes.gui"
     );
 
     @Override
     public void onInitializeClient() {
-        getLogger().info("[MinecraftCapes] Initialising");
+        getLogger().info("Initialising");
 
         //Loading Config
         MinecraftCapesConfig.loadConfig();
@@ -42,11 +45,11 @@ public class MinecraftCapes implements ClientModInitializer {
 
         //React to key pressed
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while(keyBinding.isDown()) {
+            while(keyBinding.consumeClick()) {
                 Minecraft.getInstance().setScreen(new MenuScreen());
             }
         });
 
-        getLogger().info("[MinecraftCapes] Initialised");
+        getLogger().info("Initialised");
     }
 }
