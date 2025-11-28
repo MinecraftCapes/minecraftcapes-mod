@@ -3,6 +3,7 @@ package net.minecraftcapes;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -30,12 +31,12 @@ public class MinecraftCapes {
     public static Lazy<KeyBinding> menuKey;
 
 	public MinecraftCapes() {
-        getLogger().info("[MinecraftCapes] Initialising");
+        getLogger().info("Initialising");
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
 
-        getLogger().info("[MinecraftCapes] Initialised");
+        getLogger().info("Initialised");
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
@@ -47,9 +48,10 @@ public class MinecraftCapes {
 
         //Key Mapping
         menuKey = Lazy.of(() -> new KeyBinding(
-                "Open GUI",
+                "key.minecraftcapes.gui",
+                InputMappings.Type.KEYSYM,
                 GLFW.GLFW_KEY_J,
-                "MinecraftCapes"
+                "category.minecraftcapes.gui"
         ));
 
         //Register the keybinds
