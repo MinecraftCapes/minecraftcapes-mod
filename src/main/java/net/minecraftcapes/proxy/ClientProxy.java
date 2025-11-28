@@ -11,9 +11,9 @@ import org.lwjgl.input.Keyboard;
 public class ClientProxy implements CommonProxy {
 
     public static final KeyBinding menuKey = new KeyBinding(
-            "Open GUI",
+            "key.minecraftcapes.gui",
             Keyboard.KEY_J,
-            "MinecraftCapes"
+            "category.minecraftcapes.gui"
     );
 
     @Override
