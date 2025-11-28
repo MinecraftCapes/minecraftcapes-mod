@@ -1,4 +1,4 @@
-package net.minecraftcapes.neoforge.client;
+package net.minecraftcapes.neoforge.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
@@ -9,15 +9,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 @EventBusSubscriber(modid = MinecraftCapes.MOD_ID, value = Dist.CLIENT)
-public class ClientForgeEvents {
-    
-    /**
-     * Register the client tick for key listening
-     */
+public class KeyHandlerEvent {
+
     @SubscribeEvent
-    public static void onClickTick(ClientTickEvent.Post event) {
-        if (MinecraftCapes.KEY_MAPPING.get().consumeClick()) {
+    public static void onKeyPress(ClientTickEvent.Post event) {
+        if (MinecraftCapes.KEY_MAPPING.consumeClick()) {
             Minecraft.getInstance().setScreen(new MenuScreen());
         }
     }
+
 }
