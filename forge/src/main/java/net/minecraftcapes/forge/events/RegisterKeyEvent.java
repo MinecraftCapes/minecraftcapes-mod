@@ -1,4 +1,4 @@
-package net.minecraftcapes.forge.client;
+package net.minecraftcapes.forge.events;
 
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftforge.api.distmarker.Dist;
@@ -7,13 +7,14 @@ import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MinecraftCapes.MOD_ID, value = Dist.CLIENT)
-public class ClientModEvents {
+public class RegisterKeyEvent {
     
     /**
      * Register the keybinds
+     * @param event
      */
     @SubscribeEvent
     public static void registerKeyBinding(RegisterKeyMappingsEvent event) {
-        event.register(MinecraftCapes.KEY_MAPPING.get());
+        event.register(MinecraftCapes.KEY_MAPPING);
     }
 }

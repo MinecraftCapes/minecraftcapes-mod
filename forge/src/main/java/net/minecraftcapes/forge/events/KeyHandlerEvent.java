@@ -1,4 +1,4 @@
-package net.minecraftcapes.forge.client;
+package net.minecraftcapes.forge.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
@@ -8,15 +8,12 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = MinecraftCapes.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public class ClientForgeEvents {
-    
-    /**
-     * Register the client tick for key listening
-     */
+@Mod.EventBusSubscriber(modid = MinecraftCapes.MOD_ID, value = Dist.CLIENT)
+public class KeyHandlerEvent {
+
     @SubscribeEvent
-    public static void onClickTick(TickEvent.ClientTickEvent.Post event) {
-        if (MinecraftCapes.KEY_MAPPING.get().consumeClick()) {
+    public static void onKeyPress(TickEvent.ClientTickEvent.Post event) {
+        if (MinecraftCapes.KEY_MAPPING.consumeClick()) {
             Minecraft.getInstance().setScreen(new MenuScreen());
         }
     }
