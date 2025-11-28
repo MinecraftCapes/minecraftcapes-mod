@@ -28,7 +28,7 @@ public class MenuScreen extends Screen {
         
         //Open MinecraftCapes
         this.addRenderableWidget(Button.builder(Component.nullToEmpty("Open MinecraftCapes"),
-                ConfirmLinkScreen.confirmLink("https://minecraftcapes.net", this, false)
+                ConfirmLinkScreen.confirmLink("https://minecraftcapes.net", this, true)
         ).bounds(xOffset - 75, yOffset, 150, 20).build());
         i++;
         
