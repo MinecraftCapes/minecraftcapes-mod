@@ -2,9 +2,7 @@ package net.minecraftcapes.mixin;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.core.ClientAsset;
 import net.minecraft.world.entity.player.PlayerSkin;
-import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Final;
@@ -18,11 +16,11 @@ import java.util.function.Supplier;
 
 @Mixin(PlayerInfo.class)
 public class MixinPlayerInfo {
-
+    
     @Shadow
     @Final
     private GameProfile profile;
-
+    
     @Inject(method = "createSkinLookup", at = @At("HEAD"))
     private static void createSkinLookup(GameProfile profile, CallbackInfoReturnable<Supplier<PlayerSkin>> cir) {
         DownloadManager.prepareDownload(profile.id(), profile.name(), false);

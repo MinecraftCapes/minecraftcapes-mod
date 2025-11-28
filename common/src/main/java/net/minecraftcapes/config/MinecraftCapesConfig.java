@@ -2,14 +2,15 @@ package net.minecraftcapes.config;
 
 import com.google.gson.Gson;
 import lombok.Getter;
-import net.minecraft.CrashReport;
-import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class MinecraftCapesConfig {
 
@@ -17,12 +18,12 @@ public class MinecraftCapesConfig {
     private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
     //The Config Instance
-    @Getter private static MinecraftCapesConfig.ConfigValues config = null;
+    @Getter private static ConfigValues config = new ConfigValues();
 
     /**
      * The config values
      */
-    class ConfigValues {
+    static class ConfigValues {
         private boolean capeVisible = true;
         private boolean earsVisible = true;
     }
@@ -68,20 +69,18 @@ public class MinecraftCapesConfig {
         try {
             //Create mod directory
             Files.createDirectories(configFile.getParent());
-            
+
             if(!configFile.toFile().exists()) {
-                InputStream defaultConfigFile = MinecraftCapesConfig.class.getResourceAsStream("/assets/minecraftcapes/config.json");
-                Files.copy(defaultConfigFile, configFile);
+                saveConfig();
             }
 
             Reader reader = new FileReader(configFile.toFile());
             config = new Gson().fromJson(reader, ConfigValues.class);
             reader.close();
         } catch(IOException e) {
-            CrashReport crashreport = new CrashReport("Config error", e);
-            configFile.toFile().delete();
-            Minecraft.crash(Minecraft.getInstance(), Minecraft.getInstance().gameDirectory, crashreport);
-            e.printStackTrace();
+            if(configFile.toFile().delete()) {
+                loadConfig();
+            }
         }
     }
 

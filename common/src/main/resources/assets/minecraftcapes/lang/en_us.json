@@ -1,4 +1,4 @@
 {
-  "key.category.minecraftcapes.gui": "MinecraftCapes",
-  "key.minecraftcapes.gui": "Menu"
+    "key.minecraftcapes.gui": "Open GUI",
+    "key.category.minecraftcapes.gui": "MinecraftCapes"
 }

@@ -3,13 +3,13 @@ package net.minecraftcapes.player;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SkinTextureDownloader;
-import net.minecraft.resources.Identifier;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.helpers.MinecraftApi;
+import org.apache.commons.io.IOUtils;
 
-import java.io.*;
-import java.lang.annotation.Native;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -36,14 +36,16 @@ public class DownloadManager {
             } else if (uuid.version() == 3) {
                 Thread prepareProfile = new Thread(() -> {
                     UUID onlineUUID = MinecraftApi.getUUID(username);
-                    playerHandler.setPlayerUUID(onlineUUID);
-                    downloadProfile(playerHandler);
+                    if(onlineUUID != null) {
+                        playerHandler.setPlayerUUID(onlineUUID);
+                        downloadProfile(playerHandler);
+                    }
                 });
                 prepareProfile.start();
             }
         }
     }
-
+    
     /**
      * Prepares the download
      * @param playerHandler The player handler instance
@@ -73,7 +75,7 @@ public class DownloadManager {
             // Download cape image if available
             if (profileResult.cape_url != null) {
                 NativeImage capeImage = downloadOrLoad(profileResult.cape_url, "capes");
-                if(capeImage != null) {
+                if (capeImage != null) {
                     playerHandler.applyCape(capeImage);
                 }
             }
@@ -81,7 +83,7 @@ public class DownloadManager {
             // Download ears image if available
             if (profileResult.ear_url != null) {
                 NativeImage earsImage = downloadOrLoad(profileResult.ear_url, "ears");
-                if(earsImage != null) {
+                if (earsImage != null) {
                     playerHandler.applyEars(earsImage);
                 }
             }
@@ -100,11 +102,11 @@ public class DownloadManager {
     private static NativeImage downloadOrLoad(String url, String type) {
         String hash = url.substring(url.lastIndexOf('/') + 1);
         Path cache = MinecraftCapes.getConfigDir().resolve(type).resolve(hash.length() > 2 ? hash.substring(0, 2) : "xx").resolve(hash);
-
+        
         NativeImage nativeImage = null;
 
         if(cache.toFile().exists()) {
-            try(InputStream inputStream = new FileInputStream(cache.toFile())) {
+            try(InputStream inputStream = Files.newInputStream(cache.toFile().toPath())) {
                 nativeImage = NativeImage.read(inputStream);
             } catch (IOException e) {
                 MinecraftCapes.getLogger().error("IOException with {}", cache);
@@ -152,7 +154,7 @@ public class DownloadManager {
 
             if (httpURLConnection.getResponseCode() / 100 == 2) {
                 try (InputStream inputStream = httpURLConnection.getInputStream()) {
-                    return inputStream.readAllBytes(); // Read fully before closing
+                    return IOUtils.toByteArray(inputStream); // Read fully before closing
                 }
             } else {
                 MinecraftCapes.getLogger().warn("minecraftcapes.net returned a {}", httpURLConnection.getResponseCode());

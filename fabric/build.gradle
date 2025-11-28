@@ -1,52 +1,66 @@
 plugins {
     id 'multiloader-loader'
-    id 'io.freefair.lombok' version "8.13.1"
-    id 'fabric-loom' version "${fabric_loom_version}"
+    id 'fabric-loom'
+    id "io.freefair.lombok"
 }
 
 base {
     archivesName = "${mod_name} Fabric ${minecraft_version}"
 }
 
-repositories {
-    maven { url 'https://maven.covers1624.net/' }
-}
-
 dependencies {
+    //Fabirc and Minecraft
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-    }
+
+    mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    //Auth
-    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
+    //Mod Menu
+    modLocalRuntime "maven.modrinth:modmenu:16.0.0-rc.1"
 }
 
 loom {
-    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
     runs {
         client {
             client()
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
-            programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
-            mainClass.set 'net.covers1624.devlogin.DevLogin'
-            runDir("runs/client")
+            runDir("run/client")
+            programArgs '--username=james090500'
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir("runs/server")
+            runDir("run/server")
+        }
+    }
+}
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'fabric')
+            }
+        }
+    }
+}
+loom.remapConfigurations.configureEach {
+    configurations.named(it.name) {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
         }
     }
 }
