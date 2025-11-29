@@ -16,23 +16,23 @@ import java.util.function.Supplier;
 
 @Mixin(PlayerInfo.class)
 public class MixinPlayerInfo {
-    
+
     @Shadow
     @Final
     private GameProfile profile;
-    
+
     @Inject(method = "createSkinLookup", at = @At("HEAD"))
-    private static void createSkinLookup(GameProfile profile, CallbackInfoReturnable<Supplier<PlayerSkin>> cir) {
+    private static void minecraftcapes$downloadPlayerInfo(GameProfile profile, CallbackInfoReturnable<Supplier<PlayerSkin>> cir) {
         DownloadManager.prepareDownload(profile.id(), profile.name(), false);
     }
-    
+
     @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
-    public void getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
+    public void minecraftcapes$getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(profile.id());
         //Check player handler is loaded
         if(playerHandler.getHasInfo()) {
             cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
         }
     }
-    
+
 }
