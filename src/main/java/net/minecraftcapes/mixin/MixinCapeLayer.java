@@ -31,7 +31,7 @@ public abstract class MixinCapeLayer extends RendererLivingEntity {
     }
 
     @Inject(method = "renderEquippedItems(Lnet/minecraft/client/entity/AbstractClientPlayer;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelBiped;renderCloak(F)V", shift = At.Shift.AFTER))
-    public void addCapeGlint(AbstractClientPlayer entitylivingbaseIn, float partialTicks, CallbackInfo ci) {
+    public void minecraftcapes$addCapeGlint(AbstractClientPlayer entitylivingbaseIn, float partialTicks, CallbackInfo ci) {
         // Retrieve the player handler from playerRenderState
         PlayerHandler playerHandler = PlayerHandler.get(entitylivingbaseIn.getUniqueID());
 

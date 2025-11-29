@@ -65,7 +65,11 @@ public class DownloadManager {
                 BufferedImage capeImage = downloadOrLoad(profileResult.cape_url, "capes");
                 if (capeImage != null) {
                     playerHandler.applyCape(capeImage);
+                } else {
+                    playerHandler.removeCape();
                 }
+            } else {
+                playerHandler.removeCape();
             }
 
             // Download ears image if available
@@ -73,7 +77,11 @@ public class DownloadManager {
                 BufferedImage earsImage = downloadOrLoad(profileResult.ear_url, "ears");
                 if (earsImage != null) {
                     playerHandler.applyEars(earsImage);
+                } else {
+                    playerHandler.removeEars();
                 }
+            } else {
+                playerHandler.removeEars();
             }
         });
 

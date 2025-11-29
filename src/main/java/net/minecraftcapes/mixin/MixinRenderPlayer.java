@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinRenderPlayer extends Render {
 
     @Inject(method = "rotateCorpse", at = @At(value = "RETURN"))
-    public void renderUpsidedown(EntityLivingBase entityLivingBase, float p_77043_2_, float p_77043_3_, float p_77043_4_, CallbackInfo ci) {
+    public void minecraftcapes$renderUpsideDown(EntityLivingBase entityLivingBase, float p_77043_2_, float p_77043_3_, float p_77043_4_, CallbackInfo ci) {
         if(entityLivingBase instanceof EntityPlayer) {
             PlayerHandler playerHandler = PlayerHandler.get(entityLivingBase.getUniqueID());
             if (playerHandler.isUpsideDown()) {

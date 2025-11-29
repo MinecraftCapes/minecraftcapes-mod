@@ -21,12 +21,12 @@ public abstract class MixinAbstractClientPlayer {
     private ResourceLocation locationCape;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void downloadCape(World worldIn, GameProfile playerProfile, CallbackInfo ci) {
+    private void minecraftcapes$downloadPlayerInfo(World worldIn, GameProfile playerProfile, CallbackInfo ci) {
         DownloadManager.prepareDownload(playerProfile.getId(), playerProfile.getName(), false);
     }
 
     @Inject(method = "hasCape", at = @At(value = "HEAD"), cancellable = true)
-    private void hasCape(CallbackInfoReturnable<Boolean> cir) {
+    private void minecraftcapes$hasCape(CallbackInfoReturnable<Boolean> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayer) (Object) this).getUniqueID());
         if(MinecraftCapesConfig.isCapeVisible()) {
             if(playerHandler.getCapeLocation() != null) {
@@ -36,7 +36,7 @@ public abstract class MixinAbstractClientPlayer {
     }
 
     @Inject(method = "getLocationCape", at = @At(value = "RETURN"), cancellable = true)
-    private void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
+    private void minecraftcapes$getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayer) (Object) this).getUniqueID());
         if(playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
             cir.setReturnValue(playerHandler.getCapeLocation());

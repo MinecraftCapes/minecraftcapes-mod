@@ -15,7 +15,7 @@ public class MixinModelBiped {
     public ModelRenderer bipedEars;
 
     @Inject(method = "<init>(FFII)V", at = @At(value = "RETURN"))
-    public void createEarsLayer(float p_i1149_1_, float p_i1149_2_, int p_i1149_3_, int p_i1149_4_, CallbackInfo ci) {
+    public void minecraftcapes$createEars(float p_i1149_1_, float p_i1149_2_, int p_i1149_3_, int p_i1149_4_, CallbackInfo ci) {
         ModelBiped modelBiped = (ModelBiped) (Object) this;
 
         bipedEars = new ModelRenderer(modelBiped, 0, 0);
