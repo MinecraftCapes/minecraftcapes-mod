@@ -23,7 +23,7 @@ public class MixinCapeLayer {
     private RenderPlayer playerRenderer;
 
     @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPlayer;renderCape(F)V", shift = At.Shift.AFTER))
-    public void addCapeGlint(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
+    public void minecraftcapes$addCapeGlint(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
         // Retrieve the player handler from playerRenderState
         PlayerHandler playerHandler = PlayerHandler.get(entitylivingbaseIn.getUniqueID());
 
