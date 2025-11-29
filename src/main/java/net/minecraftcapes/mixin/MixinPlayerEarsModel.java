@@ -17,7 +17,7 @@ public class MixinPlayerEarsModel<T extends LivingEntity> extends BipedModel<T> 
     private RendererModel ear;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    public void createEarsLayer(float p_i46304_1_, boolean p_i46304_2_, CallbackInfo ci) {
+    public void minecraftcapes$createEars(float p_i46304_1_, boolean p_i46304_2_, CallbackInfo ci) {
         PlayerModel modelPlayer = (PlayerModel) (Object) this;
 
         ear = new RendererModel(modelPlayer, 0, 0);

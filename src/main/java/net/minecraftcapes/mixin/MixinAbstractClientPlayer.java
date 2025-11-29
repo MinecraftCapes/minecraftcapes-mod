@@ -22,12 +22,12 @@ public abstract class MixinAbstractClientPlayer {
     protected abstract NetworkPlayerInfo getPlayerInfo();
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void downloadCape(ClientWorld p_i50991_1_, GameProfile playerProfile, CallbackInfo ci) {
+    private void minecraftcapes$downloadPlayerInfo(ClientWorld p_i50991_1_, GameProfile playerProfile, CallbackInfo ci) {
         DownloadManager.prepareDownload(playerProfile.getId(), playerProfile.getName(), false);
     }
 
     @Inject(method = "isCapeLoaded", at = @At(value = "HEAD"), cancellable = true)
-    private void isCapeLoaded(CallbackInfoReturnable<Boolean> cir) {
+    private void minecraftcapes$hasCape(CallbackInfoReturnable<Boolean> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayerEntity) (Object) this).getUUID());
         if(playerHandler.getHasInfo() || this.getPlayerInfo() != null) {
             cir.setReturnValue(true);
@@ -35,7 +35,7 @@ public abstract class MixinAbstractClientPlayer {
     }
 
     @Inject(method = "getCloakTextureLocation", at = @At(value = "RETURN"), cancellable = true)
-    private void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
+    private void minecraftcapes$getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
         PlayerHandler playerHandler = PlayerHandler.get(((AbstractClientPlayerEntity) (Object) this).getUUID());
         if(playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {

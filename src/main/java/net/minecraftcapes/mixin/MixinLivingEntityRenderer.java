@@ -22,7 +22,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     }
 
     @Inject(method = "setupRotations", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/text/TextFormatting;stripFormatting(Ljava/lang/String;)Ljava/lang/String;"))
-    public void renderUpsidedown(T bat, float p_77043_2_, float p_77043_3_, float partialTicks, CallbackInfo ci) {
+    public void minecraftcapes$renderUpsideDown(T bat, float p_77043_2_, float p_77043_3_, float partialTicks, CallbackInfo ci) {
         if(bat instanceof PlayerEntity) {
             PlayerHandler playerHandler = PlayerHandler.get(bat.getUUID());
             if(playerHandler.isUpsideDown()) {

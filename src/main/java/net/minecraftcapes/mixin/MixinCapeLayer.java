@@ -22,12 +22,12 @@ public abstract class MixinCapeLayer extends LayerRenderer<AbstractClientPlayerE
     }
 
     @Inject(method = "render(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;popMatrix()V"))
-    public void addCapeGlint(AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
+    public void minecraftcapes$addCapeGlint(AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale, CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(entitylivingbaseIn.getUUID());
         if (MinecraftCapesConfig.isCapeVisible() && playerHandler.getHasCapeGlint()) {
             ArmorLayer.renderFoil(this::bindTexture, entitylivingbaseIn, new BipedModel<AbstractClientPlayerEntity>() {
                 @Override
-                public void render(AbstractClientPlayerEntity abstractClientPlayer, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+                public void minecraftcapes$renderCape(AbstractClientPlayerEntity abstractClientPlayer, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
                     getParentModel().renderCloak(0.0625F);
                 }
             }, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
