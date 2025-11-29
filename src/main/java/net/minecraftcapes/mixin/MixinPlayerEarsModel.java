@@ -15,7 +15,7 @@ public class MixinPlayerEarsModel {
     private ModelRenderer bipedDeadmau5Head;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    public void createEarsLayer(float p_i46304_1_, boolean p_i46304_2_, CallbackInfo ci) {
+    public void minecraftcapes$createEars(float p_i46304_1_, boolean p_i46304_2_, CallbackInfo ci) {
         ModelPlayer modelPlayer = (ModelPlayer) (Object) this;
 
         bipedDeadmau5Head = new ModelRenderer(modelPlayer, 0, 0);
