@@ -22,9 +22,9 @@ public abstract class MixinPlayerEarsModel extends HumanoidModel<AvatarRenderSta
     public MixinPlayerEarsModel(ModelPart modelPart) {
         super(modelPart);
     }
-    
+
     @Inject(method = "createEarsLayer", at = @At(value = "RETURN"), cancellable = true)
-    private static void createEarsLayer(CallbackInfoReturnable<LayerDefinition> cir, @Local MeshDefinition meshdefinition, @Local(ordinal = 1) PartDefinition partdefinition1) {
+    private static void minecraftcapes$createEars(CallbackInfoReturnable<LayerDefinition> cir, @Local MeshDefinition meshdefinition, @Local(ordinal = 1) PartDefinition partdefinition1) {
         cir.cancel();
         CubeListBuilder cubelistbuilder = CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -6.0F, -1.0F, 6.0F, 6.0F, 1.0F, new CubeDeformation(1.0F, 1.0F, 0.2F));
         partdefinition1.addOrReplaceChild("left_ear", cubelistbuilder, PartPose.offset(-6.0F, -6.0F, 0.0F));

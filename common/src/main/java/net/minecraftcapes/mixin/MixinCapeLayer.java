@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(CapeLayer.class)
 public abstract class MixinCapeLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
-    
+
     public MixinCapeLayer(RenderLayerParent<AvatarRenderState, PlayerModel> p_117346_) {
         super(p_117346_);
     }
-    
+
     @Redirect(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
-    private void submit(SubmitNodeCollector instance, Model model, Object object, PoseStack poseStack, RenderType renderType, int p_432874_, int overlay, int outlineColor, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, @Local AvatarRenderState avatarRenderState) {
+    private void minecraftcapes$submitCape(SubmitNodeCollector instance, Model model, Object object, PoseStack poseStack, RenderType renderType, int p_432874_, int overlay, int outlineColor, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, @Local AvatarRenderState avatarRenderState) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
         if(extendedRenderState.minecraftcapes$getCapeEnabled()) {
             instance.order(0).submitModel(model, object, poseStack, RenderType.armorCutoutNoCull(avatarRenderState.skin.cape().texturePath()), p_432874_, overlay, -1, null, outlineColor, crumblingOverlay);
