@@ -18,9 +18,9 @@ public class MixinPlayerEarsModel<T extends LivingEntity> extends HumanoidModel<
     private ModelPart ear;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    public void createEarsLayer(float p_i46304_1_, boolean p_i46304_2_, CallbackInfo ci) {
+    public void minecraftcapes$createEars(float p_i46304_1_, boolean p_i46304_2_, CallbackInfo ci) {
         PlayerModel modelPlayer = (PlayerModel) (Object) this;
-        
+
         ear = new ModelPart(modelPlayer, 0, 0);
         ear.setTexSize(14, 7);
         //X, Y, Z

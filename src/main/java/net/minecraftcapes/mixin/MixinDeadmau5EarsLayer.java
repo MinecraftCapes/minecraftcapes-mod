@@ -21,7 +21,7 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AbstractClientP
     }
 
     @Inject(method = "render(Lnet/minecraft/client/player/AbstractClientPlayer;FFFFFFF)V", at = @At("HEAD"), cancellable = true)
-    public void render(AbstractClientPlayer var1, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_, CallbackInfo ci) {
+    public void minecraftcapes$renderEars(AbstractClientPlayer var1, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_, CallbackInfo ci) {
         //Cancel default render
         if(!var1.getName().toString().equalsIgnoreCase("deadmau5")) {
             ci.cancel();
