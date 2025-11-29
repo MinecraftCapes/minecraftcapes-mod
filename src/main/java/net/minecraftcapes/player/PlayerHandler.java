@@ -117,6 +117,38 @@ public class PlayerHandler {
     }
 
     /**
+     * Unregister the cape
+     */
+    public void removeCape() {
+        if(!hasStaticCape && !hasAnimatedCape) return;
+
+        MinecraftCapes.getLogger().debug("Removing cape for {}", playerUUID);
+
+        this.setHasAnimatedCape(false);
+        this.setHasStaticCape(false);
+
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            Minecraft.getMinecraft().getTextureManager().deleteTexture(new ResourceLocation(MOD_ID, "capes/" + playerUUID));
+
+            for (int i = 0; i < getAnimatedCape().size() - 1; i++) {
+                Minecraft.getMinecraft().getTextureManager().deleteTexture(new ResourceLocation(MOD_ID, String.format("capes/%s/%d", playerUUID, i)));
+            }
+        });
+    }
+
+    /**
+     * Unregister the ears
+     */
+    public void removeEars() {
+        if(!hasEars) return;
+
+        MinecraftCapes.getLogger().debug("Removing ears for {}", playerUUID);
+
+        this.setHasEars(false);
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getTextureManager().deleteTexture(new ResourceLocation(MOD_ID, "ears/" + playerUUID)));
+    }
+
+    /**
      * Sets the animated cape textures and loads all resources to memory
      * @param animatedCape
      */
