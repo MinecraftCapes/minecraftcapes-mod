@@ -20,7 +20,7 @@ public abstract class MixinLivingEntityRenderer<T extends EntityLivingBase> exte
     }
 
     @Inject(method = "applyRotations", at = @At("RETURN"))
-    public void renderUpsidedown(T bat, float p_77043_2_, float p_77043_3_, float partialTicks, CallbackInfo ci) {
+    public void minecraftcapes$renderUpsideDown(T bat, float p_77043_2_, float p_77043_3_, float partialTicks, CallbackInfo ci) {
         if(bat instanceof EntityPlayer) {
             PlayerHandler playerHandler = PlayerHandler.get(bat.getUniqueID());
             if(playerHandler.isUpsideDown()) {

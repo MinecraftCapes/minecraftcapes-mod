@@ -22,12 +22,12 @@ public abstract class MixinPlayerInfo {
     protected abstract NetworkPlayerInfo getPlayerInfo();
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void downloadCape(World worldIn, GameProfile playerProfile, CallbackInfo ci) {
+    private void minecraftcapes$downloadPlayerInfo(World worldIn, GameProfile playerProfile, CallbackInfo ci) {
         DownloadManager.prepareDownload(playerProfile.getId(), false);
     }
 
     @Inject(method = "getLocationCape", at = @At(value = "RETURN"), cancellable = true)
-    private void getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
+    private void minecraftcapes$getLocationCape(CallbackInfoReturnable<ResourceLocation> cir) {
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
         PlayerHandler playerHandler = PlayerHandler.get(networkplayerinfo.getGameProfile().getId());
         if(playerHandler.getCapeLocation() != null && MinecraftCapesConfig.isCapeVisible()) {
