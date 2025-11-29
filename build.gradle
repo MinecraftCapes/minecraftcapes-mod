@@ -27,7 +27,7 @@ minecraft {
         client {
             workingDirectory file('run')
             property 'forge.logging.console.level', 'debug'
-            args('--username=james090500')
+            args("--username", "james090500", "--userType", "msa", "--uuid", "ba4161c03a42496c8ae07d13372f3371", "--accessToken", "<token>")
         }
     }
 }

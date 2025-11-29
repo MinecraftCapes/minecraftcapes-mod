@@ -25,7 +25,7 @@ public abstract class MixinDeadmau5EarsLayer extends LayerRenderer<AbstractClien
     }
 
     @Inject(method = "render(Lcom/mojang/blaze3d/matrix/MatrixStack;Lnet/minecraft/client/renderer/IRenderTypeBuffer;ILnet/minecraft/client/entity/player/AbstractClientPlayerEntity;FFFFFF)V", at = @At("HEAD"), cancellable = true)
-    public void render(MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int p_225628_3_, AbstractClientPlayerEntity abstractClientPlayer, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_, CallbackInfo ci) {
+    public void minecraftcapes$renderEars(MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int p_225628_3_, AbstractClientPlayerEntity abstractClientPlayer, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_, CallbackInfo ci) {
         //Cancel default render
         if(!abstractClientPlayer.getName().toString().equalsIgnoreCase("deadmau5")) {
             ci.cancel();
