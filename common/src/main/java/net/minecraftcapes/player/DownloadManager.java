@@ -66,7 +66,11 @@ public class DownloadManager {
                 NativeImage capeImage = downloadOrLoad(profileResult.cape_url, "capes");
                 if (capeImage != null) {
                     playerHandler.applyCape(capeImage);
+                } else {
+                    playerHandler.removeCape();
                 }
+            } else {
+                playerHandler.removeCape();
             }
 
             // Download ears image if available
@@ -74,7 +78,11 @@ public class DownloadManager {
                 NativeImage earsImage = downloadOrLoad(profileResult.ear_url, "ears");
                 if (earsImage != null) {
                     playerHandler.applyEars(earsImage);
+                } else {
+                    playerHandler.removeEars();
                 }
+            } else {
+                playerHandler.removeEars();
             }
         });
 
@@ -91,7 +99,7 @@ public class DownloadManager {
     private static NativeImage downloadOrLoad(String url, String type) {
         String hash = url.substring(url.lastIndexOf('/') + 1);
         Path cache = MinecraftCapes.getConfigDir().resolve(type).resolve(hash.length() > 2 ? hash.substring(0, 2) : "xx").resolve(hash);
-        
+
         NativeImage nativeImage = null;
 
         if(cache.toFile().exists()) {

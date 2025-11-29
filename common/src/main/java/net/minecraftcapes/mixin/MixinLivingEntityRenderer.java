@@ -17,13 +17,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntityRenderer.class)
 public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>> extends EntityRenderer<T> implements RenderLayerParent<T, M> {
-    
+
     protected MixinLivingEntityRenderer(EntityRendererProvider.Context param0) {
         super(param0);
     }
-    
+
     @Inject(method = "setupRotations", at = @At(value = "TAIL"))
-    public void renderUpsidedown(T livingEntity, PoseStack poseStack, float f, float g, float h, CallbackInfo ci) {
+    public void minecraftcapes$renderUpsideDown(T livingEntity, PoseStack poseStack, float f, float g, float h, CallbackInfo ci) {
         if(livingEntity instanceof Player) {
             PlayerHandler playerHandler = PlayerHandler.get(livingEntity.getUUID());
             if(playerHandler.isUpsideDown()) {
