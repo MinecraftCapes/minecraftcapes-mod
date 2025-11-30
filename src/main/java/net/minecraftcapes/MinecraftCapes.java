@@ -6,6 +6,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.config.MinecraftCapesConfig;
@@ -20,7 +21,7 @@ public class MinecraftCapes implements ClientModInitializer {
 
     public static final String MOD_ID = "minecraftcapes";
     public static final String MOD_NAME = "MinecraftCapes";
-    public static final String MINECRAFT_VERSION = Minecraft.getInstance().getVersionType();
+    public static final String MINECRAFT_VERSION = SharedConstants.getCurrentVersion().getName();
 
     @Getter private static final Logger logger = LogManager.getLogger(MOD_NAME);
     @Getter private static final Path configDir = FabricLoaderImpl.INSTANCE.getConfigDir().resolve(MOD_ID);
@@ -35,7 +36,7 @@ public class MinecraftCapes implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        getLogger().info("[MinecraftCapes] Initialising");
+        getLogger().info("Initialising");
 
         //Loading Config
         MinecraftCapesConfig.loadConfig();
@@ -50,6 +51,6 @@ public class MinecraftCapes implements ClientModInitializer {
             }
         });
 
-        getLogger().info("[MinecraftCapes] Initialised");
+        getLogger().info("Initialised");
     }
 }

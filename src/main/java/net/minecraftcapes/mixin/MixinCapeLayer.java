@@ -27,7 +27,7 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
         if (MinecraftCapesConfig.isCapeVisible() && playerHandler.getHasCapeGlint()) {
             AbstractArmorLayer.renderFoil(this::bindTexture, entitylivingbaseIn, new HumanoidModel<AbstractClientPlayer>() {
                 @Override
-                public void minecraftcapes$renderCape(AbstractClientPlayer abstractClientPlayer, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+                public void render(AbstractClientPlayer abstractClientPlayer, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
                     getParentModel().renderCloak(0.0625F);
                 }
             }, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
