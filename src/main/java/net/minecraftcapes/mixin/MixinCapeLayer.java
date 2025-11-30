@@ -37,7 +37,7 @@ public abstract class MixinCapeLayer extends RenderLayer<AbstractClientPlayer, P
     @Redirect(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource;getBuffer(Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
     public VertexConsumer minecraftcapes$renderGlint(MultiBufferSource instance, RenderType renderType) {
         if(MinecraftCapesConfig.isCapeVisible() && minecraftcapes$playerHandler.getCapeLocation() != null) {
-            return ItemRenderer.getArmorFoilBuffer(instance, RenderType.armorCutoutNoCull(minecraftcapes$playerHandler.getCapeLocation()), false, minecraftcapes$playerHandler.getHasCapeGlint());
+            return ItemRenderer.getFoilBuffer(instance, RenderType.entityCutoutNoCull(minecraftcapes$playerHandler.getCapeLocation()), false, minecraftcapes$playerHandler.getHasCapeGlint());
         } else {
             return instance.getBuffer(renderType);
         }
