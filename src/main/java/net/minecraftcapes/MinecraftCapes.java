@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.util.SharedConstants;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -41,7 +42,7 @@ public class MinecraftCapes {
 
     public void clientSetup(FMLClientSetupEvent event) {
         // Set the version
-        MINECRAFT_VERSION = Minecraft.getInstance().getVersionType();
+        MINECRAFT_VERSION = SharedConstants.getCurrentVersion().getName();
 
         //Prep the config
         MinecraftCapesConfig.loadConfig();
