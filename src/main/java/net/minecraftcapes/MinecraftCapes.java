@@ -20,12 +20,12 @@ public class MinecraftCapes {
 	public static IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
 	public MinecraftCapes() {
-		getLogger().info("[MinecraftCapes] Initialising");
+		getLogger().info("Initialising");
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(proxy::clientSetup);
 
 		proxy.init();
 
-		getLogger().info("[MinecraftCapes] Initialised");
+		getLogger().info("Initialised");
 	}
 }
