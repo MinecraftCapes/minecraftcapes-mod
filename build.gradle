@@ -73,7 +73,7 @@ jar {
             'FMLCorePluginContainsFMLMod': true,
             'ForceLoadAsMod': true,
             "TweakOrder": 0,
-            'TweakClass': 'net.minecraftcapes.spongepowered.asm.launch.MixinTweaker',
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
     )
 }
 
@@ -132,7 +132,6 @@ tasks.named('shadowJar', ShadowJar) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveClassifier.set("") // make it the “main” jar name
 
-    relocate 'org.spongepowered', 'net.minecraftcapes.spongepowered'
 
     mergeServiceFiles {
         include 'META-INF/services/*'
