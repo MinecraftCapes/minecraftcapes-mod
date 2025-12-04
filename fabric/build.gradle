@@ -18,7 +18,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     //Mod Menu
-    modLocalRuntime "maven.modrinth:modmenu:16.0.0-rc.1"
+    modLocalRuntime "maven.modrinth:modmenu:17.0.0-alpha.1"
 }
 
 loom {
