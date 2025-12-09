@@ -2,7 +2,6 @@ package net.minecraftcapes.mixin;
 
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.entity.ClientMannequin;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.level.Level;
