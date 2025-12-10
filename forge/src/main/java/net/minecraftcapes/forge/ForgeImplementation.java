@@ -12,24 +12,24 @@ import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation extends MinecraftCapes {
-    
-    public ForgeImplementation(FMLJavaModLoadingContext context) {
-        context.getModEventBus().addListener(this::clientSetup);
-        context.getModEventBus().addListener(this::serverSetup);
+
+    public ForgeImplementation() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
     }
-    
+
     /**
      * This client setup event
      * @param event
      */
     public void clientSetup(FMLClientSetupEvent event) {
         MinecraftCapes.onEnable(FMLPaths.CONFIGDIR.get());
-        
+
         //Register the events
         MinecraftForge.EVENT_BUS.register(new RegisterKeyEvent());
         MinecraftForge.EVENT_BUS.register(new KeyHandlerEvent());
     }
-    
+
     /**
      * This is the server setup event
      * @param event
@@ -41,5 +41,5 @@ public class ForgeImplementation extends MinecraftCapes {
         MinecraftCapes.getLogger().error("     Please remove this from your server!");
         MinecraftCapes.getLogger().error("=============================================");
     }
-    
+
 }
