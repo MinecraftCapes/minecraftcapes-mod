@@ -2,7 +2,6 @@ plugins {
     id 'multiloader-loader'
     id 'io.freefair.lombok'
     id 'net.minecraftforge.gradle' version '7.0.0+'
-    id 'net.minecraftforge.jarjar' version '0.2.3+'
 }
 
 base {
@@ -11,7 +10,6 @@ base {
 
 // Automatically enable forge AccessTransformers if the file exists
 // This location is hardcoded in FML and can not be changed.
-jarJar.register()
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
@@ -42,17 +40,8 @@ repositories {
 dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
-    // This is currently bugged due to the absence of obfuscation mappings
-    //annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
-
-    //Mixin Extras
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
-    jarJar('io.github.llamalad7:mixinextras-forge:0.5.0') {
-        transitive = false
-        jarJar.configure(it) {
-            version = "0.5.0"
-        }
-    }
+    // Hack fix hopefully?
+    compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
 }
 
 // Implement mcgradleconventions loader attribute
