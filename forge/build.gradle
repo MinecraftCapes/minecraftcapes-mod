@@ -14,8 +14,18 @@ mixin {
     config("${mod_id}.mixins.json")
 }
 
-// Automatically enable forge AccessTransformers if the file exists
-// This location is hardcoded in FML and can not be changed.
+// Enable JarJar
+jarJar.enable()
+
+// Configure JarJar
+tasks.named('jarJar') {
+    archiveClassifier = ""
+}
+
+tasks.named("build") {
+    finalizedBy tasks.jarJar
+}
+
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
