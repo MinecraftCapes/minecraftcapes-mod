@@ -33,6 +33,12 @@ jar {
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
+repositories {
+    maven minecraft.mavenizer
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+}
+
 dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
@@ -44,7 +50,7 @@ dependencies {
     jarJar('io.github.llamalad7:mixinextras-forge:0.5.0') {
         transitive = false
         jarJar.configure(it) {
-            version = '[0.5.0,)'
+            version = "0.5.0"
         }
     }
 }

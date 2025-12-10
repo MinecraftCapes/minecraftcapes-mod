@@ -18,7 +18,7 @@ pluginManagement {
             forRepository {
                 maven {
                     name = 'MinecraftForge'
-                    url = uri("https://maven.minecraftforge.net/")
+                    url = uri("https://maven.minecraftforge.net")
                 }
             }
             filter {
@@ -29,7 +29,7 @@ pluginManagement {
             forRepository {
                 maven {
                     name = 'NeoForge'
-                    url = 'https://maven.neoforged.net/releases'
+                    url = uri('https://maven.neoforged.net/releases')
                 }
             }
             filter {
