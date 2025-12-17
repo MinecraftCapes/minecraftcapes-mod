@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
     id "io.freefair.lombok"
 }
 
@@ -12,13 +12,11 @@ dependencies {
     //Fabirc and Minecraft
     minecraft "com.mojang:minecraft:${minecraft_version}"
 
-    mappings loom.officialMojangMappings()
-
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    //implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     //Mod Menu
-    modLocalRuntime "maven.modrinth:modmenu:17.0.0-alpha.1"
+    //modLocalRuntime "maven.modrinth:modmenu:17.0.0-alpha.1"
 }
 
 loom {
@@ -57,10 +55,10 @@ sourceSets.configureEach {
         }
     }
 }
-loom.remapConfigurations.configureEach {
-    configurations.named(it.name) {
-        attributes {
-            attribute(loaderAttribute, 'fabric')
-        }
-    }
-}
+//loom.remapConfigurations.configureEach {
+//    configurations.named(it.name) {
+//        attributes {
+//            attribute(loaderAttribute, 'fabric')
+//        }
+//    }
+//}
