@@ -44,7 +44,7 @@ public class MinecraftApi {
      */
     private static JsonObject getApiData(String data) {
         try {
-            URI uri = URI.create("https://api.minecraftapi.net/api/v2/profile/" + data);
+            URI uri = URI.create(String.format("https://api.minecraftapi.net/v3/profile/%s?params=[name,full_uuid]", data));
             HttpURLConnection httpurlconnection = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
             httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
             httpurlconnection.setDoInput(true);

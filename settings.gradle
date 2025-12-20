@@ -25,17 +25,17 @@ pluginManagement {
                 includeGroupAndSubgroups("net.minecraftforge")
             }
         }
-//        exclusiveContent {
-//            forRepository {
-//                maven {
-//                    name = 'NeoForge'
-//                    url = uri('https://maven.neoforged.net/releases')
-//                }
-//            }
-//            filter {
-//                includeGroupAndSubgroups("net.neoforged")
-//            }
-//        }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'NeoForge'
+                    url = uri('https://maven.neoforged.net/releases')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups("net.neoforged")
+            }
+        }
         exclusiveContent {
             forRepository {
                 maven {
@@ -45,17 +45,6 @@ pluginManagement {
             }
             filter {
                 includeGroupAndSubgroups("org.spongepowered")
-            }
-        }
-        maven {
-            name = "Maven for PR #298" // https://github.com/neoforged/ModDevGradle/pull/298
-            url = uri("https://prmaven.neoforged.net/ModDevGradle/pr298")
-            content {
-                includeModule("net.neoforged.moddev.legacyforge", "net.neoforged.moddev.legacyforge.gradle.plugin")
-                includeModule("net.neoforged.moddev.legacyforge.repositories", "net.neoforged.moddev.legacyforge.repositories.gradle.plugin")
-                includeModule("net.neoforged.moddev", "net.neoforged.moddev.gradle.plugin")
-                includeModule("net.neoforged.moddev.repositories", "net.neoforged.moddev.repositories.gradle.plugin")
-                includeModule("net.neoforged", "moddev-gradle")
             }
         }
         mavenLocal()
