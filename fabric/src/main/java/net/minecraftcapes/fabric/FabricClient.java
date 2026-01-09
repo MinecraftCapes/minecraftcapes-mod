@@ -20,7 +20,7 @@ public class FabricClient extends MinecraftCapes implements ClientModInitializer
 		keyBinding = KeyMappingHelper.registerKeyMapping(MinecraftCapes.KEY_MAPPING);
 
 		//React to key pressed
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(_ -> {
 			while(keyBinding.consumeClick()) {
 				Minecraft.getInstance().setScreen(new MenuScreen());
 			}
