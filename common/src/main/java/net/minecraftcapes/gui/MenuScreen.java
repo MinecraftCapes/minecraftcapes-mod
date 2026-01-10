@@ -2,17 +2,12 @@ package net.minecraftcapes.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractSelectionList;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.components.OptionsList;
+import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
-import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -25,41 +20,44 @@ import net.minecraftcapes.player.DownloadManager;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Unique;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MenuScreen extends OptionsSubScreen {
+public class MenuScreen extends Screen {
     
-    protected @Nullable OptionsList list;
-    public final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
+    private static final Component TITLE = Component.nullToEmpty("MinecraftCapes");
+    private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
     
     public MenuScreen() {
-        super(null, Minecraft.getInstance().options, Component.nullToEmpty("MinecraftCapes"));
+        super(TITLE);
     }
     
     @Override
-    protected void addContents() {
-        this.list = this.layout.addToContents(new OptionsList(this.minecraft, this.width, this));
-        this.addOptions();
+    protected void init() {
+        this.layout.addTitleHeader(TITLE, this.font);
+        
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.defaultCellSetting().padding(100, 4, 4, 0);
+        GridLayout.RowHelper helper = gridLayout.createRowHelper(1);
+        
+        this.layout.addToContents(gridLayout);
+        
+        helper.addChild(Button.builder(Component.nullToEmpty("Open MinecraftCapes"), ConfirmLinkScreen.confirmLink(this, "https://minecraftcapes.net"))
+                .build(), 2);
+        helper.addChild(Button.builder(Component.nullToEmpty("Reload Profile"), _ -> DownloadManager.prepareDownload(this.minecraft.player.getUUID(), this.minecraft.player.getName()
+                .getString(), true)).build(), 2);
+        helper.addChild(CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible())
+                .create(Component.nullToEmpty("Custom Capes"), (_, value) -> MinecraftCapesConfig.setCapeVisible(value)), 2);
+        helper.addChild(CycleButton.onOffBuilder(MinecraftCapesConfig.isEarsVisible())
+                .create(Component.nullToEmpty("Custom Ears"), (_, value) -> MinecraftCapesConfig.setEarsVisible(value)), 2);
+        
+        this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose()).width(200).build());
+        this.layout.visitWidgets(this::addRenderableWidget);
+        this.repositionElements();
     }
     
     @Override
-    protected void addOptions() {
-        List<AbstractWidget> widgets = new ArrayList<>();
-        
-        widgets.add(Button.builder(Component.nullToEmpty("Open MinecraftCapes"), ConfirmLinkScreen.confirmLink(this, "https://minecraftcapes.net"))
-                .build());
-        widgets.add(Button.builder(Component.nullToEmpty("Reload Profile"), _ -> DownloadManager.prepareDownload(this.minecraft.player.getUUID(), this.minecraft.player.getName()
-                .getString(), true)).build());
-        widgets.add(CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible())
-                .create(Component.nullToEmpty("Custom Capes"), (_, value) -> MinecraftCapesConfig.setCapeVisible(value)));
-        widgets.add(CycleButton.onOffBuilder(MinecraftCapesConfig.isEarsVisible())
-                .create(Component.nullToEmpty("Custom Ears"), (_, value) -> MinecraftCapesConfig.setEarsVisible(value)));
-        
-        this.list.addSmall(widgets);
+    protected void repositionElements() {
+        this.layout.arrangeElements();
     }
     
     @Override
@@ -96,7 +94,7 @@ public class MenuScreen extends OptionsSubScreen {
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         EntityRenderer<? super LivingEntity, ?> entityrenderer = entityrenderdispatcher.getRenderer(livingEntity);
         EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
-        entityrenderstate.lightCoords = 15728880;
+        entityrenderstate.lightCoords = 0xF000F0;
         entityrenderstate.shadowPieces.clear();
         entityrenderstate.outlineColor = 0;
         return entityrenderstate;
