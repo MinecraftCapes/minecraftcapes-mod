@@ -1,10 +1,10 @@
 package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
+import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.helpers.ImageHandler;
 import net.minecraftcapes.helpers.MinecraftApi;
-import net.modificationstation.stationapi.api.tick.TickScheduler;
 import org.apache.commons.io.IOUtils;
 
 import java.awt.image.BufferedImage;
@@ -66,7 +66,7 @@ public class DownloadManager {
             if (profileResult.cape_url != null) {
                 BufferedImage capeImage = downloadOrLoad(profileResult.cape_url, "capes");
                 if (capeImage != null) {
-                    TickScheduler.CLIENT_RENDER_START.immediate(() -> playerHandler.applyCape(capeImage));
+                    MinecraftCapes.runLater(() -> playerHandler.applyCape(capeImage));
                 }
             }
 
@@ -74,7 +74,7 @@ public class DownloadManager {
             if (profileResult.ear_url != null) {
                 BufferedImage earsImage = downloadOrLoad(profileResult.ear_url, "ears");
                 if (earsImage != null) {
-                    TickScheduler.CLIENT_RENDER_START.immediate(() -> playerHandler.applyEars(earsImage));
+                    MinecraftCapes.runLater(() -> playerHandler.applyEars(earsImage));
                 }
             }
         });

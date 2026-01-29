@@ -6,6 +6,7 @@ import lombok.Setter;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
+import org.lwjgl.Sys;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

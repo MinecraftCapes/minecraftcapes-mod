@@ -1,112 +1,77 @@
 plugins {
 	id 'maven-publish'
-	id 'fabric-loom' version "1.13.3"
-	id 'babric-loom-extension' version "1.13.3"
+	id 'fabric-loom' version '1.15-SNAPSHOT'
+	id 'ploceus' version '1.15-SNAPSHOT'
+	id 'io.freefair.lombok' version "9.2.0"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
-java.targetCompatibility = JavaVersion.VERSION_17
-
 base {
-    archivesName = "${project.mod_name} Babric ${project.minecraft_version}"
+	archivesName = "${mod_name} Ornithe ${minecraft_version}"
 }
 
 version = project.version
 group = project.group
 
-loom {
-    runs {
-        client {
-            client()
-            programArgs(["--username", "james090500", "--uuid", "ba4161c0-3a42-496c-8ae0-7d13372f3371"])
-        }
-    }
-
+ploceus {
+	setIntermediaryGeneration(2)
 }
 
 repositories {
-	maven {url = "https://maven.glass-launcher.net/snapshots/" }
-	maven { url = "https://maven.glass-launcher.net/releases/" }
-	maven { url = "https://maven.glass-launcher.net/babric" }
-	maven { url = "https://maven.minecraftforge.net/" }
-	maven { url = "https://jitpack.io/" }
-	mavenCentral()
-	exclusiveContent {
-		forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-		}
-		filter {
-            includeGroup "maven.modrinth"
+}
+
+loom {
+	runs {
+		client {
+			client()
+			programArgs(["--username", "james090500"])
 		}
 	}
 }
 
 dependencies {
-	minecraft("com.mojang:minecraft:b1.7.3")
-	mappings("net.glasslauncher:biny:${project.properties["yarn_mappings"]}:v2")
-	modImplementation("net.fabricmc:fabric-loader:${project.properties["loader_version"]}")
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	implementation("org.apache.logging.log4j:log4j-core:2.17.2")
+	mappings ploceus.featherMappings(project.feather_build)
+	exceptions ploceus.raven(project.raven_build)
+	signatures ploceus.sparrow(project.sparrow_build)
+	nests ploceus.nests(project.nests_build)
 
-	implementation("org.slf4j:slf4j-api:1.8.0-beta4")
-	implementation("org.apache.logging.log4j:log4j-slf4j18-impl:2.17.1")
-
-	// convenience stuff
-	// adds some useful annotations for data classes. does not add any dependencies
-	compileOnly("org.projectlombok:lombok:1.18.42")
-	annotationProcessor("org.projectlombok:lombok:1.18.42")
-
-	// adds some useful annotations for miscellaneous uses. does not add any dependencies, though people without the lib will be missing some useful context hints.
-	implementation("org.jetbrains:annotations:23.0.0")
-	implementation("com.google.guava:guava:33.2.1-jre")
-
-	// StAPI itself.
-	// transitiveImplementation tells babric loom that you want this dependency to be pulled into other mod's development workspaces. Best used ONLY for required dependencies.
-	modImplementation("net.modificationstation:StationAPI:${project.properties["stationapi_version"]}")
-
-	// Extra mods.
-	// https://github.com/calmilamsy/glass-config-api
-	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${project.properties["gcapi_version"]}")
-	// https://github.com/calmilamsy/modmenu
-	modImplementation("net.danygames2014:modmenu:${project.properties["modmenu_version"]}")
-	// https://github.com/Glass-Series/Always-More-Items
-	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${project.properties["alwaysmoreitems_version"]}")
-}
-
-configurations.configureEach {
-    exclude group: "babric"
+	ploceus.dependOsl(project.osl_version)
 }
 
 processResources {
-    var expandProps = [
-            "version": version,
-            "group": project.group, //Else we target the task's group.
-            "minecraft_version": minecraft_version,
-            "mod_name": mod_name,
-            "mod_author": mod_author,
-            "mod_id": mod_id,
-            "license": license,
-            "description": project.description,
-            "credits": credits,
-    ]
+	def expandProps = [
+			"version": version,
+			"group": project.group, //Else we target the task's group.
+			"minecraft_version": minecraft_version,
+			"mod_name": mod_name,
+			"mod_author": mod_author,
+			"mod_id": mod_id,
+			"license": license,
+			"description": project.description,
+			"credits": credits,
+	]
 
-    filesMatching(['fabric.mod.json', '*.mixins.json']) {
-        expand expandProps
-    }
-
-    inputs.properties(expandProps)
-}
-
-tasks.withType(JavaCompile).configureEach {
-	options.encoding = "UTF-8"
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.properties["archivesBaseName"]}" }
+	filesMatching('fabric.mod.json') {
+		expand expandProps
 	}
 }
 
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = 'UTF-8'
+	it.options.release = 8
+}
+
+java {
+	// Still required by IDEs such as Eclipse and Visual Studio Code
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+// If you plan to use a different file for the license, don't forget to change the file name here!
+jar {
+	from('LICENSE') {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
+}

@@ -2,14 +2,17 @@ package net.minecraftcapes.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.TranslationStorage;
+import net.minecraft.locale.I18n;
 import net.minecraftcapes.config.MinecraftCapesConfig;
+import net.minecraftcapes.helpers.MinecraftApi;
+import net.minecraftcapes.player.DownloadManager;
+
+import java.util.UUID;
 
 public class MenuScreen extends Screen {
 
     @Override
     public void init() {
-        //net.minecraft.client.gui.GuiCustomizeSkin;
         int i = 0;
 
         //Custom Capes
@@ -62,7 +65,7 @@ public class MenuScreen extends Screen {
                         this.height / 6 + 24 * (i >> 1),
                         200,
                         20,
-                        TranslationStorage.getInstance().get("gui.done")
+                        I18n.translate("gui.done")
                 )
         );
     }
@@ -72,14 +75,21 @@ public class MenuScreen extends Screen {
         if(button.active) {
             if(button.id == 0) {
                 MinecraftCapesConfig.setCapeVisible(!MinecraftCapesConfig.isCapeVisible());
-                button.text = getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible());
+                button.message = getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible());
             } else if(button.id == 1) {
                 MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
-                button.text = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
-            } else if(button.id == 2) {
-                //DownloadManager.prepareDownload(Minecraft.getMinecraft().thePlayer.getUniqueID(), Minecraft.getMinecraft().thePlayer.getDisplayName(), true);
+                button.message = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
             } else if(button.id == 3) {
-                this.minecraft.setScreen(null);
+                button.active = false;
+                new Thread(() -> {
+                    UUID onlineUUID = MinecraftApi.getUUID(this.minecraft.player.name);
+                    if(onlineUUID != null) {
+                        DownloadManager.prepareDownload(onlineUUID, this.minecraft.player.name, true);
+                        button.active = true;
+                    }
+                }).start();
+            } else if(button.id == 4) {
+                this.minecraft.openScreen(null);
             }
         }
     }
@@ -87,16 +97,16 @@ public class MenuScreen extends Screen {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         this.renderBackground();
-        this.drawCenteredTextWithShadow(this.textRenderer, "MinecraftCApes", this.width / 2, 20, 16777215);
+        this.drawCenteredString(this.textRenderer, "MinecraftCApes", this.width / 2, 20, 16777215);
         super.render(mouseX, mouseY, partialTicks);
     }
 
     private String getButtonString(String buttonText, boolean value) {
         String onOff;
         if(value) {
-            onOff = TranslationStorage.getInstance().get("options.on");
+            onOff = I18n.translate("options.on");
         } else {
-            onOff = TranslationStorage.getInstance().get("options.off");
+            onOff = I18n.translate("options.off");
         }
 
         return buttonText + ": " + onOff;
