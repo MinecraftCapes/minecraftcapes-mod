@@ -17,6 +17,17 @@ ploceus {
 }
 
 repositories {
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 loom {
@@ -38,6 +49,10 @@ dependencies {
 	nests ploceus.nests(project.nests_build)
 
 	ploceus.dependOsl(project.osl_version)
+
+	// Third party mods
+	//modImplementation "maven.modrinth:modmenu-ornithe:0.3.1+mcb1.7.3"
+	//modImplementation "maven.modrinth:legacyauth:1.0.5+Protocol14-Client"
 }
 
 processResources {
