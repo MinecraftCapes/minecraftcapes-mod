@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.UUID;
 
 @Mixin(PlayerRenderer.class)
-public class PlayerRendererMixin extends MobRenderer {
+public class PlayerRendererMixin extends MobRenderer<PlayerEntity> {
 
     @Shadow
     private HumanoidModel player;
@@ -174,7 +174,7 @@ public class PlayerRendererMixin extends MobRenderer {
             GL11.glRotatef(180.0F + bodyYaw, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(180.0F + bodyYaw, 0.0F, 1.0F, 0.0F);
         }
-        super.applyRotation(entity, bob, bodyYaw, tickDelta);
+        super.applyRotation((PlayerEntity) entity, bob, bodyYaw, tickDelta);
     }
 
     /**

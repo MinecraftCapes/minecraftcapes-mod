@@ -6,8 +6,7 @@ import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.gui.MenuScreen;
-import net.ornithemc.osl.keybinds.api.KeyBindingEvents;
-import net.ornithemc.osl.lifecycle.api.client.MinecraftClientEvents;
+import net.ornithemc.osl.lifecycle.api.MinecraftEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
@@ -26,7 +25,7 @@ public class MinecraftCapes implements ClientModInitializer {
 
     private static final List<Runnable> scheduledTasks = new ArrayList<>();
 
-    private static KeyBinding keyBinding;
+    public static final KeyBinding keyBinding = new KeyBinding("Open MCC GUI", Keyboard.KEY_J);
 
     @Override
     public void onInitializeClient() {
@@ -37,11 +36,8 @@ public class MinecraftCapes implements ClientModInitializer {
 
         getLogger().info("Initialised");
 
-        // Key Binding
-        KeyBindingEvents.REGISTER_KEYBINDS.register(registry -> keyBinding = registry.register("Open GUI", Keyboard.KEY_J));
-
         // Scheduler
-        MinecraftClientEvents.TICK_END.register(minecraft -> {
+        MinecraftEvents.TICK_END.register(minecraft -> {
             if(!scheduledTasks.isEmpty()) {
                 Runnable runnable = scheduledTasks.remove(0);
                 runnable.run();

@@ -1,92 +1,115 @@
 plugins {
+	id 'java'
 	id 'maven-publish'
-	id 'fabric-loom' version '1.15-SNAPSHOT'
-	id 'ploceus' version '1.15-SNAPSHOT'
-	id 'io.freefair.lombok' version "9.2.0"
+	id 'fabric-loom' version '1.15-SNAPSHOT' apply false
+	id 'ploceus' version '1.15-SNAPSHOT' apply false
+	id 'io.freefair.lombok' version "9.2.0" apply false
 }
 
-base {
-	archivesName = "${mod_name} Ornithe ${minecraft_version}"
-}
+def configure(project) {
+	project.apply plugin: 'java'
+	project.apply plugin: 'maven-publish'
+	project.apply plugin: 'fabric-loom'
+	project.apply plugin: 'ploceus'
+	project.apply plugin: 'io.freefair.lombok'
 
-version = project.version
-group = project.group
+	project.base {
+		archivesName = "${project.rootProject.mod_name} Ornithe ${project.rootProject.minecraft_version} Gen1"
+	}
+	project.version = "${project.rootProject.version}"
+	project.group = project.rootProject.group
 
-ploceus {
-	setIntermediaryGeneration(2)
-}
+	project.loom {
+		if (project.environment == 'client') {
+			clientOnlyMinecraftJar()
 
-repositories {
-	exclusiveContent {
-		forRepository {
-			maven {
-				name = "Modrinth"
-				url = "https://api.modrinth.com/maven"
+			runs {
+				client {
+					client()
+					programArgs(["--username", "james090500"])
+				}
 			}
 		}
-		filter {
-			includeGroup "maven.modrinth"
+		if (project.environment == 'server') {
+			serverOnlyMinecraftJar()
 		}
 	}
-}
 
-loom {
-	runs {
-		client {
-			client()
-			programArgs(["--username", "james090500"])
+	project.ploceus {
+		if (project.environment == 'client') {
+			clientOnlyMappings()
+		}
+		if (project.environment == 'server') {
+			serverOnlyMappings()
 		}
 	}
-}
 
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	mappings ploceus.featherMappings(project.feather_build)
-	exceptions ploceus.raven(project.raven_build)
-	signatures ploceus.sparrow(project.sparrow_build)
-	nests ploceus.nests(project.nests_build)
-
-	ploceus.dependOsl(project.osl_version)
-
-	// Third party mods
-	//modImplementation "maven.modrinth:modmenu-ornithe:0.3.1+mcb1.7.3"
-	//modImplementation "maven.modrinth:legacyauth:1.0.5+Protocol14-Client"
-}
-
-processResources {
-	def expandProps = [
-			"version": version,
-			"group": project.group, //Else we target the task's group.
-			"minecraft_version": minecraft_version,
-			"mod_name": mod_name,
-			"mod_author": mod_author,
-			"mod_id": mod_id,
-			"license": license,
-			"description": project.description,
-			"credits": credits,
-	]
-
-	filesMatching('fabric.mod.json') {
-		expand expandProps
+	project.repositories {
+		if (project.environment == 'client') {
+			exclusiveContent {
+				forRepository {
+					maven {
+						name = "Modrinth"
+						url = "https://api.modrinth.com/maven"
+					}
+				}
+				filter {
+					includeGroup "maven.modrinth"
+				}
+			}
+		}
 	}
-}
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = 'UTF-8'
-	it.options.release = 8
-}
+	project.dependencies {
+		minecraft "com.mojang:minecraft:${project.rootProject.minecraft_version}"
+		modImplementation "net.fabricmc:fabric-loader:${project.rootProject.loader_version}"
 
-java {
-	// Still required by IDEs such as Eclipse and Visual Studio Code
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
-}
+		mappings project.ploceus.featherMappings(project.feather_build)
+		exceptions project.ploceus.raven(project.raven_build)
+		signatures project.ploceus.sparrow(project.sparrow_build)
+		nests project.ploceus.nests(project.nests_build)
 
-// If you plan to use a different file for the license, don't forget to change the file name here!
-jar {
-	from('LICENSE') {
-		rename { "${it}_${base.archivesName.get()}" }
+		project.ploceus.dependOsl(project.osl_version, project.environment)
+
+		if (project.environment == 'client') {
+			// Third party mods
+			modImplementation "maven.modrinth:modmenu-ornithe:0.3.1+mcb1.7.3"
+			modImplementation "maven.modrinth:legacyauth:1.0.5+Protocol14-Client"
+		}
+	}
+
+	project.sourceSets {
+		main {
+			java {
+				srcDirs += project.rootProject.sourceSets.main.java.srcDirs
+			}
+			resources {
+				srcDirs += project.rootProject.sourceSets.main.resources.srcDirs
+			}
+		}
+	}
+
+	project.processResources {
+		filesMatching('fabric.mod.json') {
+			expand project.properties
+		}
+	}
+
+	project.tasks.withType(JavaCompile).configureEach {
+		it.options.encoding = 'UTF-8'
+		it.options.release = 8
+	}
+
+	project.java {
+		// Still required by IDEs such as Eclipse and Visual Studio Code
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
+	}
+
+	// If you plan to use a different file for the license, don't forget to change the file name here!
+	project.jar {
+		from('LICENSE') {
+			rename { "${it}_${project.base.archivesName.get()}" }
+		}
 	}
 }
