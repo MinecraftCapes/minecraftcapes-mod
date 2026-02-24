@@ -27,6 +27,6 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AvatarRenderSta
     @Redirect(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
     public void submit(SubmitNodeCollector instance, Model model, Object o, PoseStack poseStack, RenderType renderType, int i, int j, int k, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, @Local AvatarRenderState avatarRenderState) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
-        instance.submitModel(model, avatarRenderState, poseStack, RenderTypes.entityCutoutNoCull(extendedRenderState.minecraftcapes$getEarsTexture()), i, j, k, null);
+        instance.submitModel(model, avatarRenderState, poseStack, RenderTypes.armorCutoutNoCull(extendedRenderState.minecraftcapes$getEarsTexture()), i, j, k, null);
     }
 }
