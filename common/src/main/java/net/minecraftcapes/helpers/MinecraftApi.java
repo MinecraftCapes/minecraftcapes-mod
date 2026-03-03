@@ -7,9 +7,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
@@ -43,32 +45,30 @@ public class MinecraftApi {
      * @return The response data
      */
     private static JsonObject getApiData(String data) {
+        HttpURLConnection conn = null;
         try {
-            URI uri = URI.create(String.format("https://api.minecraftapi.net/v3/profile/%s?params=[full_uuid,name]", data));
-            HttpURLConnection httpurlconnection = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
-            httpurlconnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
-            httpurlconnection.setDoInput(true);
-            httpurlconnection.setDoOutput(false);
-            httpurlconnection.connect();
-
-            if (httpurlconnection.getResponseCode() / 100 == 2) {
-                //Create reader
-                BufferedReader in = new BufferedReader(new InputStreamReader(httpurlconnection.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-
-                //Read response
-                while ((inputLine = in.readLine()) != null)
-                    response.append(inputLine);
-
-                //Convert response to JSON
-                return JsonParser.parseString(response.toString()).getAsJsonObject();
-            } else {
-                return null;
+            URI uri = URI.create("https://api.minecraftapi.net/v3/profile/" + data + "?params=[full_uuid,name]");
+            
+            conn = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
+            conn.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
+            
+            int code = conn.getResponseCode();
+            InputStream stream = (code >= 200 && code < 300) ? conn.getInputStream() : conn.getErrorStream();
+            if (stream == null || code < 200 || code >= 300) return null;
+            
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+                StringBuilder sb = new StringBuilder();
+                char[] buf = new char[2048];
+                int n;
+                while ((n = reader.read(buf)) != -1) sb.append(buf, 0, n);
+                return JsonParser.parseString(sb.toString()).getAsJsonObject();
             }
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        } finally {
+            if (conn != null) conn.disconnect();
         }
     }
+
 }

@@ -149,31 +149,29 @@ public class DownloadManager {
      * @return
      */
     private static byte[] downloadData(String url) {
-        HttpURLConnection httpURLConnection = null;
+        HttpURLConnection conn = null;
         URI uri = URI.create(url);
 
         try {
             MinecraftCapes.getLogger().info("Getting texture {}", url);
-            httpURLConnection = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
-            httpURLConnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.connect();
+            conn = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
+            conn.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
+            conn.connect();
 
-            if (httpURLConnection.getResponseCode() / 100 == 2) {
-                try (InputStream inputStream = httpURLConnection.getInputStream()) {
+            if (conn.getResponseCode() / 100 == 2) {
+                try (InputStream inputStream = conn.getInputStream()) {
                     return IOUtils.toByteArray(inputStream); // Read fully before closing
                 }
             } else {
-                MinecraftCapes.getLogger().warn("minecraftcapes.net returned a {}", httpURLConnection.getResponseCode());
+                MinecraftCapes.getLogger().warn("minecraftcapes.net returned a {}", conn.getResponseCode());
                 return null;
             }
         } catch (IOException e) {
             MinecraftCapes.getLogger().warn("No connection to minecraftcapes.net detected");
             throw new RuntimeException(e);
         } finally {
-            if (httpURLConnection != null) {
-                httpURLConnection.disconnect();
+            if (conn != null) {
+                conn.disconnect();
             }
         }
     }
