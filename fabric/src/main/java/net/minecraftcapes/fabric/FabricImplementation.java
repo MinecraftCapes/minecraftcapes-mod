@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.gui.MenuScreen;
 
-public class FabricClient extends MinecraftCapes implements ClientModInitializer {
+public class FabricImplementation extends MinecraftCapes implements ClientModInitializer {
 	private static KeyMapping keyBinding;
 	
 	@Override
