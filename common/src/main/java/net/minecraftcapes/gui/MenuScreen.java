@@ -1,7 +1,7 @@
 package net.minecraftcapes.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -61,8 +61,8 @@ public class MenuScreen extends Screen {
     }
     
     @Override
-    public void render(@NonNull GuiGraphics graphics, int mouseX, int mouseY, float a) {
-        super.render(graphics, mouseX, mouseY, a);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractRenderState(graphics, mouseX, mouseY, a);
         this.renderEntity(
                 graphics,
                 this.width / 2,
@@ -72,7 +72,7 @@ public class MenuScreen extends Screen {
     }
 
     @Unique
-    private void renderEntity(GuiGraphics guiGraphics, int x, int y, LivingEntity entity) {
+    private void renderEntity(GuiGraphicsExtractor guiGraphics, int x, int y, LivingEntity entity) {
         Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
 
         EntityRenderState entityrenderstate = extractRenderState(entity);
@@ -86,7 +86,7 @@ public class MenuScreen extends Screen {
         }
 
         Vector3f vector3f = new Vector3f(0.0F, entityrenderstate.boundingBoxHeight / 2.0625F, 0.0F);
-        guiGraphics.submitEntityRenderState(entityrenderstate, 60f, vector3f, quaternionf, null, 0, 0, x, y);
+        guiGraphics.entity(entityrenderstate, 60f, vector3f, quaternionf, null, 0, 0, x, y);
     }
 
     @Unique
@@ -94,7 +94,6 @@ public class MenuScreen extends Screen {
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         EntityRenderer<? super LivingEntity, ?> entityrenderer = entityrenderdispatcher.getRenderer(livingEntity);
         EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
-        entityrenderstate.lightCoords = 0xF000F0;
         entityrenderstate.shadowPieces.clear();
         entityrenderstate.outlineColor = 0;
         return entityrenderstate;
