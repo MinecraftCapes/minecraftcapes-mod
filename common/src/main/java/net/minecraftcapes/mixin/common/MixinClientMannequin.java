@@ -1,4 +1,4 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.common;
 
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.entity.ClientMannequin;
@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientMannequin.class)
-public abstract class ClientMannequinMixin extends Mannequin implements ClientAvatarEntity {
+public abstract class MixinClientMannequin extends Mannequin implements ClientAvatarEntity {
     
-    protected ClientMannequinMixin(Level p_445957_) {
+    protected MixinClientMannequin(Level p_445957_) {
         super(p_445957_);
     }
     
