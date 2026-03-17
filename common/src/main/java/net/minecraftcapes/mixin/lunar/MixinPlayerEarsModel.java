@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 public class MixinPlayerEarsModel {
     
     /**
-     * I wouldn't usually recommend and overwrite but it stops Lunar complaining...
+     * I wouldn't usually recommend an overwrite but it stops Lunar complaining...
      * @return
      */
     @Overwrite
