@@ -1,7 +1,5 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.lunar;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -11,24 +9,24 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.model.player.PlayerEarsModel;
 import net.minecraft.client.model.player.PlayerModel;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(PlayerEarsModel.class)
-public abstract class MixinPlayerEarsModel extends PlayerModel {
-
-    public MixinPlayerEarsModel(ModelPart p_481213_, boolean p_479809_) {
-        super(p_481213_, p_479809_);
-    }
-
-    @Inject(method = "createEarsLayer", at = @At(value = "RETURN"), cancellable = true)
-    private static void minecraftcapes$createEars(CallbackInfoReturnable<LayerDefinition> cir, @Local MeshDefinition meshdefinition, @Local(ordinal = 1) PartDefinition partdefinition1) {
-        cir.cancel();
+public class MixinPlayerEarsModel {
+    
+    /**
+     * I wouldn't usually recommend an overwrite but it stops Lunar complaining...
+     * @return
+     */
+    @Overwrite
+    public static LayerDefinition createEarsLayer() {
+        MeshDefinition meshdefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
+        PartDefinition partdefinition = meshdefinition.getRoot().clearRecursively();
+        PartDefinition partdefinition1 = partdefinition.getChild("head");
         CubeListBuilder cubelistbuilder = CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -6.0F, -1.0F, 6.0F, 6.0F, 1.0F, new CubeDeformation(1.0F, 1.0F, 0.2F));
         partdefinition1.addOrReplaceChild("left_ear", cubelistbuilder, PartPose.offset(-6.0F, -6.0F, 0.0F));
         partdefinition1.addOrReplaceChild("right_ear", cubelistbuilder, PartPose.offset(6.0F, -6.0F, 0.0F));
-        cir.setReturnValue(LayerDefinition.create(meshdefinition, 14, 7));
+        return LayerDefinition.create(meshdefinition, 14, 7);
     }
-
+    
 }

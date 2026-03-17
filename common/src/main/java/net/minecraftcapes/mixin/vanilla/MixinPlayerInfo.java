@@ -1,4 +1,4 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.vanilla;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -17,22 +17,9 @@ import java.util.function.Supplier;
 @Mixin(PlayerInfo.class)
 public class MixinPlayerInfo {
 
-    @Shadow
-    @Final
-    private GameProfile profile;
-
     @Inject(method = "createSkinLookup", at = @At("HEAD"))
     private static void minecraftcapes$downloadPlayerInfo(GameProfile profile, CallbackInfoReturnable<Supplier<PlayerSkin>> cir) {
         DownloadManager.prepareDownload(profile.id(), profile.name(), false);
-    }
-
-    @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
-    public void minecraftcapes$getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
-        PlayerHandler playerHandler = PlayerHandler.get(profile.id());
-        //Check player handler is loaded
-        if(playerHandler.getHasInfo()) {
-            cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
-        }
     }
 
 }

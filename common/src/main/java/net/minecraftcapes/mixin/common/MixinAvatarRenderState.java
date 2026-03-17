@@ -1,4 +1,4 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.common;
 
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.resources.Identifier;
