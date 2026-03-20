@@ -1,4 +1,4 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.common;
 
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.PlayerModel;

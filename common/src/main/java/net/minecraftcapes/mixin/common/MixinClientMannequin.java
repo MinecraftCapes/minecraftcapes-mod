@@ -1,8 +1,7 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.common;
 
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.entity.ClientMannequin;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.level.Level;
@@ -15,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientMannequin.class)
-public abstract class ClientMannequinMixin extends Mannequin implements ClientAvatarEntity {
+public abstract class MixinClientMannequin extends Mannequin implements ClientAvatarEntity {
     
-    public ClientMannequinMixin(EntityType<Mannequin> p_446465_, Level p_446512_) {
-        super(p_446465_, p_446512_);
+    protected MixinClientMannequin(Level p_445957_) {
+        super(p_445957_);
     }
     
     @Inject(method = "updateSkin", at = @At("HEAD"))
