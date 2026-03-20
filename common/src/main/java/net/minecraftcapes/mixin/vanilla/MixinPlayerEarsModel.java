@@ -1,8 +1,9 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.vanilla;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerEarsModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;

@@ -1,4 +1,4 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.common;
 
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
