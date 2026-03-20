@@ -1,8 +1,8 @@
-package net.minecraftcapes.mixin;
+package net.minecraftcapes.mixin.vanilla;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerEarsModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -10,17 +10,16 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEarsModel.class)
-public abstract class MixinPlayerEarsModel extends HumanoidModel<AvatarRenderState> {
+public abstract class MixinPlayerEarsModel extends PlayerModel {
 
-    public MixinPlayerEarsModel(ModelPart modelPart) {
-        super(modelPart);
+    public MixinPlayerEarsModel(ModelPart p_481213_, boolean p_479809_) {
+        super(p_481213_, p_479809_);
     }
 
     @Inject(method = "createEarsLayer", at = @At(value = "RETURN"), cancellable = true)
