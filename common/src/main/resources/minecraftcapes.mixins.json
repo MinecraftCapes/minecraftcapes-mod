@@ -2,15 +2,18 @@
   "required" : true,
   "minVersion" : "0.8",
   "package" : "net.minecraftcapes.mixin",
-  "refmap" : "minecraftcapes.refmap.json",
+  "plugin" : "net.minecraftcapes.mixin.MinecraftCapesMixinPlugin",
   "compatibilityLevel" : "JAVA_17",
   "client" : [
-    "MixinCapeLayer",
-    "MixinDeadmau5EarsLayer",
-    "MixinPlayerEarsModel",
-    "MixinPlayerInfo",
-    "MixinPlayerRenderer",
-    "MixinPlayerRenderState"
+    "common.MixinPlayerRenderer",
+    "common.MixinCapeLayer",
+    "common.MixinDeadmau5EarsLayer",
+    "common.MixinPlayerInfo",
+    "common.MixinPlayerRenderState",
+    "lunar.MixinPlayerEarsModel",
+    "lunar.MixinPlayerInfo",
+    "vanilla.MixinPlayerEarsModel",
+    "vanilla.MixinPlayerInfo"
   ],
   "injectors" : {
     "defaultRequire" : 1
