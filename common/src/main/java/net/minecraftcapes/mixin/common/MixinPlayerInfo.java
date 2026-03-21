@@ -15,18 +15,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.function.Supplier;
 
 @Mixin(PlayerInfo.class)
-public class MixinPlayerInfo {
+public abstract class MixinPlayerInfo {
 
     @Shadow
     @Final
     private GameProfile profile;
-
+    
     @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
     public void minecraftcapes$getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(profile.id());
+        playerHandler.setName(profile.name());
+        
         //Check player handler is loaded
         if(playerHandler.getHasInfo()) {
             cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
+        } else {
+            DownloadManager.prepareDownload(playerHandler);
         }
     }
 

@@ -27,6 +27,7 @@ public class PlayerHandler {
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
     @Setter @Getter private UUID playerUUID;
+    @Setter @Getter private String name;
 
     @Getter
     private Int2ObjectMap<NativeImage> animatedCape;
@@ -56,9 +57,24 @@ public class PlayerHandler {
      * @param uuid
      */
     public static void remove(UUID uuid) {
+        PlayerHandler playerHandler = instances.get(uuid);
+        playerHandler.removeCape();
+        playerHandler.removeEars();
         instances.remove(uuid);
     }
-
+    
+    /**
+     * Remove all instances to force a refresh
+     */
+    public static void clearAll() {
+        for(PlayerHandler playerHandler : instances.values()) {
+            playerHandler.removeCape();
+            playerHandler.removeEars();
+        }
+        
+        instances.clear();
+    }
+    
     /**
      * Gets the cape texture and resizes or splits it accordingly
      * @param capeImage
@@ -120,11 +136,15 @@ public class PlayerHandler {
         this.setHasAnimatedCape(false);
         this.setHasStaticCape(false);
 
-        Minecraft.getInstance().execute(() -> {
+        Minecraft.getInstance().schedule(() -> {
             Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + playerUUID));
 
-            for (int i = 0; i < getAnimatedCape().size() - 1; i++) {
-                Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, i)));
+            if(animatedCape != null) {
+                for(int i = 0; i < animatedCape.size() - 1; i++) {
+                    Minecraft.getInstance()
+                            .getTextureManager()
+                            .release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", playerUUID, i)));
+                }
             }
         });
     }
@@ -138,7 +158,7 @@ public class PlayerHandler {
         MinecraftCapes.getLogger().debug("Removing ears for {}", playerUUID);
 
         this.setHasEars(false);
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID)));
+        Minecraft.getInstance().schedule(() -> Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + playerUUID)));
     }
 
     /**
@@ -203,7 +223,7 @@ public class PlayerHandler {
      * @param nativeImage
      */
     private void applyTexture(Identifier Identifier, NativeImage nativeImage) {
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(Identifier, new DynamicTexture(Identifier::toString, nativeImage)));
+        Minecraft.getInstance().schedule(() -> Minecraft.getInstance().getTextureManager().register(Identifier, new DynamicTexture(Identifier::toString, nativeImage)));
     }
 
     /**

@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
+import net.minecraftcapes.player.PlayerHandler;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NonNull;
@@ -43,12 +44,12 @@ public class MenuScreen extends Screen {
         
         helper.addChild(Button.builder(Component.nullToEmpty("Open MinecraftCapes"), ConfirmLinkScreen.confirmLink(this, "https://minecraftcapes.net"))
                 .build(), 2);
-        helper.addChild(Button.builder(Component.nullToEmpty("Reload Profile"), _ -> DownloadManager.prepareDownload(this.minecraft.player.getUUID(), this.minecraft.player.getName()
-                .getString(), true)).build(), 2);
+        helper.addChild(Button.builder(Component.nullToEmpty("Reload Profile"), _ -> PlayerHandler.remove(this.minecraft.player.getUUID())).build(), 2);
         helper.addChild(CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible())
                 .create(Component.nullToEmpty("Custom Capes"), (_, value) -> MinecraftCapesConfig.setCapeVisible(value)), 2);
         helper.addChild(CycleButton.onOffBuilder(MinecraftCapesConfig.isEarsVisible())
                 .create(Component.nullToEmpty("Custom Ears"), (_, value) -> MinecraftCapesConfig.setEarsVisible(value)), 2);
+        helper.addChild(Button.builder(Component.nullToEmpty("Reload All Profiles"), _ -> PlayerHandler.clearAll()).build(), 2);
         
         this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose()).width(200).build());
         this.layout.visitWidgets(this::addRenderableWidget);

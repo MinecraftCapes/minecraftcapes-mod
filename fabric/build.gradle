@@ -8,7 +8,14 @@ base {
     archivesName = "${mod_name} Fabric ${minecraft_version}"
 }
 
+repositories {
+    maven { url 'https://maven.covers1624.net/' }
+}
+
 dependencies {
+    // Auth
+    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
+
     //Fabirc and Minecraft
     minecraft "com.mojang:minecraft:${minecraft_version}"
 
@@ -16,23 +23,29 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     //Mod Menu
-    //runtimeOnly "maven.modrinth:modmenu:18.0.0-alpha.3"
+    runtimeOnly "maven.modrinth:modmenu:18.0.0-alpha.6"
 }
 
 loom {
+    log4jConfigs.from("../log4j-dev.xml")
+
     runs {
+        clientLogin {
+            client()
+            ideConfigGenerated true
+            programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+            mainClass.set 'net.covers1624.devlogin.DevLogin'
+        }
         client {
             client()
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
-            runDir("run/client")
             programArgs '--username=james090500'
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir("run/server")
         }
     }
 }

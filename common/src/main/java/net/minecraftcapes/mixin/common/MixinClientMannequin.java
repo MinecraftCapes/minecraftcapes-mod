@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftcapes.player.DownloadManager;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,21 +20,33 @@ public abstract class MixinClientMannequin extends Mannequin implements ClientAv
     protected MixinClientMannequin(Level p_445957_) {
         super(p_445957_);
     }
-    
-    @Inject(method = "updateSkin", at = @At("HEAD"))
-    public void updateSkin(CallbackInfo ci) {
+
+    @Inject(method = "updateSkin", at = @At("RETURN"))
+    public void minecraftcapes$updateSkin(CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(this.uuid);
-        playerHandler.setPlayerUUID(this.getProfile().partialProfile().id());
-        DownloadManager.prepareDownload(playerHandler);
+        
+        //Check player handler is loaded
+        if(!playerHandler.getHasInfo()) {
+            this.minecraftcapes$loadProfile(playerHandler);
+        }
     }
     
     @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
-    public void getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
+    public void minecraftcapes$getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(this.uuid);
         
         //Check player handler is loaded
         if(playerHandler.getHasInfo()) {
             cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
+        } else {
+            this.minecraftcapes$loadProfile(playerHandler);
         }
+    }
+    
+    @Unique
+    private void minecraftcapes$loadProfile(PlayerHandler playerHandler) {
+        playerHandler.setPlayerUUID(this.getProfile().partialProfile().id());
+        playerHandler.setName(this.getProfile().partialProfile().name());
+        DownloadManager.prepareDownload(playerHandler);
     }
 }

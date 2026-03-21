@@ -15,14 +15,13 @@ import java.nio.file.Path;
 public class MinecraftCapes {
     
     public static final String MOD_ID = "minecraftcapes";
-    public static final String MOD_NAME = "MinecraftCapes";
     public static final String MINECRAFT_VERSION = SharedConstants.getCurrentVersion().name();
     
     @Getter
     private static Path configDir;
     
     @Getter
-    private static final Logger logger = LoggerFactory.getLogger(MOD_NAME);
+    private static final Logger logger = LoggerFactory.getLogger(MOD_ID);
     
     public static final KeyMapping KEY_MAPPING = new KeyMapping(
             "key.minecraftcapes.gui",

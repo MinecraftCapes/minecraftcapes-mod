@@ -20,22 +20,19 @@ import java.util.UUID;
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
 public class DownloadManager {
-
+    
     /**
      * Prepares the download
-     * @param uuid The entity uuid
-     * @param username The entity name
-     * @param doRefresh Whether we are forcing an overwrite
+     * @param playerHandler The player handler instance
      */
-    public static void prepareDownload(UUID uuid, String username, boolean doRefresh) {
-        PlayerHandler playerHandler = PlayerHandler.get(uuid);
-        if (!playerHandler.getHasInfo() || doRefresh) {
+    public static void prepareDownload(PlayerHandler playerHandler) {
+        if (!playerHandler.getHasInfo()) {
             playerHandler.setHasInfo(true);
-            if (uuid.version() == 4) {
+            if (playerHandler.getPlayerUUID().version() == 4) {
                 downloadProfile(playerHandler);
-            } else if (uuid.version() == 3) {
+            } else if (playerHandler.getPlayerUUID().version() == 3) {
                 Thread prepareProfile = new Thread(() -> {
-                    UUID onlineUUID = MinecraftApi.getUUID(username);
+                    UUID onlineUUID = MinecraftApi.getUUID(playerHandler.getName());
                     if(onlineUUID != null) {
                         playerHandler.setPlayerUUID(onlineUUID);
                         downloadProfile(playerHandler);
@@ -43,17 +40,6 @@ public class DownloadManager {
                 });
                 prepareProfile.start();
             }
-        }
-    }
-
-    /**
-     * Prepares the download
-     * @param playerHandler The player handler instance
-     */
-    public static void prepareDownload(PlayerHandler playerHandler) {
-        if(!playerHandler.getHasInfo()) {
-            playerHandler.setHasInfo(true);
-            downloadProfile(playerHandler);
         }
     }
 
