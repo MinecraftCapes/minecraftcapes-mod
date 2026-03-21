@@ -28,13 +28,13 @@ public class DownloadManager {
     public static void prepareDownload(PlayerHandler playerHandler) {
         if (!playerHandler.getHasInfo()) {
             playerHandler.setHasInfo(true);
-            if (playerHandler.getPlayerUUID().version() == 4) {
+            if (playerHandler.getUuid().version() == 4) {
                 downloadProfile(playerHandler);
-            } else if (playerHandler.getPlayerUUID().version() == 3) {
+            } else if (playerHandler.getUuid().version() == 3) {
                 Thread prepareProfile = new Thread(() -> {
                     UUID onlineUUID = MinecraftApi.getUUID(playerHandler.getName());
                     if(onlineUUID != null) {
-                        playerHandler.setPlayerUUID(onlineUUID);
+                        playerHandler.setUuid(onlineUUID);
                         downloadProfile(playerHandler);
                     }
                 });
@@ -49,7 +49,7 @@ public class DownloadManager {
      */
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
-            byte[] playerDataBytes = downloadData("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
+            byte[] playerDataBytes = downloadData("https://api.minecraftcapes.net/profile/" + playerHandler.getUuid().toString().replace("-", ""));
             if (playerDataBytes == null) return;
 
             String json = new String(playerDataBytes, StandardCharsets.UTF_8);

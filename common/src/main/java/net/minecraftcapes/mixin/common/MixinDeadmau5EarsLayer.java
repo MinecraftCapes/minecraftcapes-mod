@@ -1,5 +1,6 @@
 package net.minecraftcapes.mixin.common;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.Model;
@@ -15,18 +16,22 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraftcapes.player.ExtendedRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Deadmau5EarsLayer.class)
 public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
     
-    public MixinDeadmau5EarsLayer(RenderLayerParent<AvatarRenderState, PlayerModel> p_117346_) {
-        super(p_117346_);
+    public MixinDeadmau5EarsLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
+        super(renderer);
     }
     
-    @Redirect(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
-    public void submit(SubmitNodeCollector instance, Model model, Object o, PoseStack poseStack, RenderType renderType, int i, int j, int k, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, @Local AvatarRenderState avatarRenderState) {
+    @WrapWithCondition(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
+    public boolean minecraftcapes$submitEars(SubmitNodeCollector instance, Model model, Object state, PoseStack poseStack, RenderType renderType, int lightCoords, int overlayCoords, int outlineColor, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, @Local(argsOnly = true) AvatarRenderState avatarRenderState) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
-        instance.submitModel(model, avatarRenderState, poseStack, RenderTypes.armorCutoutNoCull(extendedRenderState.minecraftcapes$getEarsTexture()), i, j, k, null);
+        if(extendedRenderState.minecraftcapes$getEarsEnabled()) {
+            instance.submitModel(model, avatarRenderState, poseStack, RenderTypes.armorCutoutNoCull(extendedRenderState.minecraftcapes$getEarsTexture()), lightCoords, overlayCoords, outlineColor, null);
+            return false;
+        } else {
+            return true;
+        }
     }
 }

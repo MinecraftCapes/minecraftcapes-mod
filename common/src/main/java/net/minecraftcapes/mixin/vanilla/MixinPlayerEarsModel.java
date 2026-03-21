@@ -17,18 +17,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEarsModel.class)
 public abstract class MixinPlayerEarsModel extends PlayerModel {
-
-    public MixinPlayerEarsModel(ModelPart p_481213_, boolean p_479809_) {
-        super(p_481213_, p_479809_);
+    
+    public MixinPlayerEarsModel(ModelPart root, boolean slim) {
+        super(root, slim);
     }
-
+    
     @Inject(method = "createEarsLayer", at = @At(value = "RETURN"), cancellable = true)
-    private static void minecraftcapes$createEars(CallbackInfoReturnable<LayerDefinition> cir, @Local MeshDefinition meshdefinition, @Local(ordinal = 1) PartDefinition partdefinition1) {
+    private static void minecraftcapes$createEars(CallbackInfoReturnable<LayerDefinition> cir, @Local(name = "mesh") MeshDefinition mesh, @Local(name = "head") PartDefinition head) {
         cir.cancel();
         CubeListBuilder cubelistbuilder = CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -6.0F, -1.0F, 6.0F, 6.0F, 1.0F, new CubeDeformation(1.0F, 1.0F, 0.2F));
-        partdefinition1.addOrReplaceChild("left_ear", cubelistbuilder, PartPose.offset(-6.0F, -6.0F, 0.0F));
-        partdefinition1.addOrReplaceChild("right_ear", cubelistbuilder, PartPose.offset(6.0F, -6.0F, 0.0F));
-        cir.setReturnValue(LayerDefinition.create(meshdefinition, 14, 7));
+        head.addOrReplaceChild("left_ear", cubelistbuilder, PartPose.offset(-6.0F, -6.0F, 0.0F));
+        head.addOrReplaceChild("right_ear", cubelistbuilder, PartPose.offset(6.0F, -6.0F, 0.0F));
+        cir.setReturnValue(LayerDefinition.create(mesh, 14, 7));
     }
 
 }

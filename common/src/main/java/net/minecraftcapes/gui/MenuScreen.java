@@ -99,4 +99,5 @@ public class MenuScreen extends Screen {
         entityrenderstate.outlineColor = 0;
         return entityrenderstate;
     }
+    
 }

@@ -12,6 +12,10 @@ public interface ExtendedRenderState {
     
     boolean minecraftcapes$hasCapeGlint();
     
+    void minecraftcapes$setEarsEnabled(boolean value);
+    
+    boolean minecraftcapes$getEarsEnabled();
+    
     void minecraftcapes$setEarsTexture(Identifier value);
     
     Identifier minecraftcapes$getEarsTexture();
