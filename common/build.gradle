@@ -9,7 +9,15 @@ neoForge {
 }
 
 dependencies {
+    // Mixin
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+
+    // MixinExtras
+    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+
+    // ASM for building
+    compileOnly("org.ow2.asm:asm-tree:9.3")
 }
 
 configurations {
