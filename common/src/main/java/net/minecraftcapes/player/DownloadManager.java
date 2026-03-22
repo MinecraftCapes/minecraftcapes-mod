@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.helpers.MinecraftApi;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -161,7 +162,25 @@ public class DownloadManager {
             }
         }
     }
-
+    
+    public static void clearCache() {
+        Path capes = MinecraftCapes.getConfigDir().resolve("capes");
+        Path ears = MinecraftCapes.getConfigDir().resolve("ears");
+        
+        try {
+            FileUtils.deleteDirectory(capes.toFile());
+        } catch(IOException e) {
+            MinecraftCapes.getLogger().error("Couldn't clear cache: capes");
+            e.printStackTrace();
+        }
+        
+        try {
+            FileUtils.deleteDirectory(ears.toFile());
+        } catch(IOException e) {
+            MinecraftCapes.getLogger().error("Couldn't clear cache: ears");
+            e.printStackTrace();
+        }
+    }
 
     private static class ProfileResult {
         private boolean capeGlint = false;

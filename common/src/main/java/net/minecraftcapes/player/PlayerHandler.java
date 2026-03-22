@@ -36,8 +36,7 @@ public class PlayerHandler {
     //Animated Cape Settings
     private long lastFrameTime = 0;
     private int lastFrame = 0;
-    private int capeInterval = 100;
-
+    
     public PlayerHandler(UUID entityId) {
         this.entityId = entityId;
         this.uuid = entityId;
@@ -192,6 +191,7 @@ public class PlayerHandler {
      */
     private Identifier getFrame() {
         final long time = System.currentTimeMillis();
+        int capeInterval = 100;
         if(time > lastFrameTime + capeInterval) {
             int currentFrameNo = (lastFrame + 1 > getAnimatedCape().size() - 1) ? 0 : lastFrame + 1;
 

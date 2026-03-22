@@ -7,7 +7,8 @@
   "authors": [ "james090500", "Siriuo" ],
   "contact": {
     "homepage": "https://minecraftcapes.net/",
-    "issues": "https://minecraftcapes.net/discord"
+    "sources": "https://github.com/minecraftcapes/minecraftcapes-mod",
+    "issues": "https://github.com/MinecraftCapes/minecraftcapes-mod/issues"
   },
   "license": "${license}",
   "icon": "logo.png",
@@ -21,11 +22,18 @@
   },
   "mixins": [
     {
-      "config": "${mod_id}.mixins.json",
+      "config": "minecraftcapes.mixins.json",
       "environment": "client"
     }
   ],
   "depends": {
     "fabric-key-mapping-api-v1": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/minecraftcapes"
+      }
+    }
   }
 }
