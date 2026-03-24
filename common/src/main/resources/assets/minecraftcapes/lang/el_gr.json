@@ -1,0 +1,20 @@
+{
+  "gui.minecraftcapes.title": "MinecraftCapes",
+  "key.minecraftcapes.gui": "Άνοιγμα Μενού",
+  "key.category.minecraftcapes.gui": "MinecraftCapes",
+  "button.minecraftcapes.minecraftcapes": "MinecraftCapes",
+  "button.minecraftcapes.reload": "Επαναφόρτωση Προφίλ",
+  "button.minecraftcapes.custom_capes": "Προσαρμοσμένες Κάπες",
+  "button.minecraftcapes.custom_ears": "Προσαρμοσμένα Αυτιά",
+  "button.minecraftcapes.reload_all": "Επαναφόρτωση Όλων των Προφίλ",
+  "button.minecraftcapes.discord": "Discord",
+  "button.minecraftcapes.github": "GitHub",
+  "gui.minecraftcapes.tab.general": "Γενικά",
+  "gui.minecraftcapes.tab.options": "Επιλογές",
+  "gui.minecraftcapes.tab.links": "Σύνδεσμοι",
+  "button.minecraftcapes.minecraftcapes.tooltip": "Άνοιγμα της ιστοσελίδας MinecraftCapes.net",
+  "button.minecraftcapes.reload.tooltip": "Επαναφόρτωσε το προφίλ σου για να εμφανιστούν η νέα κάπα/αυτιά!",
+  "button.minecraftcapes.custom_capes.tooltip": "Εμφάνιση ή απόκρυψη προσαρμοσμένων καπών",
+  "button.minecraftcapes.custom_ears.tooltip": "Εμφάνιση ή απόκρυψη προσαρμοσμένων αυτιών",
+  "button.minecraftcapes.reload_all.tooltip": "Επαναφόρτωση όλων των προφίλ ώστε να ενημερωθούν οι κάπες/αυτιά των άλλων παικτών. Σημείωση: Μπορεί να προκαλέσει lag!"
+}

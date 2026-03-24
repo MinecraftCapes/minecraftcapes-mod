@@ -1,0 +1,20 @@
+{
+  "gui.minecraftcapes.title": "MinecraftCapes",
+  "key.minecraftcapes.gui": "Open GUI",
+  "key.category.minecraftcapes.gui": "MinecraftCapes",
+  "button.minecraftcapes.minecraftcapes": "MinecraftCapes",
+  "button.minecraftcapes.reload": "Actualizar Perfil",
+  "button.minecraftcapes.custom_capes": "Capas Personalizadas",
+  "button.minecraftcapes.custom_ears": "orejas personalizadas",
+  "button.minecraftcapes.reload_all": "Actualizar todos los perfiles",
+  "button.minecraftcapes.discord": "Discord",
+  "button.minecraftcapes.github": "GitHub",
+  "gui.minecraftcapes.tab.general": "General",
+  "gui.minecraftcapes.tab.options": "Opciones",
+  "gui.minecraftcapes.tab.links": "Links",
+  "button.minecraftcapes.minecraftcapes.tooltip": "Abrir la pagina de MinecraftCapes.net",
+  "button.minecraftcapes.reload.tooltip": "Actualiza tu perfil para mostrar las ultimas capas/orejas",
+  "button.minecraftcapes.custom_capes.tooltip": "Mostrar o ocultar capas",
+  "button.minecraftcapes.custom_ears.tooltip": "Mostrar o ocultar Orejas",
+  "button.minecraftcapes.reload_all.tooltip": "Actualiza todos los perfiles para que otras personas puedan ver tu capas o orejas. Esto puede causar lag!"
+}
