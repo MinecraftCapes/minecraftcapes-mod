@@ -17,7 +17,7 @@ import net.minecraftcapes.player.ExtendedRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(CapeLayer.class)
+@Mixin(value = CapeLayer.class, priority = 0)
 public abstract class MixinCapeLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
     
     public MixinCapeLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {

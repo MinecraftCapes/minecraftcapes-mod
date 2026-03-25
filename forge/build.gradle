@@ -1,7 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'io.freefair.lombok'
-    id 'net.minecraftforge.gradle' version '7.0.0+'
+    id 'net.minecraftforge.gradle' version '7.+'
 }
 
 base {
