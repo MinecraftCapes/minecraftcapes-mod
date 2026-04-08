@@ -17,8 +17,6 @@ public class ForgeImplementation {
         busGroup = context.getModBusGroup();
         FMLClientSetupEvent.getBus(busGroup).addListener(this::clientSetup);
         FMLDedicatedServerSetupEvent.getBus(busGroup).addListener(this::serverSetup);
-        
-        //com.llamalad7.mixinextras.sugar.Local;
     }
     
     /**

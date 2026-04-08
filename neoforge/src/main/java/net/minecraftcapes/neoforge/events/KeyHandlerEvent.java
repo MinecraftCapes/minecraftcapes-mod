@@ -14,7 +14,7 @@ public class KeyHandlerEvent {
     @SubscribeEvent
     public static void onKeyPress(ClientTickEvent.Post event) {
         if (MinecraftCapes.KEY_MAPPING.consumeClick()) {
-            Minecraft.getInstance().setScreen(new MenuScreen());
+            Minecraft.getInstance().gui.setScreen(new MenuScreen());
         }
     }
 
