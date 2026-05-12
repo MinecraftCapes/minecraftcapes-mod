@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.tabs.GridLayoutTab;
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -21,7 +22,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.player.DownloadManager;
 import net.minecraftcapes.player.PlayerHandler;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -34,7 +34,7 @@ public class MenuScreen extends Screen {
     private static final Component TITLE = Component.translatable("gui.minecraftcapes.title");
     private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
     private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
-    private @Nullable TabNavigationBar tabNavigationBar;
+    private @Nullable MenuTabBar tabNavigationBar;
     
     public MenuScreen() {
         super(TITLE);
@@ -42,7 +42,7 @@ public class MenuScreen extends Screen {
     
     @Override
     protected void init() {
-        this.tabNavigationBar = TabNavigationBar.builder(this.tabManager, this.width)
+        this.tabNavigationBar = MenuTabBar.builder(this.tabManager, this.width)
                 .addTabs(new MenuScreen.GeneralTab(), new OptionsTab(), new MenuScreen.LinksTab())
                 .build();
         this.setFocused(this.tabNavigationBar);
@@ -60,7 +60,7 @@ public class MenuScreen extends Screen {
     @Override
     protected void repositionElements() {
         if (this.tabNavigationBar != null) {
-            this.tabNavigationBar.updateWidth(this.width);
+            this.tabNavigationBar.arrangeElements(this.width);
             int tabAreaTop = this.tabNavigationBar.getRectangle().bottom();
             ScreenRectangle tabArea = new ScreenRectangle(0, tabAreaTop, this.width, this.height - this.layout.getFooterHeight() - tabAreaTop);
             this.tabManager.setTabArea(tabArea);
