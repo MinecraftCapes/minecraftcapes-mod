@@ -1,0 +1,22 @@
+{
+  "modmenu.nameTranslation.minecraftcapes": "Minecraft披風",
+  "modmenu.descriptionTranslation.minecraftcapes": "自訂披風、鞘翅和 Deadmau5 材質，所有使用模組的人都能看到！",
+  "gui.minecraftcapes.title": "Minecraft披風",
+  "key.minecraftcapes.gui": "打開選單",
+  "key.category.minecraftcapes.gui": "Minecraft披風",
+  "button.minecraftcapes.minecraftcapes": "Minecraft披風",
+  "button.minecraftcapes.reload": "重新載入個人檔案",
+  "button.minecraftcapes.custom_capes": "自訂披風",
+  "button.minecraftcapes.custom_ears": "自訂耳朵",
+  "button.minecraftcapes.reload_all": "重新載入所有個人檔案",
+  "button.minecraftcapes.discord": "Discord",
+  "button.minecraftcapes.github": "GitHub",
+  "gui.minecraftcapes.tab.general": "一般",
+  "gui.minecraftcapes.tab.options": "選項",
+  "gui.minecraftcapes.tab.links": "連結",
+  "button.minecraftcapes.minecraftcapes.tooltip": "打開MinecraftCapes.net官方網站",
+  "button.minecraftcapes.reload.tooltip": "重新載入您的設定檔以顯示披風/耳朵！",
+  "button.minecraftcapes.custom_capes.tooltip": "顯示或隱藏自訂披風",
+  "button.minecraftcapes.custom_ears.tooltip": "顯示或隱藏自訂耳朵",
+  "button.minecraftcapes.reload_all.tooltip": "重新載入所有個人資料，以便其他人可以查看披風/耳朵更新。 註：這可能會導致稍微卡頓！"
+}
