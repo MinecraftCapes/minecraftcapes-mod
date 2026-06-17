@@ -2,23 +2,17 @@ package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.helpers.MinecraftApi;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import net.minecraftcapes.utils.WebUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
-
-import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
 public class DownloadManager {
     
@@ -50,7 +44,7 @@ public class DownloadManager {
      */
     private static void downloadProfile(PlayerHandler playerHandler) {
         Thread playerDownload = new Thread(() -> {
-            byte[] playerDataBytes = downloadData("https://api.minecraftcapes.net/profile/" + playerHandler.getUuid().toString().replace("-", ""));
+            byte[] playerDataBytes = WebUtils.get("https://api.minecraftcapes.net/profile/" + playerHandler.getUuid().toString().replace("-", ""));
             if (playerDataBytes == null) return;
 
             String json = new String(playerDataBytes, StandardCharsets.UTF_8);
@@ -113,7 +107,7 @@ public class DownloadManager {
                 }
             }
         } else {
-            byte[] imageBytes = downloadData(url);
+            byte[] imageBytes = WebUtils.get(url);
             if (imageBytes != null) {
                 try {
                     Files.createDirectories(cache.getParent());
@@ -128,58 +122,6 @@ public class DownloadManager {
         }
 
         return nativeImage;
-    }
-
-    /**
-     * Downloads the data for the profile
-     * @param url
-     * @return
-     */
-    private static byte[] downloadData(String url) {
-        HttpURLConnection conn = null;
-        URI uri = URI.create(url);
-
-        try {
-            MinecraftCapes.getLogger().info("Getting texture {}", url);
-            conn = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
-            conn.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
-            conn.connect();
-
-            if (conn.getResponseCode() / 100 == 2) {
-                try (InputStream inputStream = conn.getInputStream()) {
-                    return IOUtils.toByteArray(inputStream); // Read fully before closing
-                }
-            } else {
-                MinecraftCapes.getLogger().warn("minecraftcapes.net returned a {}", conn.getResponseCode());
-                return null;
-            }
-        } catch (IOException e) {
-            MinecraftCapes.getLogger().warn("No connection to minecraftcapes.net detected");
-            throw new RuntimeException(e);
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-    }
-    
-    public static void clearCache() {
-        Path capes = MinecraftCapes.getConfigDir().resolve("capes");
-        Path ears = MinecraftCapes.getConfigDir().resolve("ears");
-        
-        try {
-            FileUtils.deleteDirectory(capes.toFile());
-        } catch(IOException e) {
-            MinecraftCapes.getLogger().error("Couldn't clear cache: capes");
-            e.printStackTrace();
-        }
-        
-        try {
-            FileUtils.deleteDirectory(ears.toFile());
-        } catch(IOException e) {
-            MinecraftCapes.getLogger().error("Couldn't clear cache: ears");
-            e.printStackTrace();
-        }
     }
 
     private static class ProfileResult {

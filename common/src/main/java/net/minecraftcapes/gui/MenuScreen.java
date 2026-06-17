@@ -3,16 +3,10 @@ package net.minecraftcapes.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.tabs.GridLayoutTab;
 import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.TabManager;
-import net.minecraft.client.gui.components.tabs.TabNavigationBar;
-import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -21,8 +15,10 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.player.PlayerHandler;
+import net.minecraftcapes.gui.tabs.GeneralTab;
+import net.minecraftcapes.gui.tabs.LinksTab;
+import net.minecraftcapes.gui.tabs.OptionsTab;
+import net.minecraftcapes.gui.tabs.WardrobeTab;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NonNull;
@@ -43,7 +39,12 @@ public class MenuScreen extends Screen {
     @Override
     protected void init() {
         this.tabNavigationBar = MenuTabBar.builder(this.tabManager, this.width)
-                .addTabs(new MenuScreen.GeneralTab(), new OptionsTab(), new MenuScreen.LinksTab())
+                .addTabs(
+                        new GeneralTab(this, minecraft.player),
+                        new WardrobeTab(this, minecraft.player),
+                        new OptionsTab(),
+                        new LinksTab(this)
+                )
                 .build();
         this.setFocused(this.tabNavigationBar);
         this.addRenderableWidget(this.tabNavigationBar);
@@ -72,19 +73,26 @@ public class MenuScreen extends Screen {
     @Override
     public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractRenderState(graphics, mouseX, mouseY, a);
-        this.renderEntity(
-                graphics,
-                this.width / 2,
-                this.height,
-                this.minecraft.player
-        );
+        
+        if(!(this.tabManager.getCurrentTab() instanceof WardrobeTab)) {
+            this.extractEntityRenderState(
+                    graphics,
+                    this.width / 2,
+                    this.height,
+                    this.minecraft.player
+            );
+        }
     }
 
     @Unique
-    private void renderEntity(GuiGraphicsExtractor guiGraphics, int x, int y, LivingEntity entity) {
+    private void extractEntityRenderState(GuiGraphicsExtractor guiGraphics, int x, int y, LivingEntity entity) {
         Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
-
-        EntityRenderState entityrenderstate = extractRenderState(entity);
+        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        EntityRenderer<? super LivingEntity, ?> entityrenderer = entityrenderdispatcher.getRenderer(entity);
+        EntityRenderState entityrenderstate = entityrenderer.createRenderState(entity, 1.0F);
+        entityrenderstate.shadowPieces.clear();
+        entityrenderstate.outlineColor = 0;
+        
         if (entityrenderstate instanceof LivingEntityRenderState livingentityrenderstate) {
             livingentityrenderstate.bodyRot = 0F;
             livingentityrenderstate.yRot = 0f;
@@ -97,116 +105,4 @@ public class MenuScreen extends Screen {
         Vector3f vector3f = new Vector3f(0.0F, entityrenderstate.boundingBoxHeight / 2.0625F, 0.0F);
         guiGraphics.entity(entityrenderstate, 60f, vector3f, quaternionf, null, 0, 0, x, y);
     }
-
-    @Unique
-    private EntityRenderState extractRenderState(LivingEntity livingEntity) {
-        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        EntityRenderer<? super LivingEntity, ?> entityrenderer = entityrenderdispatcher.getRenderer(livingEntity);
-        EntityRenderState entityrenderstate = entityrenderer.createRenderState(livingEntity, 1.0F);
-        entityrenderstate.shadowPieces.clear();
-        entityrenderstate.outlineColor = 0;
-        return entityrenderstate;
-    }
-    
-    private class GeneralTab extends GridLayoutTab {
-        public GeneralTab() {
-            super(Component.translatable("gui.minecraftcapes.tab.general"));
-            
-            this.layout.defaultCellSetting().padding(100, 4, 4, 0);
-            GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
-            
-            // Open MinecraftCapes
-            Button openMinecraftCapes = Button.builder(
-                    Component.translatable("button.minecraftcapes.minecraftcapes"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://minecraftcapes.net")
-            )
-            .build();
-            
-            // Reload Profile
-            Button reloadProfile = Button.builder(
-                    Component.translatable("button.minecraftcapes.reload"),
-                    _ -> PlayerHandler.remove(MenuScreen.this.minecraft.player.getUUID())
-            )
-            .build();
-            
-            Button reloadAllProfiles = Button.builder(
-                    Component.translatable("button.minecraftcapes.reload_all"),
-                    _ -> PlayerHandler.clearAll()
-            )
-            .build();
-            
-            // Tool Tips
-            openMinecraftCapes.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.minecraftcapes.tooltip")));
-            reloadProfile.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.reload.tooltip")));
-            reloadAllProfiles.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.reload_all.tooltip")));
-            
-            // Add Buttons
-            helper.addChild(openMinecraftCapes);
-            helper.addChild(reloadProfile);
-            helper.addChild(reloadAllProfiles);
-        }
-    }
-    
-    private static class OptionsTab extends GridLayoutTab {
-        public OptionsTab() {
-            super(Component.translatable("gui.minecraftcapes.tab.options"));
-            
-            this.layout.defaultCellSetting().padding(100, 4, 4, 0);
-            GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
-            
-            CycleButton<Boolean> customCapes = CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible())
-            .create(
-                Component.translatable("button.minecraftcapes.custom_capes"),
-                (_, value) -> MinecraftCapesConfig.setCapeVisible(value)
-            );
-            
-            CycleButton<Boolean> customEars = CycleButton.onOffBuilder(MinecraftCapesConfig.isEarsVisible())
-            .create(
-                Component.translatable("button.minecraftcapes.custom_ears"),
-                (_, value) -> MinecraftCapesConfig.setEarsVisible(value)
-            );
-            
-            // Tool Tips
-            customCapes.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.custom_capes.tooltip")));
-            customEars.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.custom_ears.tooltip")));
-            
-            // Add Buttons
-            helper.addChild(customCapes);
-            helper.addChild(customEars);
-        }
-    }
-    
-    private class LinksTab extends GridLayoutTab {
-        public LinksTab() {
-            super(Component.translatable("gui.minecraftcapes.tab.links"));
-            
-            this.layout.defaultCellSetting().padding(100, 4, 4, 0);
-            GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
-            
-            // MinecraftCapes
-            Button openMinecraftCapes = Button.builder(
-                    Component.translatable("button.minecraftcapes.minecraftcapes"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://minecraftcapes.net")
-            )
-            .build();
-            
-            Button openDiscord = Button.builder(
-                    Component.translatable("button.minecraftcapes.discord"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://discord.gg/minecraftcapes")
-            )
-            .build();
-            
-            Button openGitHub = Button.builder(
-                    Component.translatable("button.minecraftcapes.github"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://github.com/minecraftcapes")
-            )
-            .build();
-            
-            // Add Buttons
-            helper.addChild(openMinecraftCapes);
-            helper.addChild(openDiscord);
-            helper.addChild(openGitHub);
-        }
-    }
-    
 }
