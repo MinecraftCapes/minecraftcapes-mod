@@ -1,0 +1,23 @@
+{
+  "gui.minecraftcapes.title": "MinecraftCapes",
+  "key.minecraftcapes.gui": "Открыть меню",
+  "key.category.minecraftcapes.gui": "MinecraftCapes",
+  "button.minecraftcapes.minecraftcapes": "MinecraftCapes",
+  "button.minecraftcapes.reload": "Перезагрузить профиль",
+  "button.minecraftcapes.custom_capes": "Пользовательские плащи",
+  "button.minecraftcapes.custom_ears": "Пользовательские уши",
+  "button.minecraftcapes.reload_all": "Перезагрузить все профили",
+  "button.minecraftcapes.discord": "Discord",
+  "button.minecraftcapes.github": "GitHub",
+  "gui.minecraftcapes.tab.general": "Общие",
+  "gui.minecraftcapes.tab.options": "Опции",
+  "gui.minecraftcapes.tab.links": "Ссылки",
+  "button.minecraftcapes.minecraftcapes.tooltip": "Открыть сайт MinecraftCapes.net",
+  "button.minecraftcapes.reload.tooltip": "Перезагрузить свой профиль, чтобы увидеть новый плащ/уши!",
+  "button.minecraftcapes.custom_capes.tooltip": "Скрыть или показать пользовательские плащи",
+  "button.minecraftcapes.custom_ears.tooltip": "Скрыть или показать пользовательские уши",
+  "button.minecraftcapes.reload_all.tooltip": "Перезагрузить все профили игроков. Примечание: Это может привести к задержкам!",
+  
+  "modmenu.summaryTranslation.minecraftcapes": "Пользовательские плащи, элитры и уши Deadmau5 для всех пользователей мода!",
+  "modmenu.descriptionTranslation.minecraftcapes": "Пользовательские плащи, элитры и уши Deadmau5 для всех пользователей мода!"
+}
