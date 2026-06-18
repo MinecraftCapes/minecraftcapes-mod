@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import static net.minecraftcapes.MinecraftCapes.MOD_ID;
 
@@ -127,7 +128,7 @@ public class PlayerHandler {
         this.setHasAnimatedCape(false);
         this.setHasStaticCape(false);
 
-        Minecraft.getMinecraft().func_152344_a(() -> {
+        Minecraft.getMinecraft().addScheduledTask(() -> {
             Minecraft.getMinecraft().getTextureManager().deleteTexture(new ResourceLocation(MOD_ID, "capes/" + playerUUID));
 
             for (int i = 0; i < getAnimatedCape().size() - 1; i++) {
@@ -145,7 +146,7 @@ public class PlayerHandler {
         MinecraftCapes.getLogger().debug("Removing ears for {}", playerUUID);
 
         this.setHasEars(false);
-        Minecraft.getMinecraft().func_152344_a(() -> Minecraft.getMinecraft().getTextureManager().deleteTexture(new ResourceLocation(MOD_ID, "ears/" + playerUUID)));
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getTextureManager().deleteTexture(new ResourceLocation(MOD_ID, "ears/" + playerUUID)));
     }
 
     /**
@@ -209,8 +210,7 @@ public class PlayerHandler {
      * @param bufferedImage
      */
     private void applyTexture(final ResourceLocation resourceLocation, final BufferedImage bufferedImage) {
-        //func_152344_a
-        Minecraft.getMinecraft().func_152344_a(() -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage)));
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(bufferedImage)));
     }
 
     /**
