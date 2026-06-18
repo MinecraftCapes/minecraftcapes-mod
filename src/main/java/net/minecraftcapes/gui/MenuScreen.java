@@ -126,7 +126,7 @@ public class MenuScreen extends GuiScreen {
         livingEntity.prevRotationYawHead = livingEntity.rotationYaw;
         GL11.glTranslatef(0.0F, 0.0F, 0.0F);
         RenderManager.instance.playerViewY = 180.0F;
-        RenderManager.instance.doRenderEntity(livingEntity, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, false);
+        RenderManager.instance.renderEntityWithPosYaw(livingEntity, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F);
         livingEntity.renderYawOffset = renderYawOffset;
         livingEntity.rotationYaw = rotationYaw;
         livingEntity.rotationPitch = rotationPitch;

@@ -1,84 +1,59 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+plugins {
+    id 'idea'
+    id 'java'
+    id 'io.freefair.lombok' version "${lombok_version}"
+    id 'net.minecraftforge.gradle' version '7.+'
+}
 
-buildscript {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        maven { url "https://maven.minecraftforge.net" }
-        maven { url 'https://repo.spongepowered.org/maven'}
-    }
-    dependencies {
-        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.1.+') {
-            changing = true
+// Minecraft uses Java 8
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    sourceCompatibility = targetCompatibility = java_version
+}
+
+// Include generated resources
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+base {
+    archivesName = "${mod_name} Forge ${minecraft_version}"
+}
+
+//mixin {
+//    add(sourceSets.main, "${mod_id}.refmap.json")
+//    config("${mod_id}.mixins.json")
+//}
+
+minecraft {
+    runs {
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
+            args "-mixin.config=${mod_id}.mixins.json"
         }
-        classpath("com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7+")
-        classpath("io.freefair.lombok:io.freefair.lombok.gradle.plugin:8+")
+
+        register('client') {
+            args "--username=james090500"
+        }
     }
 }
 
 repositories {
-    maven {
-        url = "https://repo.spongepowered.org/maven/"
-    }
-}
-
-apply plugin: 'forge'
-apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: "io.freefair.lombok"
-
-// These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
-sourceCompatibility = targetCompatibility = 8
-
-version = "${project.version}"
-group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "${project.mod_name} Forge ${project.minecraft_version}"
-
-minecraft {
-    version = project.forge_version
-
-    replace '@MOD_VERSION', project.version
-    replace '@MINECRAFT_VERSION', project.minecraft_version
-    replaceIn 'MinecraftCapes.java'
-
-    runDir = "run"
-    mappings = "stable_12"
-}
-
-// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
-configurations {
-    shade
-    implementation.extendsFrom(shade)
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+    maven {url = "https://repo.spongepowered.org/maven/" }
 }
 
 dependencies {
-    shade('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
-        exclude module: 'launchwrapper'
-        exclude module: 'guava'
-        exclude module: 'gson'
-        exclude module: 'commons-io'
-        exclude module: 'log4j-core'
-    }
-}
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
-def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + "${project.mod_id}.refmap.json"
-tasks.withType(Jar).configureEach {
-    from(refMap)
-}
-
-jar {
-    from sourceSets.main.output
-
-    manifest.attributes (
-            "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
-            'FMLCorePluginContainsFMLMod': true,
-            'ForceLoadAsMod': true,
-            "TweakOrder": 0,
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-    )
+    implementation "org.spongepowered:mixin:0.7.10-SNAPSHOT"
+    //annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT'
 }
 
 processResources {
-    var expandProps = [
+    // Fill in data
+    def expandProps = [
             "version": version,
             "group": project.group, //Else we target the task's group.
             "minecraft_version": minecraft_version,
@@ -101,47 +76,6 @@ processResources {
     inputs.properties(expandProps)
 }
 
-runClient {
-    args("--username=james090500")
-}
-
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-
-afterEvaluate {
-    //https://github.com/TimeConqueror/SpongeMixins/raw/master/mixin-0.8-SNAPSHOT.jar
-    tasks.compileJava {
-        // Use the 0.8 AP jar via annotationProcessorPath instead of -processorpath
-        def mixinAp = files(projectDir.absolutePath + "/libs/mixin-0.8-SNAPSHOT.jar")
-        options.annotationProcessorPath = (options.annotationProcessorPath ?: configurations.annotationProcessor) + mixinAp
-
-        options.compilerArgs += [
-                // There's a bug in the AnnotationProcessor for 0.7.11 that will generate the annotations pointing to the parent class instead of subclass
-                // resulting in the mixin not being applied.  This is fixed in 0.8, however 0.8 needs guava > 21.0, and minecraft ships with 17.0.
-                // So as a hacky workaround... ship with 0.7.11, but use the AP from 0.8 for compiling
-                //"-Xlint:-sunapi", "-XDenableSunApiLintControl", "-XDignore.symbol.file",
-                "-AreobfSrgFile=${tasks.reobf.srg}",
-                "-AoutSrgFile=${mixinSrg}",
-                "-AoutRefMapFile=${refMap}"
-        ]
-    }
-}
-
-// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
-tasks.named('shadowJar', ShadowJar) {
-    configurations = [project.configurations.shade]
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    archiveClassifier.set("") // make it the “main” jar name
-
-
-    mergeServiceFiles {
-        include 'META-INF/services/*'
-    }
-}
-
-tasks.named('reobf') {
-    dependsOn tasks.named('shadowJar')
-}
-
-reobf {
-    addExtraSrgFile mixinSrg
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }
