@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.Deadmau5EarsLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraftcapes.player.ExtendedRenderState;
@@ -24,11 +23,11 @@ public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AvatarRenderSta
         super(renderer);
     }
     
-    @WrapWithCondition(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
-    public boolean minecraftcapes$submitEars(SubmitNodeCollector instance, Model model, Object state, PoseStack poseStack, RenderType renderType, int lightCoords, int overlayCoords, int outlineColor, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, @Local(argsOnly = true) AvatarRenderState avatarRenderState) {
+    @WrapWithCondition(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;III)V"))
+    public boolean minecraftcapes$submitEars(SubmitNodeCollector instance, Model model, Object state, PoseStack poseStack, RenderType renderType, int lightCoords, int overlayCoords, int outlineColor, @Local(argsOnly = true) AvatarRenderState avatarRenderState) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
         if(extendedRenderState.minecraftcapes$getEarsEnabled()) {
-            instance.submitModel(model, avatarRenderState, poseStack, RenderTypes.armorCutoutNoCull(extendedRenderState.minecraftcapes$getEarsTexture()), lightCoords, overlayCoords, outlineColor, null);
+            instance.submitModel(model, avatarRenderState, poseStack, RenderTypes.armorCutoutNoCull(extendedRenderState.minecraftcapes$getEarsTexture()), lightCoords, overlayCoords, outlineColor);
             return false;
         } else {
             return true;
