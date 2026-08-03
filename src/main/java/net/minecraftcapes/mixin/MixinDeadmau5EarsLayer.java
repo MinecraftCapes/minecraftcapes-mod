@@ -20,12 +20,8 @@ public class MixinDeadmau5EarsLayer {
 
     @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At("HEAD"), cancellable = true)
     public void minecraftcapes$renderEars(AbstractClientPlayer entitylivingbaseIn, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale, CallbackInfo ci) {
-        //Cancel default render
-        if(!entitylivingbaseIn.getName().equalsIgnoreCase("deadmau5")) {
-            ci.cancel();
-        }
-
         PlayerHandler playerHandler = PlayerHandler.get(entitylivingbaseIn.getUniqueID());
+
         if (playerHandler.getEarLocation() != null && !entitylivingbaseIn.isInvisible() && MinecraftCapesConfig.isEarsVisible()) {
             this.playerRenderer.bindTexture(playerHandler.getEarLocation());
 
@@ -38,6 +34,8 @@ public class MixinDeadmau5EarsLayer {
             this.playerRenderer.getMainModel().renderDeadmau5Head(0.0625F);
             GlStateManager.popMatrix();
         }
+
+        ci.cancel();
     }
 
 }

@@ -1,96 +1,128 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        maven { url "https://maven.minecraftforge.net" }
-        maven { url 'https://repo.spongepowered.org/maven'}
-    }
-    dependencies {
-        classpath("net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT")
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-    }
+plugins {
+    id 'idea'
+    id 'java'
+    id 'io.freefair.lombok' version "${lombok_version}"
+    id 'net.minecraftforge.gradle' version '7.+'
+    id 'net.minecraftforge.renamer' version '1.1.7'
+    id 'com.gradleup.shadow' version '9.6.1'
 }
 
-plugins {
-    id "java"
-    id "com.github.johnrengelman.shadow" version "2.0.4"
-    id "io.freefair.lombok" version "2.9.5"
+java {
+    // Minecraft uses Java 8
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    sourceCompatibility = targetCompatibility = java_version
+}
+
+base {
+    archivesName = "${mod_name} Forge ${minecraft_version}"
+}
+
+// Include generated resources
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+// Libraries that should be bundled into the final mod JAR.
+configurations {
+    shadowImpl
+
+    implementation.extendsFrom(shadowImpl)
 }
 
 repositories {
+    minecraft.mavenizer(it)
+
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+
+    mavenCentral()
+
     maven {
         url = "https://repo.spongepowered.org/maven/"
     }
 }
 
-apply plugin: "net.minecraftforge.gradle.forge"
-apply plugin: 'org.spongepowered.mixin'
+dependencies {
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}-${minecraft_version}")
 
-// These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
-sourceCompatibility = targetCompatibility = 1.8
-
-version = "${project.version}"
-group = "net.minecraftcapes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "${project.mod_name} Forge ${project.minecraft_version}"
+    shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
+        transitive = false
+    }
+}
 
 minecraft {
-    version = "${minecraft_version}-${forge_version}-${minecraft_version}"
+    mappings channel: 'stable', version: "22-${minecraft_version}"
 
-    replace '@MOD_VERSION', project.version
-    replace '@MINECRAFT_VERSION', project.minecraft_version
-    replaceIn 'MinecraftCapes.java'
+    runs {
+        client {
+            workingDir = layout.projectDirectory.dir('run')
 
-    runDir = "run"
-    mappings = "stable_22"
-    makeObfSourceJar = false
-}
+            args "--username=james090500"
 
-// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
-configurations {
-    shade
-    compile.extendsFrom(shade)
-}
-
-def systemOs = System.getProperty("os.name").toLowerCase(Locale.ENGLISH)
-
-dependencies {
-    shade('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-        exclude module: 'launchwrapper'
-        exclude module: 'guava'
-        exclude module: 'gson'
-        exclude module: 'commons-io'
-        exclude module: 'log4j-core'
+            systemProperty(
+                    "fml.coreMods.load",
+                    "net.minecraftcapes.mixin.MixinLoader"
+            )
+        }
     }
-
-    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
-jar {
-    manifest.attributes (
-        "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
-        'FMLCorePluginContainsFMLMod': true,
-        'ForceLoadAsMod': true,
-        "TweakOrder": 0,
-        'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+renamer.enableMixinRefmaps {
+    config("${mod_id}.mixins.json")
+    refMap = "${mod_id}.refmap.json"
+}
+
+renamer.mappings(minecraft.dependency.toSrg)
+
+renamer.classes(tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar)) {
+    archiveClassifier = ''
+
+    mappings renamer.mixin.generatedMappings
+}
+
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    dependsOn tasks.named('jar')
+
+    from(zipTree(tasks.named('jar').get().archiveFile))
+
+    configurations = [project.configurations.shadowImpl]
+
+    archiveClassifier.set('shadow')
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    mergeServiceFiles {
+        include 'META-INF/services/*'
+    }
+}
+
+tasks.named('jar', Jar) {
+    archiveClassifier = 'thin'
+
+    from sourceSets.main.output
+
+    manifest.attributes(
+            "FMLCorePlugin": "net.minecraftcapes.mixin.MixinLoader",
+            "FMLCorePluginContainsFMLMod": true,
+            "ForceLoadAsMod": true,
+            "TweakOrder": 0,
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
     )
 }
 
-processResources {
-    // Fill in data
+tasks.named('processResources') {
     def expandProps = [
-            "version": version,
-            "group": project.group, //Else we target the task's group.
-            "minecraft_version": minecraft_version,
-            "pack_format": pack_format,
-            "mod_name": mod_name,
-            "mod_author": mod_author,
-            "mod_id": mod_id,
-            "license": license,
-            "description": project.description,
-            "forge_version": forge_version,
-            "forge_loader_version_range": forge_loader_version_range,
-            "credits": credits,
-            "java_version": java_version
+            version                    : version,
+            group                      : project.group,
+            minecraft_version          : minecraft_version,
+            pack_format                : pack_format,
+            mod_name                   : mod_name,
+            mod_author                 : mod_author,
+            mod_id                     : mod_id,
+            license                    : license,
+            description                : project.description,
+            forge_version              : forge_version,
+            forge_loader_version_range : forge_loader_version_range,
+            credits                    : credits,
+            java_version               : java_version
     ]
 
     filesMatching(['mcmod.info', 'pack.mcmeta']) {
@@ -100,27 +132,16 @@ processResources {
     inputs.properties(expandProps)
 }
 
-sourceSets {
-    main {
-        ext.refMap = "${mod_id}.refmap.json"
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+afterEvaluate {
+    tasks.named('compileJava', JavaCompile) {
+        // Mixin 0.7's annotation processor has issues, so use the 0.8.3 processor instead.
+        def mixinAp = files("$projectDir/libs/mixin-0.8.3-processor.jar")
+
+        options.annotationProcessorPath =
+                (options.annotationProcessorPath ?: configurations.annotationProcessor) + mixinAp
     }
-}
-
-runClient {
-    args("--username=james090500")
-}
-
-// This is the configuration for the shadow plugin, which is used to add libraries to the jar.
-shadowJar {
-    configurations = [project.configurations.shade]
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    classifier ""
-
-    mergeServiceFiles {
-        include 'META-INF/services/*'
-    }
-}
-
-reobf {
-    shadowJar { }
 }

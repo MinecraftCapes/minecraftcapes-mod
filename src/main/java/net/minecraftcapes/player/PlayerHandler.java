@@ -111,6 +111,10 @@ public class PlayerHandler {
         }
     }
 
+    /**
+     * Apply ears to a player
+     * @param earImage
+     */
     public void applyEars(BufferedImage earImage) {
         applyTexture(new ResourceLocation(MOD_ID, "ears/" + playerUUID), earImage);
         this.setHasEars(true);

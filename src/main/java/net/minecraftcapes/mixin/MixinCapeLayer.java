@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerCape;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Final;
@@ -25,10 +24,15 @@ public class MixinCapeLayer {
     private RenderPlayer playerRenderer;
 
     @Unique
-    private static final ResourceLocation minecraftcapes$ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+    private ResourceLocation minecraftcapes$ENCHANTED_ITEM_GLINT_RES;
 
     @Inject(method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/ModelPlayer;renderCape(F)V", shift = At.Shift.AFTER), cancellable = true)
     public void minecraftcapes$addCapeGlint(AbstractClientPlayer entitylivingbaseIn, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale, CallbackInfo ci) {
+        // Why? This fixes lunar, Unsafe.allocateInstance bypasses the constructor.
+        if(minecraftcapes$ENCHANTED_ITEM_GLINT_RES == null) {
+            minecraftcapes$ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+        }
+
         // Retrieve the player handler from playerRenderState
         PlayerHandler playerHandler = PlayerHandler.get(entitylivingbaseIn.getUniqueID());
 

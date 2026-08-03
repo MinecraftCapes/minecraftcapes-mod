@@ -110,8 +110,9 @@ public class MenuScreen extends GuiScreen {
         GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, 50.0F);
-        GlStateManager.scale(scale, scale, scale);
-        GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(-scale, scale, scale);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
         float renderYawOffset = livingEntity.renderYawOffset;
         float rotationYaw = livingEntity.rotationYaw;
         float rotationPitch = livingEntity.rotationPitch;
@@ -125,7 +126,7 @@ public class MenuScreen extends GuiScreen {
         livingEntity.prevRotationYawHead = livingEntity.rotationYaw;
         GlStateManager.translate(0.0F, 0.0F, 0.0F);
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        renderManager.setPlayerViewY(180.0F);
+        renderManager.setPlayerViewY(0.0F);
         renderManager.setRenderShadow(false);
         renderManager.doRenderEntity(livingEntity, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, false);
         renderManager.setRenderShadow(true);
