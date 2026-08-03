@@ -111,8 +111,9 @@ public class MenuScreen extends GuiScreen {
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 50.0F);
-        GL11.glScalef(scale, scale, scale);
-        GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glScalef(-scale, scale, scale);
+        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
         float renderYawOffset = livingEntity.renderYawOffset;
         float rotationYaw = livingEntity.rotationYaw;
         float rotationPitch = livingEntity.rotationPitch;
@@ -125,7 +126,7 @@ public class MenuScreen extends GuiScreen {
         livingEntity.rotationYawHead = livingEntity.rotationYaw;
         livingEntity.prevRotationYawHead = livingEntity.rotationYaw;
         GL11.glTranslatef(0.0F, 0.0F, 0.0F);
-        RenderManager.instance.playerViewY = 180.0F;
+        RenderManager.instance.playerViewY = 0.0F;
         RenderManager.instance.renderEntityWithPosYaw(livingEntity, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F);
         livingEntity.renderYawOffset = renderYawOffset;
         livingEntity.rotationYaw = rotationYaw;
