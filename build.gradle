@@ -52,11 +52,9 @@ minecraft {
     mappings channel: 'stable', version: "12-${minecraft_version}"
 
     runs {
-        configureEach {
+        client {
             workingDir = layout.projectDirectory.dir('run')
-        }
 
-        register('client') {
             args "--username=james090500"
 
             systemProperty(
