@@ -6,7 +6,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +24,8 @@ public class MinecraftCapes {
     
     public static final KeyMapping KEY_MAPPING = new KeyMapping(
             "key.minecraftcapes.gui",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_J,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_J,
             KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "gui"))
     );
     
