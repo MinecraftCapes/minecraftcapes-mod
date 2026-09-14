@@ -1,0 +1,78 @@
+plugins {
+	id 'maven-publish'
+	id 'fabric-loom' version '1.17-SNAPSHOT'
+	id 'ploceus' version '1.17-SNAPSHOT'
+	id 'io.freefair.lombok' version "9.1.0"
+}
+
+base {
+	archivesName = "${mod_name} Ornithe ${minecraft_version}"
+}
+
+ploceus {
+	setIntermediaryGeneration(2)
+}
+
+repositories {
+	maven { url 'https://maven.covers1624.net/' }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	mappings ploceus.featherMappings(project.feather_build)
+
+	ploceus.dependOsl(project.osl_version)
+
+	//Dev Login
+	localRuntime 'net.covers1624:DevLogin:0.1.0.5'
+}
+
+loom {
+	runs {
+		clientLogin {
+			client()
+			ideConfigGenerated true
+			programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+			mainClass.set 'net.covers1624.devlogin.DevLogin'
+		}
+	}
+}
+
+processResources {
+	var expandProps = [
+		"version": version,
+		"group": project.group, //Else we target the task's group.
+		"minecraft_version": minecraft_version,
+		"mod_name": mod_name,
+		"mod_author": mod_author,
+		"mod_id": mod_id,
+		"license": license,
+		"description": project.description,
+		"credits": credits,
+	]
+
+	filesMatching(['fabric.mod.json', '*.mixins.json']) {
+		expand expandProps
+	}
+
+	inputs.properties(expandProps)
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = 'UTF-8'
+	it.options.release = 8
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+// If you plan to use a different file for the license, don't forget to change the file name here!
+jar {
+	from('LICENSE') {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
+}

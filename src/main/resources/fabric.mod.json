@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": [ "james090500", "Siriuo" ],
+  "contact": {
+    "homepage": "https://minecraftcapes.net/",
+    "issues": "https://minecraftcapes.net/discord"
+  },
+  "license": "${license}",
+  "icon": "logo.png",
+  "entrypoints": {
+    "client": [
+      "net.minecraftcapes.MinecraftCapes"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "minecraftcapes.mixins.json",
+      "environment": "client"
+    }
+  ],
+	"depends": {
+		"fabricloader": ">=0.17.3",
+		"minecraft": "${minecraft_version}",
+		"osl-entrypoints": ">=0.4.0"
+	}
+}
