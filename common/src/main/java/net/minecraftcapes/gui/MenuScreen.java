@@ -28,6 +28,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Unique;
 
+import java.net.URI;
+
 public class MenuScreen extends Screen {
     
     private static final Component TITLE = Component.translatable("gui.minecraftcapes.title");
@@ -117,7 +119,7 @@ public class MenuScreen extends Screen {
             // Open MinecraftCapes
             Button openMinecraftCapes = Button.builder(
                     Component.translatable("button.minecraftcapes.minecraftcapes"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://minecraftcapes.net")
+                    ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://minecraftcapes.net"))
             )
             .build();
             
@@ -185,19 +187,19 @@ public class MenuScreen extends Screen {
             // MinecraftCapes
             Button openMinecraftCapes = Button.builder(
                     Component.translatable("button.minecraftcapes.minecraftcapes"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://minecraftcapes.net")
+                    ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://minecraftcapes.net"))
             )
             .build();
             
             Button openDiscord = Button.builder(
                     Component.translatable("button.minecraftcapes.discord"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://discord.gg/minecraftcapes")
+                    ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://discord.gg/minecraftcapes"))
             )
             .build();
             
             Button openGitHub = Button.builder(
                     Component.translatable("button.minecraftcapes.github"),
-                    ConfirmLinkScreen.confirmLink(MenuScreen.this, "https://github.com/minecraftcapes")
+                    ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://github.com/minecraftcapes"))
             )
             .build();
             
