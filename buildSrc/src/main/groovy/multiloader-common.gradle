@@ -6,8 +6,6 @@ plugins {
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
     sourceCompatibility = targetCompatibility = java_version
-    withSourcesJar()
-    withJavadocJar()
 }
 
 repositories {
@@ -41,7 +39,7 @@ repositories {
 
 // Declare capabilities on the outgoing configurations.
 // Read more about capabilities here: https://docs.gradle.org/current/userguide/component_capabilities.html#sec:declaring-additional-capabilities-for-a-local-component
-['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+['apiElements', 'runtimeElements'].each { variant ->
     configurations."$variant".outgoing {
         capability("$group:${project.name}:$version")
         capability("$group:${base.archivesName.get()}:$version")
@@ -50,12 +48,6 @@ repositories {
     }
     publishing.publications.configureEach {
         suppressPomMetadataWarningsFor(variant)
-    }
-}
-
-sourcesJar {
-    from(rootProject.file("LICENSE")) {
-        rename { "${it}_${mod_name}" }
     }
 }
 
