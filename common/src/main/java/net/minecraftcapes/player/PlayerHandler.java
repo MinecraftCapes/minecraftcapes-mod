@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftcapes.MinecraftCapes;
 
 import java.util.HashMap;
@@ -46,6 +47,14 @@ public class PlayerHandler {
     public static PlayerHandler get(UUID uuid) {
         PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
         return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
+    }
+    
+    /**
+     * Old Deprecated Function for compatability
+     */
+    @Deprecated
+    public static PlayerHandler get(Player player) {
+        return get(player.getUUID());
     }
 
     /**
