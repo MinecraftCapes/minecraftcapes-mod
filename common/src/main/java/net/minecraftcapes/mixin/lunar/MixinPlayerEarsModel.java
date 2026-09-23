@@ -15,8 +15,9 @@ import org.spongepowered.asm.mixin.Overwrite;
 public class MixinPlayerEarsModel {
     
     /**
-     * I wouldn't usually recommend an overwrite but it stops Lunar complaining...
-     * @return
+     * @return The MCC ears
+     * @author james090500 - MinecraftCapes
+     * @reason I wouldn't usually recommend an overwrite, but it stops Lunar complaining...
      */
     @Overwrite
     public static LayerDefinition createEarsLayer() {

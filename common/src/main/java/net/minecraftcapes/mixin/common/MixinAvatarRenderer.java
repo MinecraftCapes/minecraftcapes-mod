@@ -25,7 +25,7 @@ public abstract class MixinAvatarRenderer<AvatarlikeEntity extends Avatar & Clie
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V", at = @At(value = "TAIL"))
     public void minecraftcapes$extractRenderState(AvatarlikeEntity avatarlikeEntity, AvatarRenderState avatarRenderState, float partialTicks, CallbackInfo ci) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
-        PlayerHandler playerHandler = PlayerHandler.get(avatarlikeEntity.getUUID());
+        PlayerHandler playerHandler = PlayerHandler.get(avatarlikeEntity.getProfile().partialProfile().id());
         
         if(playerHandler.getHasInfo()) {
             avatarRenderState.isUpsideDown = playerHandler.isUpsideDown();
