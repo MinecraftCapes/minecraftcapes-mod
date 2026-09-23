@@ -22,14 +22,14 @@ public abstract class MixinClientMannequin extends Mannequin implements ClientAv
     
     @Inject(method = "updateSkin", at = @At("HEAD"))
     public void updateSkin(CallbackInfo ci) {
-        PlayerHandler playerHandler = PlayerHandler.get(this.uuid);
-        playerHandler.setPlayerUUID(this.getProfile().partialProfile().id());
+        PlayerHandler playerHandler = PlayerHandler.get(this.getProfile().partialProfile().id());
+        playerHandler.setName(this.getProfile().partialProfile().name());
         DownloadManager.prepareDownload(playerHandler);
     }
     
     @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
     public void getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
-        PlayerHandler playerHandler = PlayerHandler.get(this.uuid);
+        PlayerHandler playerHandler = PlayerHandler.get(this.getProfile().partialProfile().id());
         
         //Check player handler is loaded
         if(playerHandler.getHasInfo()) {
