@@ -26,8 +26,7 @@ public class PlayerHandler {
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
-    private final UUID entityId;
-    @Setter @Getter private UUID uuid;
+    @Getter private final UUID uuid;
     @Setter @Getter private String name;
 
     @Getter
@@ -37,31 +36,30 @@ public class PlayerHandler {
     private long lastFrameTime = 0;
     private int lastFrame = 0;
     
-    public PlayerHandler(UUID entityId) {
-        this.entityId = entityId;
-        this.uuid = entityId;
-        PlayerHandler.instances.put(entityId, this);
+    public PlayerHandler(UUID uuid) {
+        this.uuid = uuid;
+        PlayerHandler.instances.put(uuid, this);
     }
 
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param entityId The entity id (Mannaquin/Player)
+     * @param uuid The player profile UUID
      * @return The player handler
      */
-    public static PlayerHandler get(UUID entityId) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(entityId);
-        return playerHandler == null ? new PlayerHandler(entityId) : playerHandler;
+    public static PlayerHandler get(UUID uuid) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
+        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
     }
 
     /**
      * Remove a player
-     * @param entityId The entity id (Mannaquin/Player)
+     * @param uuid The player profile UUID
      */
-    public static void remove(UUID entityId) {
-        PlayerHandler playerHandler = instances.get(entityId);
+    public static void remove(UUID uuid) {
+        PlayerHandler playerHandler = instances.get(uuid);
         playerHandler.removeCape();
         playerHandler.removeEars();
-        instances.remove(entityId);
+        instances.remove(uuid);
     }
     
     /**
@@ -95,7 +93,7 @@ public class PlayerHandler {
                 animatedCapeFrames.put(currentFrame, frame);
             }
             this.setAnimatedCape(animatedCapeFrames);
-            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", entityId);
+            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", uuid);
         } else {
             int imageWidth = 64;
             int imageHeight = 32;
@@ -110,10 +108,10 @@ public class PlayerHandler {
             }
 
             capeImage.close();
-            this.applyTexture(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + entityId), imgNew);
+            this.applyTexture(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + uuid), imgNew);
             this.setHasStaticCape(true);
             this.setHasAnimatedCape(false);
-            MinecraftCapes.getLogger().debug("Static cape loaded for {}", entityId);
+            MinecraftCapes.getLogger().debug("Static cape loaded for {}", uuid);
         }
     }
 
@@ -122,7 +120,7 @@ public class PlayerHandler {
      * @param earImage
      */
     public void applyEars(NativeImage earImage) {
-        applyTexture(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + entityId), earImage);
+        applyTexture(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + uuid), earImage);
         this.setHasEars(true);
     }
 
@@ -132,19 +130,19 @@ public class PlayerHandler {
     public void removeCape() {
         if(!hasStaticCape && !hasAnimatedCape) return;
 
-        MinecraftCapes.getLogger().debug("Removing cape for {}", entityId);
+        MinecraftCapes.getLogger().debug("Removing cape for {}", uuid);
 
         this.setHasAnimatedCape(false);
         this.setHasStaticCape(false);
 
         Minecraft.getInstance().execute(() -> {
-            Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + entityId));
+            Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + uuid));
 
             if(animatedCape != null) {
                 for(int i = 0; i < animatedCape.size() - 1; i++) {
                     Minecraft.getInstance()
                             .getTextureManager()
-                            .release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", entityId, i)));
+                            .release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, i)));
                 }
             }
         });
@@ -156,10 +154,10 @@ public class PlayerHandler {
     public void removeEars() {
         if(!hasEars) return;
 
-        MinecraftCapes.getLogger().debug("Removing ears for {}", entityId);
+        MinecraftCapes.getLogger().debug("Removing ears for {}", uuid);
 
         this.setHasEars(false);
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + entityId)));
+        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + uuid)));
     }
 
     /**
@@ -167,7 +165,7 @@ public class PlayerHandler {
      * @param animatedCape
      */
     public void setAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {
-        MinecraftCapes.getLogger().debug("Setting animated cape for {}", entityId);
+        MinecraftCapes.getLogger().debug("Setting animated cape for {}", uuid);
         this.animatedCape = animatedCape;
         this.setHasStaticCape(false);
         this.setHasAnimatedCape(true);
@@ -178,9 +176,9 @@ public class PlayerHandler {
      * Load all NativeImages into a Identifier
      */
     private void loadFramesToResource() {
-        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", entityId);
+        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", uuid);
         animatedCape.forEach((integer, nativeImage) -> {
-            Identifier currentResource = Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", entityId, integer));
+            Identifier currentResource = Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, integer));
             applyTexture(currentResource, nativeImage);
         });
     }
@@ -198,9 +196,9 @@ public class PlayerHandler {
             lastFrame = currentFrameNo;
             lastFrameTime = time;
 
-            return Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", entityId, currentFrameNo));
+            return Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, currentFrameNo));
         }
-        return Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", entityId, lastFrame));
+        return Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, lastFrame));
     }
 
     /**
@@ -208,7 +206,7 @@ public class PlayerHandler {
      * @return
      */
     public Identifier getCapeLocation() {
-        return hasStaticCape ? Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + entityId) : hasAnimatedCape ? getFrame() : null;
+        return hasStaticCape ? Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + uuid) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -216,7 +214,7 @@ public class PlayerHandler {
      * @return
      */
     public Identifier getEarLocation() {
-        return hasEars ? Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + entityId) : null;
+        return hasEars ? Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + uuid) : null;
     }
 
     /**
