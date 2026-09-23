@@ -43,7 +43,7 @@ public class PlayerHandler {
 
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param uuid The entity id (Mannaquin/Player)
+     * @param uuid The player profile UUID
      * @return The player handler
      */
     public static PlayerHandler get(UUID uuid) {
@@ -53,7 +53,7 @@ public class PlayerHandler {
 
     /**
      * Remove a player
-     * @param uuid The entity id (Mannaquin/Player)
+     * @param uuid The player profile UUID
      */
     public static void remove(UUID uuid) {
         PlayerHandler playerHandler = instances.get(uuid);

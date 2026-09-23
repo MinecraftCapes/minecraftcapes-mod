@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,12 +27,14 @@ import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
 public class DownloadManager {
     private static final Gson GSON = new Gson();
+    // Allow short legacy/offline names, but never display names or URL characters.
+    private static final Pattern VALID_USERNAME = Pattern.compile("[A-Za-z0-9_]{1,16}");
     private static final ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(4, runnable -> {
         Thread thread = new Thread(runnable, "MinecraftCapes-Download");
         thread.setDaemon(true);
         return thread;
     });
-    
+
     /**
      * Prepares the download
      * @param playerHandler The player handler instance
@@ -39,6 +42,7 @@ public class DownloadManager {
     public static void prepareDownload(PlayerHandler playerHandler) {
         synchronized (playerHandler) {
             if (!playerHandler.getHasInfo()) {
+                playerHandler.setHasInfo(true);
                 downloadProfile(playerHandler);
             }
         }
@@ -55,14 +59,13 @@ public class DownloadManager {
         String identifier;
         if (uuid != null && uuid.version() == 4) {
             identifier = uuid.toString().replace("-", "");
-        } else if (username != null && !username.isBlank()) {
+        } else if (username != null && VALID_USERNAME.matcher(username).matches()) {
             identifier = username;
         } else {
-            // Leave hasInfo false so a later call can use the resolved profile.
+            // This handler has been attempted; skip invalid or missing names without retrying.
             return;
         }
 
-        playerHandler.setHasInfo(true);
         DOWNLOAD_EXECUTOR.execute(() -> {
             String downloadUrl = "https://api.minecraftcapes.net/profile/" + identifier;
             byte[] playerDataBytes = downloadData(downloadUrl);
@@ -198,18 +201,18 @@ public class DownloadManager {
             }
         }
     }
-    
+
     public static void clearCache() {
         Path capes = MinecraftCapes.getConfigDir().resolve("capes");
         Path ears = MinecraftCapes.getConfigDir().resolve("ears");
-        
+
         try {
             FileUtils.deleteDirectory(capes.toFile());
         } catch(IOException e) {
             MinecraftCapes.getLogger().error("Couldn't clear cache: capes");
             e.printStackTrace();
         }
-        
+
         try {
             FileUtils.deleteDirectory(ears.toFile());
         } catch(IOException e) {
