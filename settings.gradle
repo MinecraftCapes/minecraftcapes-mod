@@ -29,7 +29,7 @@ pluginManagement {
             forRepository {
                 maven {
                     name = 'NeoForge'
-                    url = 'https://maven.neoforged.net/'
+                    url = 'https://maven.neoforged.net/releases'
                 }
             }
             filter {
