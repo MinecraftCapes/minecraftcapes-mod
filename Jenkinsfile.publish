@@ -18,12 +18,20 @@ pipeline {
     }
 
     stages {
+        stage('Confirm publication') {
+            steps {
+                timeout(time: 1, unit: 'DAYS') {
+                    input message: "Build and publish a ${params.RELEASE_TYPE ?: 'STABLE'} release to Modrinth and CurseForge?", ok: 'Publish'
+                }
+            }
+        }
+
         stage('Publish') {
             agent { label 'Agent' }
             steps {
                 deleteDir()
-                unstash 'release-source'
-                // Finish every loader build before starting any uploads.
+                checkout scm
+                echo "Publishing release type: ${params.RELEASE_TYPE ?: 'STABLE'}"
                 sh './gradlew clean build --no-daemon'
                 withCredentials([
                     string(credentialsId: 'minecraftcapes-modrinth-token', variable: 'MODRINTH_TOKEN'),
