@@ -15,7 +15,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh './gradlew clean build --no-daemon'
+                sh '''
+                    set -eu
+                    # Remove stale outputs from loaders disabled since the previous build.
+                    rm -rf fabric/build/libs forge/build/libs neoforge/build/libs
+                    ./gradlew clean build --no-daemon
+                '''
             }
         }
 
@@ -27,30 +32,39 @@ pipeline {
                     rm -rf jenkins-artifacts
                     mkdir -p jenkins-artifacts
 
-                    for launcher in fabric forge; do
-                        jar_count="$(find "$launcher/build/libs" -maxdepth 1 -type f \
-                            -name '*.jar' \
-                            ! -name '*-sources.jar' \
-                            ! -name '*-javadoc.jar' \
-                            ! -name '*-dev.jar' \
-                            ! -name '*-shadow.jar' \
-                            ! -name '*-all.jar' | wc -l | tr -d ' ')"
+                    output_count=0
+                    for libs in fabric/build/libs forge/build/libs neoforge/build/libs; do
+                        [ -d "$libs" ] || continue
+                        output_count=$((output_count + 1))
+
+                        jar_count=0
+                        selected_jar=''
+                        for jar in "$libs"/*.jar; do
+                            [ -f "$jar" ] || continue
+                            case "$jar" in
+                                *-sources.jar|*-javadoc.jar|*-dev.jar|*-shadow.jar|*-all.jar) continue ;;
+                            esac
+                            jar_count=$((jar_count + 1))
+                            selected_jar="$jar"
+                        done
 
                         if [ "$jar_count" -ne 1 ]; then
-                            echo "Expected exactly one deployable JAR for $launcher, found $jar_count."
-                            find "$launcher/build/libs" -maxdepth 1 -type f -name '*.jar' -print
+                            echo "Expected exactly one deployable JAR in $libs, found $jar_count."
                             exit 1
                         fi
 
-                        find "$launcher/build/libs" -maxdepth 1 -type f \
-                            -name '*.jar' \
-                            ! -name '*-sources.jar' \
-                            ! -name '*-javadoc.jar' \
-                            ! -name '*-dev.jar' \
-                            ! -name '*-shadow.jar' \
-                            ! -name '*-all.jar' \
-                            -exec cp -v '{}' jenkins-artifacts/ ';'
+                        target="jenkins-artifacts/$(basename "$selected_jar")"
+                        if [ -e "$target" ]; then
+                            echo "Duplicate artifact filename: $target"
+                            exit 1
+                        fi
+                        cp -v "$selected_jar" "$target"
                     done
+
+                    if [ "$output_count" -eq 0 ]; then
+                        echo "No loader artifact directories were produced."
+                        exit 1
+                    fi
                 '''
 
                 archiveArtifacts(
