@@ -1,10 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'mcr.microsoft.com/openjdk/jdk:21-ubuntu'
-            args '--user root:root'
-            reuseNode true
-        }
+    environment {
+        JAVA_HOME = '/opt/jdks/21'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+        GRADLE_USER_HOME = '/home/jenkins/.gradle'
     }
 
     options {
@@ -15,7 +13,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh './gradlew build --no-daemon'
+                sh './gradlew clean build --no-daemon'
             }
         }
 
