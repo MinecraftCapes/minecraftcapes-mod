@@ -1,4 +1,6 @@
 pipeline {
+    agent { label 'Agent' }
+
     environment {
         JAVA_HOME = '/opt/jdks/21'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
