@@ -19,7 +19,10 @@ pipeline {
                     set -eu
                     # Remove stale outputs from loaders disabled since the previous build.
                     rm -rf fabric/build/libs forge/build/libs neoforge/build/libs
-                    ./gradlew clean build --no-daemon
+                    # ForgeGradle generates Minecraft dependencies during configuration.
+                    # Build separately so clean cannot delete them before compilation.
+                    ./gradlew clean --no-daemon
+                    ./gradlew build --no-daemon
                 '''
             }
         }
