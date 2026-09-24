@@ -41,7 +41,6 @@ dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     // Common sources are recompiled here; their compileOnly dependencies are not inherited.
-    compileOnly("org.spongepowered:mixin:0.8.5")
     compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
 }
 
