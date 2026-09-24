@@ -1,12 +1,6 @@
 pipeline {
     agent none
 
-    environment {
-        JAVA_HOME = '/opt/jdks/25'
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-        GRADLE_USER_HOME = '/home/jenkins/.gradle'
-    }
-
     options {
         disableConcurrentBuilds()
         skipDefaultCheckout(true)
@@ -18,21 +12,19 @@ pipeline {
     }
 
     stages {
-        stage('Confirm publication') {
-            steps {
-                timeout(time: 1, unit: 'DAYS') {
-                    input message: "Build and publish a ${params.RELEASE_TYPE ?: 'STABLE'} release to Modrinth and CurseForge?", ok: 'Publish'
-                }
-            }
-        }
-
         stage('Publish') {
             agent { label 'Agent' }
+            environment {
+                JAVA_HOME = '/opt/jdks/25'
+                PATH = "${JAVA_HOME}/bin:${env.PATH}"
+                GRADLE_USER_HOME = '/home/jenkins/.gradle'
+            }
             steps {
                 deleteDir()
                 checkout scm
                 echo "Publishing release type: ${params.RELEASE_TYPE ?: 'STABLE'}"
-                sh './gradlew clean build --no-daemon'
+                sh './gradlew clean --no-daemon'
+                sh './gradlew build --no-daemon'
                 withCredentials([
                     string(credentialsId: 'minecraftcapes-modrinth-token', variable: 'MODRINTH_TOKEN'),
                     string(credentialsId: 'minecraftcapes-curseforge-token', variable: 'CURSEFORGE_TOKEN')
