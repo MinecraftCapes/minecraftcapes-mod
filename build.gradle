@@ -1,5 +1,50 @@
 plugins {
+    id 'me.modmuss50.mod-publish-plugin' version '1.1.0'
     id 'fabric-loom' version "${fabric_loom_version}" apply false
     id 'net.neoforged.moddev' version "${moddev_version}" apply(false)
     id 'io.freefair.lombok' version "${lombok_version}" apply(false)
+}
+
+def mcVersion = providers.gradleProperty('minecraft_version').get()
+def modVersion = providers.gradleProperty('version').get()
+
+publishMods {
+    type = providers.environmentVariable('RELEASE_TYPE').getOrElse('STABLE')
+    changelog = ''
+
+    def cfOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable('CURSEFORGE_TOKEN')
+        projectId = '359836'
+        minecraftVersions.add(mcVersion)
+        clientRequired = true
+        serverRequired = false
+    }
+
+    def mrOptions = modrinthOptions {
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN')
+        projectId = '9gNVPfzw'
+        minecraftVersions.add(mcVersion)
+    }
+
+    ['fabric', 'forge', 'neoforge'].each { loader ->
+        if (findProject(":${loader}") != null) {
+            curseforge("curseforge${loader.capitalize()}") {
+                from cfOptions
+                file project(":${loader}")
+                version = "${loader}-${mcVersion}-${modVersion}"
+                displayName = "MinecraftCapes ${loader.capitalize()} ${mcVersion}-${modVersion}"
+                modLoaders.add(loader)
+                if (loader == 'fabric') requires('fabric-api')
+            }
+
+            modrinth("modrinth${loader.capitalize()}") {
+                from mrOptions
+                file project(":${loader}")
+                version = "${loader}-${mcVersion}-${modVersion}"
+                displayName = "MinecraftCapes ${loader.capitalize()} ${mcVersion}-${modVersion}"
+                modLoaders.add(loader)
+                if (loader == 'fabric') requires('fabric-api')
+            }
+        }
+    }
 }
