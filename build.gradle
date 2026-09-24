@@ -10,11 +10,12 @@ def modVersion = providers.gradleProperty('version').get()
 
 publishMods {
     type = providers.environmentVariable('RELEASE_TYPE').getOrElse('STABLE')
-    minecraftVersions.add(mcVersion)
+    changelog = ''
 
     def cfOptions = curseforgeOptions {
         accessToken = providers.environmentVariable('CURSEFORGE_TOKEN')
         projectId = '359836'
+        minecraftVersions.add(mcVersion)
         client = true
         server = false
     }
@@ -22,6 +23,7 @@ publishMods {
     def mrOptions = modrinthOptions {
         accessToken = providers.environmentVariable('MODRINTH_TOKEN')
         projectId = '9gNVPfzw'
+        minecraftVersions.add(mcVersion)
         environment = CLIENT_ONLY
     }
 
