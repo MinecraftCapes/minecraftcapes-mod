@@ -1,11 +1,13 @@
 plugins {
-    id 'io.freefair.lombok' version "8.13.1"
-    id 'net.minecraftforge.gradle' version '6.+'
-    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
+    id 'java'
+    id 'io.freefair.lombok' version "9.5.0"
+    id 'net.minecraftforge.gradle' version '7.+'
+    id 'net.minecraftforge.renamer' version '1.1.7'
 }
 
 // These settings allow you to choose what version of Java you want to be compatible with. Forge 1.7.10 runs on Java 6 to 8.
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 compileJava {
     sourceCompatibility = "8"
     targetCompatibility = "8"
@@ -15,9 +17,9 @@ base {
     archivesName = "${mod_name} Forge ${minecraft_version}"
 }
 
-mixin {
-    add(sourceSets.main, "${mod_id}.refmap.json")
+renamer.enableMixinRefmaps {
     config("${mod_id}.mixins.json")
+    refMap = "${mod_id}.refmap.json"
 }
 
 minecraft {
@@ -25,22 +27,28 @@ minecraft {
 
     runs {
         client {
-            workingDirectory file('run')
-            property 'forge.logging.console.level', 'debug'
+            workingDir = layout.projectDirectory.dir('run')
+            systemProperty 'forge.logging.console.level', 'debug'
             args('--username=james090500')
         }
     }
 }
 
 repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
     maven {url = "https://repo.spongepowered.org/maven/" }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    // Minecraft supplies GLFW at runtime; the key binding code also needs its API to compile.
+    compileOnly 'org.lwjgl:lwjgl-glfw:3.2.2'
 
-    implementation "org.spongepowered:mixin:0.8.5-SNAPSHOT"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT'
+    compileOnly "org.spongepowered:mixin:0.8.5"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // Required for Dev
     annotationProcessor 'com.google.code.gson:gson:2.8.9'
@@ -81,4 +89,48 @@ processResources {
     }
 
     inputs.properties(expandProps)
+}
+renamer.mappings(minecraft.dependency.toSrg)
+renamer.classes(tasks.named('jar', Jar)) {
+    archiveClassifier = ''
+    mappings renamer.mixin.generatedMappings
+}
+tasks.named('jar', Jar) {
+    archiveClassifier = 'dev'
+    manifest.attributes('MixinConfigs': "${mod_id}.mixins.json")
+}
+// Compile with a modern JDK while retaining Java 8 API and bytecode compatibility.
+tasks.withType(JavaCompile).configureEach {
+    // Keep compilation independent of Minecraft's Java 8 runtime.
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    options.release = 8
+}
+
+
+publishMods {
+    file = tasks.named('renameJar').flatMap { it.output }
+    version = "forge-${minecraft_version}-${version}"
+    displayName = "MinecraftCapes Forge ${minecraft_version}-${version}"
+    type = providers.environmentVariable('RELEASE_TYPE').getOrElse('STABLE')
+    changelog = ''
+    modLoaders.add('forge')
+
+    curseforge {
+        accessToken = providers.environmentVariable('CURSEFORGE_TOKEN')
+        projectId = '359836'
+        minecraftVersions.add(minecraft_version)
+        client = true
+        server = false
+        requires('mixinbootstrap')
+    }
+
+    modrinth {
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN')
+        projectId = '9gNVPfzw'
+        minecraftVersions.add(minecraft_version)
+        environment = CLIENT_ONLY
+        requires('mixinbootstrap')
+    }
 }
