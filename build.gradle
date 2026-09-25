@@ -1,4 +1,5 @@
 plugins {
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
     id 'idea'
     id 'java'
     id 'io.freefair.lombok' version "${lombok_version}"
@@ -133,6 +134,10 @@ tasks.named('processResources') {
 }
 
 tasks.withType(JavaCompile).configureEach {
+    // Keep compilation independent of Minecraft's Java 8 runtime.
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
     options.encoding = 'UTF-8'
 }
 
@@ -143,5 +148,34 @@ afterEvaluate {
 
         options.annotationProcessorPath =
                 (options.annotationProcessorPath ?: configurations.annotationProcessor) + mixinAp
+    }
+}
+// Compile with a modern JDK while retaining Java 8 API and bytecode compatibility.
+tasks.withType(JavaCompile).configureEach {
+    options.release = 8
+}
+
+
+publishMods {
+    file = tasks.named('renameShadowJar').flatMap { it.output }
+    version = "forge-${minecraft_version}-${version}"
+    displayName = "MinecraftCapes Forge ${minecraft_version}-${version}"
+    type = providers.environmentVariable('RELEASE_TYPE').getOrElse('STABLE')
+    changelog = ''
+    modLoaders.add('forge')
+
+    curseforge {
+        accessToken = providers.environmentVariable('CURSEFORGE_TOKEN')
+        projectId = '359836'
+        minecraftVersions.add(minecraft_version)
+        client = true
+        server = false
+    }
+
+    modrinth {
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN')
+        projectId = '9gNVPfzw'
+        minecraftVersions.add(minecraft_version)
+        environment = CLIENT_ONLY
     }
 }

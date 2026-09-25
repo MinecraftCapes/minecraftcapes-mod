@@ -8,7 +8,6 @@ bin
 
 # idea
 out
-libs
 *.ipr
 *.iws
 *.iml
