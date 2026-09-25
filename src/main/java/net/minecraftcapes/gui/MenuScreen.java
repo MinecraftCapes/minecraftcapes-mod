@@ -67,7 +67,7 @@ public class MenuScreen extends GuiScreen {
                 MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
                 button.displayString = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
             } else if(button.id == 3) {
-                DownloadManager.prepareDownload(Minecraft.getMinecraft().thePlayer.getUniqueID(), Minecraft.getMinecraft().thePlayer.getDisplayName(), true);
+                DownloadManager.prepareDownload(Minecraft.getMinecraft().thePlayer.getUniqueID(), Minecraft.getMinecraft().thePlayer.getGameProfile().getName(), true);
             } else if(button.id == 4) {
                 this.mc.displayGuiScreen(null);
             }
