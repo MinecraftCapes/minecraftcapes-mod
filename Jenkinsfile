@@ -12,6 +12,10 @@ pipeline {
         timestamps()
     }
 
+    parameters {
+        choice(name: 'RELEASE_TYPE', choices: ['NO_DEPLOY', 'STABLE', 'BETA', 'ALPHA'], description: 'Choose NO_DEPLOY to build without publishing.')
+    }
+
     stages {
         stage('Build') {
             steps {
@@ -75,6 +79,23 @@ pipeline {
                     fingerprint: true,
                     onlyIfSuccessful: true
                 )
+            }
+        }
+
+        stage('Publish') {
+            when {
+                expression {
+                    params.RELEASE_TYPE in ['STABLE', 'BETA', 'ALPHA']
+                }
+            }
+            steps {
+                echo "Publishing release type: ${params.RELEASE_TYPE}"
+                withCredentials([
+                    string(credentialsId: 'minecraftcapes-modrinth-token', variable: 'MODRINTH_TOKEN'),
+                    string(credentialsId: 'minecraftcapes-curseforge-token', variable: 'CURSEFORGE_TOKEN')
+                ]) {
+                    sh './gradlew publishMods --no-daemon'
+                }
             }
         }
     }
