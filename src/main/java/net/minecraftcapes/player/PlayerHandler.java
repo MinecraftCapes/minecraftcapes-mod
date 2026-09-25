@@ -27,7 +27,8 @@ public class PlayerHandler {
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
-    @Setter @Getter private UUID playerUUID;
+    @Getter private final UUID uuid;
+    @Setter @Getter private String name;
 
     @Getter
     private Int2ObjectMap<NativeImage> animatedCape;
@@ -38,14 +39,14 @@ public class PlayerHandler {
     private int capeInterval = 100;
 
     public PlayerHandler(UUID uuid) {
-        this.playerUUID = uuid;
-        PlayerHandler.instances.put(playerUUID, this);
+        this.uuid = uuid;
+        PlayerHandler.instances.put(uuid, this);
     }
 
     @Deprecated
     public PlayerHandler(EntityPlayer player) {
-        this.playerUUID = player.getUniqueID();
-        PlayerHandler.instances.put(playerUUID, this);
+        this.uuid = player.getUniqueID();
+        PlayerHandler.instances.put(uuid, this);
     }
 
     /**
@@ -87,7 +88,7 @@ public class PlayerHandler {
                 animatedCape.put(currentFrame, frame);
             }
             setAnimatedCape(animatedCape);
-            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", playerUUID);
+            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", uuid);
         } else {
             int imageWidth = 64;
             int imageHeight = 32;
@@ -101,9 +102,9 @@ public class PlayerHandler {
                 }
             }
 
-            applyTexture(new ResourceLocation(MODID, "capes/" + playerUUID), imgNew);
+            applyTexture(new ResourceLocation(MODID, "capes/" + uuid), imgNew);
             setHasStaticCape(true);
-            MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
+            MinecraftCapes.getLogger().debug("Static cape loaded for {}", uuid);
         }
     }
 
@@ -112,8 +113,38 @@ public class PlayerHandler {
      * @param earImage The ear image
      */
     public void applyEars(NativeImage earImage) {
-        applyTexture(new ResourceLocation(MODID, "ears/" + playerUUID), earImage);
+        applyTexture(new ResourceLocation(MODID, "ears/" + uuid), earImage);
         this.setHasEars(true);
+    }
+
+    /**
+     * Unregisters the cape when a refreshed profile no longer has one.
+     */
+    public void removeCape() {
+        if (!hasStaticCape && !hasAnimatedCape) return;
+
+        this.setHasStaticCape(false);
+        this.setHasAnimatedCape(false);
+        Int2ObjectMap<NativeImage> frames = this.animatedCape;
+        Minecraft.getInstance().addScheduledTask(() -> {
+            Minecraft.getInstance().getTextureManager().deleteTexture(new ResourceLocation(MODID, "capes/" + uuid));
+            if (frames != null) {
+                for (int frame : frames.keySet()) {
+                    Minecraft.getInstance().getTextureManager().deleteTexture(new ResourceLocation(MODID, String.format("capes/%s/%d", uuid, frame)));
+                }
+            }
+        });
+    }
+
+    /**
+     * Unregisters the ears when a refreshed profile no longer has them.
+     */
+    public void removeEars() {
+        if (!hasEars) return;
+
+        this.setHasEars(false);
+        Minecraft.getInstance().addScheduledTask(() ->
+                Minecraft.getInstance().getTextureManager().deleteTexture(new ResourceLocation(MODID, "ears/" + uuid)));
     }
 
     /**
@@ -121,7 +152,7 @@ public class PlayerHandler {
      * @param animatedCape
      */
     public void setAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {
-        MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
+        MinecraftCapes.getLogger().debug("Setting animated cape for {}", uuid);
         this.animatedCape = animatedCape;
         this.setHasAnimatedCape(true);
         this.setHasStaticCape(false);
@@ -132,9 +163,9 @@ public class PlayerHandler {
      * Load all BufferedImages into a ResourceLocation
      */
     private void loadFramesToResource() {
-        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
+        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", uuid);
         for(final HashMap.Entry<Integer, NativeImage> entry : getAnimatedCape().int2ObjectEntrySet()) {
-            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
+            ResourceLocation currentResource = new ResourceLocation(MODID, String.format("capes/%s/%d", uuid, entry.getKey()));
             applyTexture(currentResource, entry.getValue());
         }
     }
@@ -151,9 +182,9 @@ public class PlayerHandler {
             lastFrame = currentFrameNo;
             lastFrameTime = time;
 
-            return new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, currentFrameNo));
+            return new ResourceLocation(MODID, String.format("capes/%s/%d", uuid, currentFrameNo));
         }
-        return new ResourceLocation(MODID, String.format("capes/%s/%d", playerUUID, lastFrame));
+        return new ResourceLocation(MODID, String.format("capes/%s/%d", uuid, lastFrame));
     }
 
     /**
@@ -161,7 +192,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getCapeLocation() {
-        return hasStaticCape ? new ResourceLocation(MODID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
+        return hasStaticCape ? new ResourceLocation(MODID, "capes/" + uuid) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -169,7 +200,7 @@ public class PlayerHandler {
      * @return
      */
     public ResourceLocation getEarLocation() {
-        return hasEars ? new ResourceLocation(MODID, "ears/" + playerUUID) : null;
+        return hasEars ? new ResourceLocation(MODID, "ears/" + uuid) : null;
     }
 
     /**
@@ -199,7 +230,7 @@ public class PlayerHandler {
                 ", hasCapeGlint=" + hasCapeGlint +
                 ", upsideDown=" + upsideDown +
                 ", hasInfo=" + hasInfo +
-                ", playerUUID=" + playerUUID +
+                ", uuid=" + uuid +
                 ", animatedCape=" + animatedCape +
                 ", lastFrameTime=" + lastFrameTime +
                 ", lastFrame=" + lastFrame +

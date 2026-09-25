@@ -23,7 +23,7 @@ public abstract class MixinPlayerInfo {
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void minecraftcapes$downloadPlayerInfo(World worldIn, GameProfile playerProfile, CallbackInfo ci) {
-        DownloadManager.prepareDownload(playerProfile.getId(), false);
+        DownloadManager.prepareDownload(playerProfile.getId(), playerProfile.getName(), false);
     }
 
     @Inject(method = "getLocationCape", at = @At(value = "RETURN"), cancellable = true)

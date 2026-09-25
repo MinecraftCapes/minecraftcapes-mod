@@ -40,7 +40,7 @@ public class MenuScreen extends GuiScreen {
         //Reload Profile
         this.addButton(new GuiButton(2, this.width / 2 - 75, this.height / 6 + 24 * (i >> 1), 150, 20, "Reload Profile") {
             public void onClick ( double mouseX, double mouseY) {
-                DownloadManager.prepareDownload(MenuScreen.this.mc.player.getUniqueID(),true);
+                DownloadManager.prepareDownload(MenuScreen.this.mc.player.getUniqueID(), MenuScreen.this.mc.player.getGameProfile().getName(), true);
             }
         });
         i++;
