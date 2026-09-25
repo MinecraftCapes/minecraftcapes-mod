@@ -1,4 +1,5 @@
 plugins {
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
     id 'fabric-loom' version "${fabric_loom_version}"
     id("io.freefair.lombok") version "9.1.0"
     id 'maven-publish'
@@ -72,5 +73,34 @@ jar {
 
     from("LICENSE") {
         rename { "${it}_${inputs.properties.archivesName}"}
+    }
+}
+
+def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
+
+publishMods {
+    file = tasks.named('renameJar').flatMap { it.output }
+    version = "forge-${minecraft_version}-${version}"
+    displayName = "MinecraftCapes Forge ${minecraft_version}-${version}"
+    // Jenkins skips publishing for NO_DEPLOY; Gradle still needs a valid enum to configure the build.
+    type = releaseType == 'NO_DEPLOY' ? 'ALPHA' : releaseType
+    changelog = ''
+    modLoaders.add('forge')
+
+    curseforge {
+        accessToken = providers.environmentVariable('CURSEFORGE_TOKEN')
+        projectId = '359836'
+        minecraftVersions.add(minecraft_version)
+        client = true
+        server = false
+        requires('mixinbootstrap')
+    }
+
+    modrinth {
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN')
+        projectId = '9gNVPfzw'
+        minecraftVersions.add(minecraft_version)
+        environment = CLIENT_ONLY
+        requires('mixinbootstrap')
     }
 }

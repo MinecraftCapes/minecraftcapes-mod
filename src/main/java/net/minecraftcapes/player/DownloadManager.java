@@ -1,10 +1,10 @@
 package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
-import net.minecraftcapes.helpers.MinecraftApi;
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -13,35 +13,53 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
 public class DownloadManager {
+    private static final Gson GSON = new Gson();
+    // Allow short legacy/offline names, but never display names or URL characters.
+    private static final Pattern VALID_USERNAME = Pattern.compile("[A-Za-z0-9_]{1,16}");
+    private static final ExecutorService DOWNLOAD_EXECUTOR = Executors.newFixedThreadPool(4, runnable -> {
+        Thread thread = new Thread(runnable, "MinecraftCapes-Download");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     /**
-     * Prepares the download
-     * @param uuid The entity uuid
-     * @param username The entity name
-     * @param doRefresh Whether we are forcing an overwrite
+     * Prepares a player download, optionally forcing a refresh.
+     * @param uuid The profile UUID
+     * @param username The player name
+     * @param doRefresh Whether to request the profile again
      */
     public static void prepareDownload(UUID uuid, String username, boolean doRefresh) {
         PlayerHandler playerHandler = PlayerHandler.get(uuid);
-        if (!playerHandler.getHasInfo() || doRefresh) {
-            playerHandler.setHasInfo(true);
-            if (uuid.version() == 4) {
+        synchronized (playerHandler) {
+            if (!playerHandler.getHasInfo() || doRefresh) {
+                playerHandler.setName(username);
+                playerHandler.setHasInfo(true);
                 downloadProfile(playerHandler);
-            } else if (uuid.version() == 3) {
-                Thread prepareProfile = new Thread(() -> {
-                    UUID onlineUUID = MinecraftApi.getUUID(username);
-                    if(onlineUUID != null) {
-                        playerHandler.setPlayerUUID(onlineUUID);
-                        downloadProfile(playerHandler);
-                    }
-                });
-                prepareProfile.start();
+            }
+        }
+    }
+
+    /**
+     * Prepares the download
+     * @param playerHandler The player handler instance
+     */
+    public static void prepareDownload(PlayerHandler playerHandler) {
+        synchronized (playerHandler) {
+            if (!playerHandler.getHasInfo()) {
+                playerHandler.setHasInfo(true);
+                downloadProfile(playerHandler);
             }
         }
     }
@@ -51,12 +69,33 @@ public class DownloadManager {
      * @param playerHandler
      */
     private static void downloadProfile(PlayerHandler playerHandler) {
-        Thread playerDownload = new Thread(() -> {
-            byte[] playerDataBytes = downloadData("https://api.minecraftcapes.net/profile/" + playerHandler.getPlayerUUID().toString().replace("-", ""));
+        // Capture the identity before queuing: partial profiles may not have a UUID yet.
+        UUID uuid = playerHandler.getUuid();
+        String username = playerHandler.getName();
+        String identifier;
+        if (uuid != null && uuid.version() == 4) {
+            identifier = uuid.toString().replace("-", "");
+        } else if (username != null && VALID_USERNAME.matcher(username).matches()) {
+            identifier = username;
+        } else {
+            // This handler has been attempted; skip invalid or missing names without retrying.
+            return;
+        }
+
+        DOWNLOAD_EXECUTOR.execute(() -> {
+            String downloadUrl = "https://api.minecraftcapes.net/profile/" + identifier;
+            byte[] playerDataBytes = downloadData(downloadUrl);
             if (playerDataBytes == null) return;
 
             String json = new String(playerDataBytes, StandardCharsets.UTF_8);
-            ProfileResult profileResult = new Gson().fromJson(json, ProfileResult.class);
+            ProfileResult profileResult;
+            try {
+                profileResult = GSON.fromJson(json, ProfileResult.class);
+            } catch (JsonParseException e) {
+                MinecraftCapes.getLogger().warn("Invalid profile response for {}", identifier, e);
+                return;
+            }
+            if (profileResult == null) return;
 
             playerHandler.setHasCapeGlint(profileResult.capeGlint);
             playerHandler.setUpsideDown(profileResult.upsideDown);
@@ -86,8 +125,6 @@ public class DownloadManager {
             }
         });
 
-        playerDownload.setDaemon(true);
-        playerDownload.start();
     }
 
     /**
@@ -100,31 +137,45 @@ public class DownloadManager {
         String hash = url.substring(url.lastIndexOf('/') + 1);
         Path cache = MinecraftCapes.getConfigDir().resolve(type).resolve(hash.length() > 2 ? hash.substring(0, 2) : "xx").resolve(hash);
 
-        NativeImage nativeImage = null;
-
-        if(cache.toFile().exists()) {
-            try(InputStream inputStream = Files.newInputStream(cache.toFile().toPath())) {
-                nativeImage = NativeImage.read(inputStream);
+        if (Files.isRegularFile(cache)) {
+            try (InputStream inputStream = Files.newInputStream(cache)) {
+                return NativeImage.read(inputStream);
             } catch (IOException e) {
-                MinecraftCapes.getLogger().error("IOException with {}", cache);
-                MinecraftCapes.getLogger().error(e.getMessage());
-                if(cache.toFile().delete()) {
-                    return downloadOrLoad(url, type);
-                } else {
-                    return null;
-                }
+                MinecraftCapes.getLogger().warn("Couldn't read cached texture {}; downloading again", cache, e);
             }
-        } else {
-            byte[] imageBytes = downloadData(url);
-            if (imageBytes != null) {
+        }
+
+        byte[] imageBytes = downloadData(url);
+        if (imageBytes == null) return null;
+
+        NativeImage nativeImage;
+        try (InputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+            nativeImage = NativeImage.read(inputStream);
+        } catch (IOException e) {
+            MinecraftCapes.getLogger().warn("Couldn't decode texture {}", url, e);
+            return null;
+        }
+
+        // Publish only complete, validated files so concurrent readers never see partial data.
+        Path temporary = null;
+        try {
+            Files.createDirectories(cache.getParent());
+            temporary = Files.createTempFile(cache.getParent(), "texture-", ".tmp");
+            Files.write(temporary, imageBytes);
+            try {
+                Files.move(temporary, cache, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(temporary, cache, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            // A read-only or full cache must not prevent displaying a valid texture.
+            MinecraftCapes.getLogger().warn("Couldn't cache texture {}", cache, e);
+        } finally {
+            if (temporary != null) {
                 try {
-                    Files.createDirectories(cache.getParent());
-                    Files.write(cache, imageBytes);
-                    nativeImage = NativeImage.read(new ByteArrayInputStream(imageBytes));
+                    Files.deleteIfExists(temporary);
                 } catch (IOException e) {
-                    MinecraftCapes.getLogger().error("IOException with {}", url);
-                    MinecraftCapes.getLogger().error(e.getMessage());
-                    return null;
+                    MinecraftCapes.getLogger().warn("Couldn't remove temporary texture {}", temporary, e);
                 }
             }
         }
@@ -138,35 +189,34 @@ public class DownloadManager {
      * @return
      */
     private static byte[] downloadData(String url) {
-        HttpURLConnection httpURLConnection = null;
-        URI uri = URI.create(url);
+        HttpURLConnection conn = null;
 
         try {
-            MinecraftCapes.getLogger().info("Getting texture {}", url);
-            httpURLConnection = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
-            httpURLConnection.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.connect();
+            URI uri = URI.create(url);
+            MinecraftCapes.getLogger().debug("Downloading {}", url);
+            conn = (HttpURLConnection) uri.toURL().openConnection(Minecraft.getInstance().getProxy());
+            conn.setRequestProperty("User-Agent", "minecraftcapes-mod/" + MINECRAFT_VERSION);
+            conn.setConnectTimeout(10_000);
+            conn.setReadTimeout(10_000);
 
-            if (httpURLConnection.getResponseCode() / 100 == 2) {
-                try (InputStream inputStream = httpURLConnection.getInputStream()) {
+            int status = conn.getResponseCode();
+            if (status / 100 == 2) {
+                try (InputStream inputStream = conn.getInputStream()) {
                     return IOUtils.toByteArray(inputStream); // Read fully before closing
                 }
             } else {
-                MinecraftCapes.getLogger().warn("minecraftcapes.net returned a {}", httpURLConnection.getResponseCode());
+                MinecraftCapes.getLogger().warn("Download {} returned HTTP {}", url, status);
                 return null;
             }
-        } catch (IOException e) {
-            MinecraftCapes.getLogger().warn("No connection to minecraftcapes.net detected");
-            throw new RuntimeException(e);
+        } catch (IOException | IllegalArgumentException e) {
+            MinecraftCapes.getLogger().warn("Couldn't download {}", url, e);
+            return null;
         } finally {
-            if (httpURLConnection != null) {
-                httpURLConnection.disconnect();
+            if (conn != null) {
+                conn.disconnect();
             }
         }
     }
-
 
     private static class ProfileResult {
         private boolean capeGlint = false;
