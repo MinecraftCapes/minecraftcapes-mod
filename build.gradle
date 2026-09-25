@@ -109,11 +109,14 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 
+def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
+
 publishMods {
     file = tasks.named('renameJar').flatMap { it.output }
     version = "forge-${minecraft_version}-${version}"
     displayName = "MinecraftCapes Forge ${minecraft_version}-${version}"
-    type = providers.environmentVariable('RELEASE_TYPE').getOrElse('STABLE')
+    // Jenkins skips publishing for NO_DEPLOY; Gradle still needs a valid enum to configure the build.
+    type = releaseType == 'NO_DEPLOY' ? 'ALPHA' : releaseType
     changelog = ''
     modLoaders.add('forge')
 
