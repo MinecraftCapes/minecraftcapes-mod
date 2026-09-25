@@ -23,8 +23,11 @@ subprojects {
 def mcVersion = providers.gradleProperty('minecraft_version').get()
 def modVersion = providers.gradleProperty('version').get()
 
+def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
+
 publishMods {
-    type = providers.environmentVariable('RELEASE_TYPE').getOrElse('STABLE')
+    // Jenkins skips publishing for NO_DEPLOY; Gradle still needs a valid enum to configure the build.
+    type = releaseType == 'NO_DEPLOY' ? 'ALPHA' : releaseType
     changelog = ''
 
     def cfOptions = curseforgeOptions {
