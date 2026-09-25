@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
 
-@Mod(modid = MinecraftCapes.MOD_ID, name = MinecraftCapes.MOD_NAME, version = "1.0.1")
+@Mod(modid = MinecraftCapes.MOD_ID, name = MinecraftCapes.MOD_NAME, version = "1.1.0")
 public class MinecraftCapes {
 
     public static final String MOD_ID = "minecraftcapes";
