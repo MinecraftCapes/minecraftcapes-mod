@@ -5,17 +5,6 @@ pluginManagement {
         exclusiveContent {
             forRepository {
                 maven {
-                    name = 'MinecraftForge'
-                    url = uri("https://maven.minecraftforge.net/")
-                }
-            }
-            filter {
-                includeGroupAndSubgroups("net.minecraftforge")
-            }
-        }
-        exclusiveContent {
-            forRepository {
-                maven {
                     name = 'Sponge Snapshots'
                     url = uri("https://repo.spongepowered.org/repository/maven-public")
                 }
@@ -28,5 +17,7 @@ pluginManagement {
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
+
+rootProject.name = 'forge-1.16.5'
