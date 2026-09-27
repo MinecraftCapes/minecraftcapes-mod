@@ -15,7 +15,6 @@ publishMods {
     // Jenkins skips publishing for NO_DEPLOY; Gradle still needs a valid enum to configure the build.
     type = releaseType == 'NO_DEPLOY' ? 'ALPHA' : releaseType
     changelog = ''
-    dryRun = true
 
     def cfOptions = curseforgeOptions {
         accessToken = providers.environmentVariable('CURSEFORGE_TOKEN')
