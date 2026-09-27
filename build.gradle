@@ -1,14 +1,14 @@
 plugins {
-    id 'me.modmuss50.mod-publish-plugin' version '1.1.0'
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
     id 'fabric-loom' version "${fabric_loom_version}" apply false
     id 'net.neoforged.moddev' version "${moddev_version}" apply(false)
     id 'io.freefair.lombok' version "${lombok_version}" apply(false)
 }
 
-def mcVersion = providers.gradleProperty('minecraft_version').get()
-def modVersion = providers.gradleProperty('version').get()
-
 def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
+
+evaluationDependsOn(':fabric')
+evaluationDependsOn(':neoforge')
 
 publishMods {
     // Jenkins skips publishing for NO_DEPLOY; Gradle still needs a valid enum to configure the build.
@@ -18,33 +18,42 @@ publishMods {
     def cfOptions = curseforgeOptions {
         accessToken = providers.environmentVariable('CURSEFORGE_TOKEN')
         projectId = '359836'
-        minecraftVersions.add(mcVersion)
-        clientRequired = true
-        serverRequired = false
+        minecraftVersions.add(project.minecraft_version)
+        client = true
+        server = false
     }
 
     def mrOptions = modrinthOptions {
         accessToken = providers.environmentVariable('MODRINTH_TOKEN')
         projectId = '9gNVPfzw'
-        minecraftVersions.add(mcVersion)
+        minecraftVersions.add(project.minecraft_version)
+        environment = CLIENT_ONLY
     }
 
     ['fabric', 'forge', 'neoforge'].each { loader ->
         if (findProject(":${loader}") != null) {
             curseforge("curseforge${loader.capitalize()}") {
                 from cfOptions
-                file project(":${loader}")
-                version = "${loader}-${mcVersion}-${modVersion}"
-                displayName = "MinecraftCapes ${loader.capitalize()} ${mcVersion}-${modVersion}"
+                if(loader == 'fabric') {
+                    file.set(project(":${loader}").tasks.named("remapJar").flatMap { task -> task.archiveFile })
+                } else {
+                    file.set(project(":${loader}").tasks.named("jar").flatMap { task -> task.archiveFile })
+                }
+                version = "${loader}-${project.minecraft_version}-${project.version}"
+                displayName = "MinecraftCapes ${loader.capitalize()} ${project.minecraft_version}-${project.version}"
                 modLoaders.add(loader)
                 if (loader == 'fabric') requires('fabric-api')
             }
 
             modrinth("modrinth${loader.capitalize()}") {
                 from mrOptions
-                file project(":${loader}")
-                version = "${loader}-${mcVersion}-${modVersion}"
-                displayName = "MinecraftCapes ${loader.capitalize()} ${mcVersion}-${modVersion}"
+                if(loader == 'fabric') {
+                    file.set(project(":${loader}").tasks.named("remapJar").flatMap { task -> task.archiveFile })
+                } else {
+                    file.set(project(":${loader}").tasks.named("jar").flatMap { task -> task.archiveFile })
+                }
+                version = "${loader}-${project.minecraft_version}-${project.version}"
+                displayName = "MinecraftCapes ${loader.capitalize()} ${project.minecraft_version}-${project.version}"
                 modLoaders.add(loader)
                 if (loader == 'fabric') requires('fabric-api')
             }

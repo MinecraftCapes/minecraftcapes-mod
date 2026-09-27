@@ -58,5 +58,4 @@ plugins {
 rootProject.name = 'MinecraftCapes'
 include("common")
 include("fabric")
-//include("forge")
 include("neoforge")
