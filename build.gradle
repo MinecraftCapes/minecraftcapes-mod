@@ -61,12 +61,15 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 8
+    // Compile with JDK 21 independently of Minecraft's Java 8 runtime.
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    sourceCompatibility = targetCompatibility = java_version
 }
 
 jar {
