@@ -8,7 +8,6 @@ plugins {
 def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
 
 evaluationDependsOn(':fabric')
-evaluationDependsOn(':forge')
 evaluationDependsOn(':neoforge')
 
 publishMods {
