@@ -9,6 +9,7 @@ def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA
 
 evaluationDependsOn(':fabric')
 evaluationDependsOn(':forge')
+evaluationDependsOn(':neoforge')
 
 publishMods {
     // Jenkins skips publishing for NO_DEPLOY; Gradle still needs a valid enum to configure the build.
@@ -36,10 +37,8 @@ publishMods {
                 from cfOptions
                 if(loader == 'fabric') {
                     file.set(project(":${loader}").tasks.named("remapJar").flatMap { task -> task.archiveFile })
-                } else if(loader == 'neoforge') {
-                    file.set(project(":${loader}").tasks.named("jar").flatMap { task -> task.archiveFile })
                 } else {
-                    file project(":${loader}")
+                    file.set(project(":${loader}").tasks.named("jar").flatMap { task -> task.archiveFile })
                 }
                 version = "${loader}-${project.minecraft_version}-${project.version}"
                 displayName = "MinecraftCapes ${loader.capitalize()} ${project.minecraft_version}-${project.version}"
@@ -51,10 +50,8 @@ publishMods {
                 from mrOptions
                 if(loader == 'fabric') {
                     file.set(project(":${loader}").tasks.named("remapJar").flatMap { task -> task.archiveFile })
-                } else if(loader == 'neoforge') {
-                    file.set(project(":${loader}").tasks.named("jar").flatMap { task -> task.archiveFile })
                 } else {
-                    file project(":${loader}")
+                    file.set(project(":${loader}").tasks.named("jar").flatMap { task -> task.archiveFile })
                 }
                 version = "${loader}-${project.minecraft_version}-${project.version}"
                 displayName = "MinecraftCapes ${loader.capitalize()} ${project.minecraft_version}-${project.version}"
