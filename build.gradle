@@ -76,8 +76,8 @@ def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA
 
 publishMods {
     file = remapJar.archiveFile
-    version = "fabric-${minecraft_version}-${version}"
-    displayName = "MinecraftCapes Fabric ${minecraft_version}-${version}"
+    version = "fabric-${project.minecraft_version}-${project.version}"
+    displayName = "MinecraftCapes Fabric ${project.minecraft_version}-${project.version}"
     // Jenkins skips publishing for NO_DEPLOY; Gradle still needs a valid enum to configure the build.
     type = releaseType == 'NO_DEPLOY' ? 'ALPHA' : releaseType
     changelog = ''
