@@ -44,17 +44,22 @@ loom {
     runs {
         client {
             client()
-            setConfigName("Fabric Client")
-            ideConfigGenerated(true)
-            runDir("run/client")
-            programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+            setDisplayName("Fabric Client")
+            getGenerateRunConfig().set(true)
+            getRunDirectory().set(getProject().file("run/client"))
+            getProgramArguments().addAll '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
             mainClass.set 'net.covers1624.devlogin.DevLogin'
         }
         server {
             server()
-            setConfigName("Fabric Server")
-            ideConfigGenerated(true)
-            runDir("run/server")
+            setDisplayName("Fabric Server")
+            getGenerateRunConfig().set(true)
+            getRunDirectory().set(getProject().file("run/server"))
         }
     }
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    sourceCompatibility = targetCompatibility = java_version
 }

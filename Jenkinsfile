@@ -2,7 +2,7 @@ pipeline {
     agent { label 'Agent' }
 
     environment {
-        JAVA_HOME = '/opt/jdks/21'
+        JAVA_HOME = '/opt/jdks/25'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
         GRADLE_USER_HOME = '/home/jenkins/.gradle'
     }

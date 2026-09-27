@@ -56,3 +56,8 @@ dependencies {
     //Mixins
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    sourceCompatibility = targetCompatibility = java_version
+}
