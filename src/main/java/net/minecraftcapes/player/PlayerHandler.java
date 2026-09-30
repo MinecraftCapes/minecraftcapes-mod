@@ -26,7 +26,8 @@ public class PlayerHandler {
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
-    @Setter @Getter private UUID playerUUID;
+    @Getter private final UUID uuid;
+    @Setter @Getter private String name;
 
     @Getter
     private HashMap<Integer, BufferedImage> animatedCape;
@@ -37,14 +38,8 @@ public class PlayerHandler {
     private int capeInterval = 100;
 
     public PlayerHandler(UUID uuid) {
-        this.playerUUID = uuid;
-        PlayerHandler.instances.put(playerUUID, this);
-    }
-
-    @Deprecated
-    public PlayerHandler(PlayerEntity player) {
-        this.playerUUID = player.getUuid();
-        PlayerHandler.instances.put(playerUUID, this);
+        this.uuid = uuid;
+        PlayerHandler.instances.put(uuid, this);
     }
 
     /**
@@ -55,16 +50,6 @@ public class PlayerHandler {
     public static PlayerHandler get(UUID uuid) {
         PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
         return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
-    }
-
-    /**
-     * Tries to get the PlayerHandler instance from a player
-     * @param player
-     * @return
-     */
-    @Deprecated
-    public static PlayerHandler getFromPlayer(PlayerEntity player) {
-        return get(player.getUuid());
     }
 
     /**
@@ -93,7 +78,7 @@ public class PlayerHandler {
                 animatedCape.put(currentFrame, frame);
             }
             setAnimatedCape(animatedCape);
-            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", playerUUID);
+            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", uuid);
         } else {
             int imageWidth = 64;
             int imageHeight = 32;
@@ -105,9 +90,9 @@ public class PlayerHandler {
             g.drawImage(capeImage, 0, 0, null);
             g.dispose();
 
-            applyTexture(new Identifier(MOD_ID, "capes/" + playerUUID), imgNew);
+            applyTexture(new Identifier(MOD_ID, "capes/" + uuid), imgNew);
             setHasStaticCape(true);
-            MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
+            MinecraftCapes.getLogger().debug("Static cape loaded for {}", uuid);
         }
     }
 
@@ -116,7 +101,7 @@ public class PlayerHandler {
      * @param earImage
      */
     public void applyEars(BufferedImage earImage) {
-        applyTexture(new Identifier(MOD_ID, "ears/" + playerUUID), earImage);
+        applyTexture(new Identifier(MOD_ID, "ears/" + uuid), earImage);
         this.setHasEars(true);
     }
 
@@ -126,16 +111,16 @@ public class PlayerHandler {
     public void removeCape() {
         if(!hasStaticCape && !hasAnimatedCape) return;
 
-        MinecraftCapes.getLogger().debug("Removing cape for {}", playerUUID);
+        MinecraftCapes.getLogger().debug("Removing cape for {}", uuid);
 
         this.setHasAnimatedCape(false);
         this.setHasStaticCape(false);
 
         Minecraft.getInstance().executeTask(() -> {
-            Minecraft.getInstance().getTextureManager().close(new Identifier(MOD_ID, "capes/" + playerUUID));
+            Minecraft.getInstance().getTextureManager().close(new Identifier(MOD_ID, "capes/" + uuid));
 
             for (int i = 0; i < getAnimatedCape().size() - 1; i++) {
-                Minecraft.getInstance().getTextureManager().close(new Identifier(MOD_ID, String.format("capes/%s/%d", playerUUID, i)));
+                Minecraft.getInstance().getTextureManager().close(new Identifier(MOD_ID, String.format("capes/%s/%d", uuid, i)));
             }
         });
     }
@@ -146,10 +131,10 @@ public class PlayerHandler {
     public void removeEars() {
         if(!hasEars) return;
 
-        MinecraftCapes.getLogger().debug("Removing ears for {}", playerUUID);
+        MinecraftCapes.getLogger().debug("Removing ears for {}", uuid);
 
         this.setHasEars(false);
-        Minecraft.getInstance().executeTask(() -> Minecraft.getInstance().getTextureManager().close(new Identifier(MOD_ID, "ears/" + playerUUID)));
+        Minecraft.getInstance().executeTask(() -> Minecraft.getInstance().getTextureManager().close(new Identifier(MOD_ID, "ears/" + uuid)));
     }
 
     /**
@@ -157,7 +142,7 @@ public class PlayerHandler {
      * @param animatedCape
      */
     public void setAnimatedCape(HashMap<Integer, BufferedImage> animatedCape) {
-        MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
+        MinecraftCapes.getLogger().debug("Setting animated cape for {}", uuid);
         this.animatedCape = animatedCape;
         this.setHasAnimatedCape(true);
         this.loadFramesToResource();
@@ -167,9 +152,9 @@ public class PlayerHandler {
      * Load all BufferedImages into a Identifier
      */
     private void loadFramesToResource() {
-        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", playerUUID);
+        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", uuid);
         for(final HashMap.Entry<Integer, BufferedImage> entry : getAnimatedCape().entrySet()) {
-            Identifier currentResource = new Identifier(MOD_ID, String.format("capes/%s/%d", playerUUID, entry.getKey()));
+            Identifier currentResource = new Identifier(MOD_ID, String.format("capes/%s/%d", uuid, entry.getKey()));
             applyTexture(currentResource, entry.getValue());
         }
     }
@@ -186,9 +171,9 @@ public class PlayerHandler {
             lastFrame = currentFrameNo;
             lastFrameTime = time;
 
-            return new Identifier(MOD_ID, String.format("capes/%s/%d", playerUUID, currentFrameNo));
+            return new Identifier(MOD_ID, String.format("capes/%s/%d", uuid, currentFrameNo));
         }
-        return new Identifier(MOD_ID, String.format("capes/%s/%d", playerUUID, lastFrame));
+        return new Identifier(MOD_ID, String.format("capes/%s/%d", uuid, lastFrame));
     }
 
     /**
@@ -196,7 +181,7 @@ public class PlayerHandler {
      * @return
      */
     public Identifier getCapeLocation() {
-        return hasStaticCape ? new Identifier(MOD_ID, "capes/" + playerUUID) : hasAnimatedCape ? getFrame() : null;
+        return hasStaticCape ? new Identifier(MOD_ID, "capes/" + uuid) : hasAnimatedCape ? getFrame() : null;
     }
 
     /**
@@ -204,7 +189,7 @@ public class PlayerHandler {
      * @return
      */
     public Identifier getEarLocation() {
-        return hasEars ? new Identifier(MOD_ID, "ears/" + playerUUID) : null;
+        return hasEars ? new Identifier(MOD_ID, "ears/" + uuid) : null;
     }
 
     /**
@@ -231,7 +216,7 @@ public class PlayerHandler {
                 ", hasCapeGlint=" + hasCapeGlint +
                 ", upsideDown=" + upsideDown +
                 ", hasInfo=" + hasInfo +
-                ", playerUUID=" + playerUUID +
+                ", uuid=" + uuid +
                 ", animatedCape=" + animatedCape +
                 ", lastFrameTime=" + lastFrameTime +
                 ", lastFrame=" + lastFrame +

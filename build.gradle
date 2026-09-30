@@ -1,5 +1,5 @@
 plugins {
-	id 'maven-publish'
+	id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
 	id 'fabric-loom' version '1.17-SNAPSHOT'
 	id 'ploceus' version '1.17-SNAPSHOT'
 	id 'io.freefair.lombok' version "9.1.0"
@@ -31,10 +31,13 @@ dependencies {
 
 loom {
 	runs {
+		client {
+			getProgramArguments().add('--username=james090500')
+		}
 		clientLogin {
 			client()
-			ideConfigGenerated true
-			programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
+			getGenerateRunConfig().set(true);
+			getProgramArguments().add('--launch_target net.fabricmc.loader.impl.launch.knot.KnotClient')
 			mainClass.set 'net.covers1624.devlogin.DevLogin'
 		}
 	}
@@ -60,19 +63,26 @@ processResources {
 	inputs.properties(expandProps)
 }
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = 'UTF-8'
-	it.options.release = 8
-}
-
 java {
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	toolchain.languageVersion = JavaLanguageVersion.of(8)
+	sourceCompatibility = targetCompatibility = 8
 }
 
-// If you plan to use a different file for the license, don't forget to change the file name here!
-jar {
-	from('LICENSE') {
-		rename { "${it}_${base.archivesName.get()}" }
+def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
+
+publishMods {
+	dryRun = true
+	file = remapJar.archiveFile
+	modLoaders.add('ornithe')
+
+	modrinth {
+		projectId = '9gNVPfzw'
+		accessToken = providers.environmentVariable('MODRINTH_TOKEN')
+		version = "ornithe-${project.minecraft_version}-${project.version}"
+		displayName = "MinecraftCapes Ornithe ${project.minecraft_version}-${project.version}"
+		minecraftVersions.add(minecraft_version)
+		type = releaseType == 'NO_DEPLOY' ? 'ALPHA' : releaseType
+		environment = CLIENT_ONLY
+		changelog = ''
 	}
 }
