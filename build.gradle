@@ -1,7 +1,7 @@
 plugins {
-	id 'maven-publish'
-	id 'fabric-loom' version '1.15-SNAPSHOT'
-	id 'ploceus' version '1.15-SNAPSHOT'
+	id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
+	id 'fabric-loom' version '1.17-SNAPSHOT'
+	id 'ploceus' version '1.17-SNAPSHOT'
 	id 'io.freefair.lombok' version "9.2.0"
 }
 
@@ -9,34 +9,8 @@ base {
 	archivesName = "${mod_name} Ornithe ${minecraft_version}"
 }
 
-version = project.version
-group = project.group
-
 ploceus {
 	setIntermediaryGeneration(2)
-}
-
-repositories {
-	exclusiveContent {
-		forRepository {
-			maven {
-				name = "Modrinth"
-				url = "https://api.modrinth.com/maven"
-			}
-		}
-		filter {
-			includeGroup "maven.modrinth"
-		}
-	}
-}
-
-loom {
-	runs {
-		client {
-			client()
-			programArgs(["--username", "james090500"])
-		}
-	}
 }
 
 dependencies {
@@ -44,15 +18,16 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	mappings ploceus.featherMappings(project.feather_build)
-	exceptions ploceus.raven(project.raven_build)
-	signatures ploceus.sparrow(project.sparrow_build)
-	nests ploceus.nests(project.nests_build)
 
 	ploceus.dependOsl(project.osl_version)
+}
 
-	// Third party mods
-	//modImplementation "maven.modrinth:modmenu-ornithe:0.3.1+mcb1.7.3"
-	//modImplementation "maven.modrinth:legacyauth:1.0.5+Protocol14-Client"
+loom {
+	runs {
+		client {
+			getProgramArguments().addAll(["--username", "james090500"])
+		}
+	}
 }
 
 processResources {
@@ -73,20 +48,26 @@ processResources {
 	}
 }
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = 'UTF-8'
-	it.options.release = 8
-}
-
 java {
-	// Still required by IDEs such as Eclipse and Visual Studio Code
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	toolchain.languageVersion = JavaLanguageVersion.of(8)
+	sourceCompatibility = targetCompatibility = 8
 }
 
-// If you plan to use a different file for the license, don't forget to change the file name here!
-jar {
-	from('LICENSE') {
-		rename { "${it}_${base.archivesName.get()}" }
+def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
+
+publishMods {
+	dryRun = true
+	file = remapJar.archiveFile
+	modLoaders.add('ornithe')
+
+	modrinth {
+		projectId = '9gNVPfzw'
+		accessToken = providers.environmentVariable('MODRINTH_TOKEN')
+		version = "ornithe-${project.minecraft_version}-${project.version}"
+		displayName = "MinecraftCapes Ornithe ${project.minecraft_version}-${project.version}"
+		minecraftVersions.add(minecraft_version)
+		type = releaseType == 'NO_DEPLOY' ? 'ALPHA' : releaseType
+		environment = CLIENT_ONLY
+		changelog = ''
 	}
 }

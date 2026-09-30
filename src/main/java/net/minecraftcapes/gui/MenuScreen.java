@@ -4,7 +4,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.locale.I18n;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.helpers.MinecraftApi;
 import net.minecraftcapes.player.DownloadManager;
 
 import java.util.UUID;
@@ -80,14 +79,7 @@ public class MenuScreen extends Screen {
                 MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
                 button.message = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
             } else if(button.id == 3) {
-                button.active = false;
-                new Thread(() -> {
-                    UUID onlineUUID = MinecraftApi.getUUID(this.minecraft.player.name);
-                    if(onlineUUID != null) {
-                        DownloadManager.prepareDownload(onlineUUID, this.minecraft.player.name, true);
-                        button.active = true;
-                    }
-                }).start();
+                DownloadManager.prepareDownload(this.minecraft.player.name, true);
             } else if(button.id == 4) {
                 this.minecraft.openScreen(null);
             }

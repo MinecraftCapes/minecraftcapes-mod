@@ -6,16 +6,14 @@ import lombok.Setter;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
-import org.lwjgl.Sys;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class PlayerHandler {
     
-    private static final HashMap<UUID, PlayerHandler> instances = new HashMap<>();
+    private static final HashMap<String, PlayerHandler> instances = new HashMap<>();
     
     @Setter private boolean hasStaticCape = false;
     @Setter private boolean hasEars = false;
@@ -23,7 +21,7 @@ public class PlayerHandler {
     @Getter @Setter private Boolean hasCapeGlint = false;
     @Getter @Setter private boolean upsideDown = false;
     @Getter @Setter private Boolean hasInfo = false;
-    @Setter @Getter private UUID playerUUID;
+    @Getter private String username;
 
     private Int2IntArrayMap animatedCape;
     private int cape;
@@ -35,27 +33,19 @@ public class PlayerHandler {
     private int lastFrame = 0;
     private int capeInterval = 100;
     
-    public PlayerHandler(UUID uuid) {
-        this.playerUUID = uuid;
-        PlayerHandler.instances.put(playerUUID, this);
+    public PlayerHandler(String username) {
+        this.username = username;
+        PlayerHandler.instances.put(username, this);
     }
     
     /**
      * Tries to get the PlayerHandler instance from a player
-     * @param uuid the players uuid
+     * @param username the players username
      * @return The player handler
      */
-    public static PlayerHandler get(UUID uuid) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
-        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
-    }
-    
-    /**
-     * Remove a player
-     * @param uuid
-     */
-    public static void remove(UUID uuid) {
-        instances.remove(uuid);
+    public static PlayerHandler get(String username) {
+        PlayerHandler playerHandler = PlayerHandler.instances.get(username);
+        return playerHandler == null ? new PlayerHandler(username) : playerHandler;
     }
     
     /**
@@ -84,7 +74,7 @@ public class PlayerHandler {
                 animatedCape.put(currentFrame, this.applyTexture(frame));
             }
             setAnimatedCape(animatedCape);
-            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", playerUUID);
+            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", username);
         } else {
             int imageWidth = 64;
             int imageHeight = 32;
@@ -99,7 +89,7 @@ public class PlayerHandler {
             this.cape = this.applyTexture(imgNew);
             this.setHasStaticCape(true);
             this.setHasAnimatedCape(false);
-            MinecraftCapes.getLogger().debug("Static cape loaded for {}", playerUUID);
+            MinecraftCapes.getLogger().debug("Static cape loaded for {}", username);
         }
     }
     
@@ -117,11 +107,42 @@ public class PlayerHandler {
     }
 
     /**
+     * Unregister the cape
+     */
+    public void removeCape() {
+        if(!hasStaticCape && !hasAnimatedCape) return;
+
+        MinecraftCapes.getLogger().debug("Removing cape for {}", username);
+
+        if(this.hasStaticCape) {
+            this.setHasStaticCape(false);
+            this.removeTexture(this.cape);
+        }
+
+        if(this.hasAnimatedCape) {
+            this.setHasAnimatedCape(false);
+            this.animatedCape.forEach((frame, id) -> this.removeTexture(id));
+        }
+    }
+
+    /**
+     * Unregister the ears
+     */
+    public void removeEars() {
+        if(!hasEars) return;
+
+        MinecraftCapes.getLogger().debug("Removing ears for {}", username);
+
+        this.setHasEars(false);
+        this.removeTexture(this.ears);
+    }
+
+    /**
      * Sets the animated cape textures and loads all resources to memory
      * @param animatedCape
      */
     public void setAnimatedCape(Int2IntArrayMap animatedCape) {
-        MinecraftCapes.getLogger().debug("Setting animated cape for {}", playerUUID);
+        MinecraftCapes.getLogger().debug("Setting animated cape for {}", username);
         this.animatedCape = animatedCape;
         this.setHasStaticCape(false);
         this.setHasAnimatedCape(true);
@@ -168,5 +189,14 @@ public class PlayerHandler {
     private int applyTexture(BufferedImage bufferedImage) {
         Minecraft gameInstance = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
         return gameInstance.textureManager.load(bufferedImage);
+    }
+
+    /**
+     * Release a texture ID
+     * @param id
+     */
+    private void removeTexture(int id) {
+        Minecraft gameInstance = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
+        gameInstance.textureManager.release(id);
     }
 }

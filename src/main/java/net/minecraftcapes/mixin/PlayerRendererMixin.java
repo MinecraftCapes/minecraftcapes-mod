@@ -1,18 +1,14 @@
 package net.minecraftcapes.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.entity.MobRenderer;
 import net.minecraft.client.render.entity.PlayerRenderer;
 import net.minecraft.client.render.model.Model;
 import net.minecraft.client.render.model.entity.HumanoidModel;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftcapes.config.MinecraftCapesConfig;
-import net.minecraftcapes.helpers.MinecraftApi;
 import net.minecraftcapes.player.DownloadManager;
 import net.minecraftcapes.player.PlayerHandler;
 import org.lwjgl.opengl.GL11;
@@ -24,8 +20,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.UUID;
-
 @Mixin(PlayerRenderer.class)
 public class PlayerRendererMixin extends MobRenderer {
 
@@ -35,36 +29,17 @@ public class PlayerRendererMixin extends MobRenderer {
     @Unique
     private PlayerHandler playerHandler;
 
-    @Unique
-    private boolean needsPlayerHandler = true;
-
     public PlayerRendererMixin(Model model, float shadowSize) {
         super(model, shadowSize);
     }
 
     /**
      * Gets the first playerhandler instance
-     * @param playerEntity
-     * @param e
-     * @param f
-     * @param g
-     * @param h
-     * @param par6
-     * @param ci
      */
     @Inject(method = "render(Lnet/minecraft/entity/mob/player/PlayerEntity;DDDFF)V", at = @At(value = "TAIL"))
-    public void minecraftcapes$getPlayerHandler(PlayerEntity playerEntity, double e, double f, double g, float h, float par6, CallbackInfo ci) {
-        if(needsPlayerHandler && playerHandler == null) {
-            needsPlayerHandler = false;
-            Thread prepareProfile = new Thread(() -> {
-                UUID onlineUUID = MinecraftApi.getUUID(playerEntity.name);
-                if(onlineUUID != null) {
-                    playerHandler = PlayerHandler.get(onlineUUID);
-                    DownloadManager.prepareDownload(onlineUUID, playerEntity.name, false);
-                }
-            });
-            prepareProfile.start();
-        }
+    public void minecraftcapes$getPlayerHandler(PlayerEntity entity, double dx, double dy, double dz, float yaw, float tickDelta, CallbackInfo ci) {
+        playerHandler = PlayerHandler.get(entity.name);
+        DownloadManager.prepareDownload(entity.name, false);
     }
 
     /**
@@ -75,8 +50,8 @@ public class PlayerRendererMixin extends MobRenderer {
      * @return
      */
     @Redirect(method = "renderMore(Lnet/minecraft/entity/mob/player/PlayerEntity;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/PlayerRenderer;bindHttpTexture(Ljava/lang/String;Ljava/lang/String;)Z"))
-    public boolean minecraftcapes$renderCape(PlayerRenderer instance, String url, String backup, @Local(argsOnly = true) PlayerEntity playerEntity) {
-        if(playerEntity.cape.equals(url)) {
+    public boolean minecraftcapes$renderCape(PlayerRenderer instance, String url, String backup, @Local(argsOnly = true) PlayerEntity entity) {
+        if(entity.capeTexture.equals(url)) {
             if (MinecraftCapesConfig.isCapeVisible() && playerHandler != null && playerHandler.getCapeLocation() >= 0) {
                 return false;
             }
@@ -86,18 +61,18 @@ public class PlayerRendererMixin extends MobRenderer {
 
     /**
      * Render Ears
-     * @param playerEntity The player entity
-     * @param f Delta
+     * @param entity The player entity
+     * @param tickDelta Delta
      * @param ci Callback
      */
     @Inject(method = "renderMore(Lnet/minecraft/entity/mob/player/PlayerEntity;F)V", at = @At(value = "TAIL"))
-    public void minecraftcapes$renderEars(PlayerEntity playerEntity, float f, CallbackInfo ci) {
+    public void minecraftcapes$renderEars(PlayerEntity entity, float tickDelta, CallbackInfo ci) {
         if(MinecraftCapesConfig.isEarsVisible() && playerHandler != null && playerHandler.getEarLocation() >= 0) {
             this.dispatcher.textureManager.bind(playerHandler.getEarLocation());
             GL11.glPushMatrix();
             float f2 = 1.3333334F;
             GL11.glScalef(f2, f2, f2);
-            if(playerEntity.isSneaking()) {
+            if(entity.isSneaking()) {
                 GL11.glTranslatef(0.0F, 0.1F, 0.0F);
             }
             player.renderDeadmau5Ears(0.0625F);
@@ -107,20 +82,20 @@ public class PlayerRendererMixin extends MobRenderer {
 
     /**
      * Render Cape
-     * @param playerEntity The player entity
-     * @param f Delta
+     * @param entity The player entity
+     * @param tickDelta Delta
      * @param ci Callback
      */
     @Inject(method = "renderMore(Lnet/minecraft/entity/mob/player/PlayerEntity;F)V", at = @At(value = "TAIL"))
-    public void minecraftcapes$renderCape(PlayerEntity playerEntity, float f, CallbackInfo ci) {
+    public void minecraftcapes$renderCape(PlayerEntity entity, float tickDelta, CallbackInfo ci) {
         if(MinecraftCapesConfig.isCapeVisible() && playerHandler != null && playerHandler.getCapeLocation() >= 0) {
             this.dispatcher.textureManager.bind(playerHandler.getCapeLocation());
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0F, 0.0F, 0.125F);
-            double d = playerEntity.lastCapeX + (playerEntity.capeX - playerEntity.lastCapeX) * (double)f - (playerEntity.lastX + (playerEntity.x - playerEntity.lastX) * (double)f);
-            double e = playerEntity.lastCapeY + (playerEntity.capeY - playerEntity.lastCapeY) * (double)f - (playerEntity.lastY + (playerEntity.y - playerEntity.lastY) * (double)f);
-            double f15 = playerEntity.lastCapeZ + (playerEntity.capeZ - playerEntity.lastCapeZ) * (double)f - (playerEntity.lastZ + (playerEntity.z - playerEntity.lastZ) * (double)f);
-            float m = playerEntity.lastBodyYaw + (playerEntity.bodyYaw - playerEntity.lastBodyYaw) * f;
+            double d = entity.lastCapeX + (entity.capeX - entity.lastCapeX) * (double)tickDelta - (entity.lastX + (entity.x - entity.lastX) * (double)tickDelta);
+            double e = entity.lastCapeY + (entity.capeY - entity.lastCapeY) * (double)tickDelta - (entity.lastY + (entity.y - entity.lastY) * (double)tickDelta);
+            double f15 = entity.lastCapeZ + (entity.capeZ - entity.lastCapeZ) * (double)tickDelta - (entity.lastZ + (entity.z - entity.lastZ) * (double)tickDelta);
+            float m = entity.lastBodyYaw + (entity.bodyYaw - entity.lastBodyYaw) * tickDelta;
             double g17 = MathHelper.sin(m * (float)Math.PI / 180.0F);
             double h18 = -MathHelper.cos(m * (float)Math.PI / 180.0F);
             float n = (float)e * 10.0F;
@@ -138,9 +113,9 @@ public class PlayerRendererMixin extends MobRenderer {
                 o = 0.0F;
             }
 
-            float q = playerEntity.lastBob + (playerEntity.bob - playerEntity.lastBob) * f;
-            n += MathHelper.sin((playerEntity.lastWalkDistance + (playerEntity.walkDistance - playerEntity.lastWalkDistance) * f) * 6.0F) * 32.0F * q;
-            if (playerEntity.isSneaking()) {
+            float q = entity.lastBob + (entity.bob - entity.lastBob) * tickDelta;
+            n += MathHelper.sin((entity.lastWalkDistance + (entity.walkDistance - entity.lastWalkDistance) * tickDelta) * 6.0F) * 32.0F * q;
+            if (entity.isSneaking()) {
                 n += 25.0F;
             }
 
@@ -151,7 +126,7 @@ public class PlayerRendererMixin extends MobRenderer {
             this.player.renderCape(0.0625F);
 
             if(playerHandler.getHasCapeGlint()) {
-                this.minecraftcapes$renderEnchantmentGlint(playerEntity, f);
+                this.minecraftcapes$renderEnchantmentGlint(entity, tickDelta);
             }
 
             GL11.glPopMatrix();
@@ -179,12 +154,10 @@ public class PlayerRendererMixin extends MobRenderer {
 
     /**
      * Render the enchantment for the cape if needed
-     * @param playerEntity
-     * @param partialTicks
      */
     @Unique
-    private void minecraftcapes$renderEnchantmentGlint(PlayerEntity playerEntity, float partialTicks) {
-        float f8 = (float) playerEntity.ticks + partialTicks;
+    private void minecraftcapes$renderEnchantmentGlint(PlayerEntity entity, float partialTicks) {
+        float f8 = (float) entity.ticks + partialTicks;
         this.bindTexture("/assets/minecraftcapes/glint.png");
         GL11.glEnable(GL11.GL_BLEND);
         float f9 = 0.5F;
