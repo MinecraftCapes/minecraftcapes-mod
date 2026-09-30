@@ -71,7 +71,6 @@ java {
 def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')
 
 publishMods {
-	dryRun = true
 	file = remapJar.archiveFile
 	modLoaders.add('ornithe')
 
