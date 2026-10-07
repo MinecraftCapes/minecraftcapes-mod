@@ -11,6 +11,7 @@
     "common.MixinClientMannequin",
     "common.MixinDeadmau5EarsLayer",
     "common.MixinPlayerInfo",
+    "common.MixinPlayerOptionsScreen",
     "lunar.MixinPlayerEarsModel",
     "vanilla.MixinPlayerEarsModel"
   ],

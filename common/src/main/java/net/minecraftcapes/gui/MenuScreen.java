@@ -36,6 +36,9 @@ public class MenuScreen extends Screen {
     private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
     private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
     private @Nullable MenuTabBar tabNavigationBar;
+    private final Component GENERAL_TAB = Component.translatable("gui.minecraftcapes.tab.general");
+    private final Component OPTIONS_TAB = Component.translatable("gui.minecraftcapes.tab.options");
+    private final Component LINKS_TAB = Component.translatable("gui.minecraftcapes.tab.links");
     
     public MenuScreen() {
         super(TITLE);
@@ -44,7 +47,9 @@ public class MenuScreen extends Screen {
     @Override
     protected void init() {
         this.tabNavigationBar = MenuTabBar.builder(this.tabManager, this.width)
-                .addTabs(new MenuScreen.GeneralTab(), new OptionsTab(), new MenuScreen.LinksTab())
+                .addTab(GENERAL_TAB, new MenuScreen.GeneralTab())
+                .addTab(OPTIONS_TAB, new MenuScreen.OptionsTab())
+                .addTab(LINKS_TAB, new MenuScreen.LinksTab())
                 .build();
         this.setFocused(this.tabNavigationBar);
         this.addRenderableWidget(this.tabNavigationBar);
@@ -111,8 +116,6 @@ public class MenuScreen extends Screen {
     
     private class GeneralTab extends GridLayoutTab {
         public GeneralTab() {
-            super(Component.translatable("gui.minecraftcapes.tab.general"));
-            
             this.layout.defaultCellSetting().padding(100, 4, 4, 0);
             GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
             
@@ -150,8 +153,6 @@ public class MenuScreen extends Screen {
     
     private static class OptionsTab extends GridLayoutTab {
         public OptionsTab() {
-            super(Component.translatable("gui.minecraftcapes.tab.options"));
-            
             this.layout.defaultCellSetting().padding(100, 4, 4, 0);
             GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
             
@@ -179,8 +180,6 @@ public class MenuScreen extends Screen {
     
     private class LinksTab extends GridLayoutTab {
         public LinksTab() {
-            super(Component.translatable("gui.minecraftcapes.tab.links"));
-            
             this.layout.defaultCellSetting().padding(100, 4, 4, 0);
             GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
             

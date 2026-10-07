@@ -6,9 +6,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.config.MinecraftCapesConfig;
@@ -219,11 +220,13 @@ public class PlayerHandler {
 
     /**
      * Applys a texture on the render thread
-     * @param Identifier
+     * @param identifier
      * @param nativeImage
      */
-    private void applyTexture(Identifier Identifier, NativeImage nativeImage) {
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().register(Identifier, new DynamicTexture(Identifier::toString, nativeImage)));
+    private void applyTexture(Identifier identifier, NativeImage nativeImage) {
+        ClientAsset.ResourceTexture texture = new ClientAsset.ResourceTexture(identifier);
+        Minecraft.getInstance().execute(() ->
+                Minecraft.getInstance().getTextureManager().register(identifier, TextureResources.from2dImage(texture.texturePath()::toString, nativeImage)));
     }
 
     /**
