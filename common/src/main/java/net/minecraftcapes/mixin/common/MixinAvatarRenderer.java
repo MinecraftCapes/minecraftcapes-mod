@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Avatar;
 import net.minecraftcapes.config.MinecraftCapesConfig;
+import net.minecraftcapes.player.DownloadManager;
 import net.minecraftcapes.player.ExtendedRenderState;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +29,8 @@ public abstract class MixinAvatarRenderer<AvatarlikeEntity extends Avatar & Clie
         PlayerHandler playerHandler = PlayerHandler.get(avatarlikeEntity.getProfile().partialProfile().id());
         
         if(playerHandler.getHasInfo()) {
+            avatarRenderState.skin = playerHandler.getSkin(avatarRenderState.skin);
+            
             avatarRenderState.isUpsideDown = playerHandler.isUpsideDown();
             
             // We do a double check here because of the @WrapCondition
@@ -39,6 +42,8 @@ public abstract class MixinAvatarRenderer<AvatarlikeEntity extends Avatar & Clie
             extendedRenderState.minecraftcapes$setGapeGlint(playerHandler.getHasCapeGlint());
             extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
             extendedRenderState.minecraftcapes$setEarsTexture(playerHandler.getEarLocation());
+        } else {
+            DownloadManager.prepareDownload(playerHandler);
         }
     }
 }

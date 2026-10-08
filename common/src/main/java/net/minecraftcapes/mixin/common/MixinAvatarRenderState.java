@@ -60,5 +60,4 @@ public class MixinAvatarRenderState implements ExtendedRenderState {
     public Identifier minecraftcapes$getEarsTexture() {
         return this.minecraftcapes$earsTexture;
     }
-    
 }

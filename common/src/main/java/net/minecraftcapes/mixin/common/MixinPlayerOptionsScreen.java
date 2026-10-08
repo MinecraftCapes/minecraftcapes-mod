@@ -1,9 +1,11 @@
 package net.minecraftcapes.mixin.common;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.friends.FriendsListActions;
 import net.minecraft.client.gui.screens.social.PlayerOptionsScreen;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.world.entity.Avatar;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
 import net.minecraftcapes.player.ExtendedRenderState;
@@ -14,6 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -21,32 +24,44 @@ import java.util.function.Supplier;
 @Mixin(PlayerOptionsScreen.class)
 public abstract class MixinPlayerOptionsScreen {
     
-    @Final
     @Shadow
+    @Final
     private AvatarRenderState playerRenderState;
     
-    @Inject(method = "<init>", at = @At(value = "TAIL"))
+    @Shadow
+    @Final
+    protected UUID playerId;
+    
+    @Inject(method = "<init>", at = @At("RETURN"))
     public void minecraftcapes$init(Screen lastScreen, UUID playerId, String playerName, FriendsListActions friendsListActions, Supplier skinGetter, boolean skinReportable, boolean chatReportable, boolean hasRecentMessages, CallbackInfo ci) {
-        ExtendedRenderState extendedRenderState = (ExtendedRenderState) this.playerRenderState;
         PlayerHandler playerHandler = PlayerHandler.get(playerId);
         playerHandler.setName(playerName);
         
-        System.out.println("woo1");
+        // Force a download
+        if(!playerHandler.getHasInfo()) {
+            DownloadManager.prepareDownload(playerHandler);
+        }
+    }
+    
+    @Inject(method = "extractRenderState", at = @At(value = "RETURN"))
+    public void minecraftcapes$extractRenderState(GuiGraphicsExtractor graphics, int xm, int ym, float a, CallbackInfo ci) {
+        ExtendedRenderState extendedRenderState = (ExtendedRenderState) playerRenderState;
+        PlayerHandler playerHandler = PlayerHandler.get(playerId);
+  
         if(playerHandler.getHasInfo()) {
-            System.out.println("woo2");
-            this.playerRenderState.isUpsideDown = playerHandler.isUpsideDown();
+            playerRenderState.skin = playerHandler.getSkin(playerRenderState.skin);
+            
+            playerRenderState.isUpsideDown = playerHandler.isUpsideDown();
             
             // We do a double check here because of the @WrapCondition
             // if isHasEars is true but isEarsVisible is false it will render with vanilla
             // The double check ensure we only render ears if they're visible
-            this.playerRenderState.showExtraEars = this.playerRenderState.showExtraEars || (playerHandler.isHasEars() && MinecraftCapesConfig.isEarsVisible());
+            playerRenderState.showExtraEars = playerRenderState.showExtraEars || (playerHandler.isHasEars() && MinecraftCapesConfig.isEarsVisible());
             
             extendedRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
             extendedRenderState.minecraftcapes$setGapeGlint(playerHandler.getHasCapeGlint());
             extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
             extendedRenderState.minecraftcapes$setEarsTexture(playerHandler.getEarLocation());
-        } else {
-            DownloadManager.prepareDownload(playerHandler);
         }
     }
 }
