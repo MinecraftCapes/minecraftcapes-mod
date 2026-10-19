@@ -37,7 +37,7 @@ public abstract class MixinPlayerOptionsScreen {
         PlayerHandler playerHandler = PlayerHandler.get(playerId);
         playerHandler.setName(playerName);
         
-        // Force a download
+        // Force a download before we extract
         if(!playerHandler.getHasInfo()) {
             DownloadManager.prepareDownload(playerHandler);
         }
@@ -45,23 +45,7 @@ public abstract class MixinPlayerOptionsScreen {
     
     @Inject(method = "extractRenderState", at = @At(value = "RETURN"))
     public void minecraftcapes$extractRenderState(GuiGraphicsExtractor graphics, int xm, int ym, float a, CallbackInfo ci) {
-        ExtendedRenderState extendedRenderState = (ExtendedRenderState) playerRenderState;
         PlayerHandler playerHandler = PlayerHandler.get(playerId);
-  
-        if(playerHandler.getHasInfo()) {
-            playerRenderState.skin = playerHandler.getSkin(playerRenderState.skin);
-            
-            playerRenderState.isUpsideDown = playerHandler.isUpsideDown();
-            
-            // We do a double check here because of the @WrapCondition
-            // if isHasEars is true but isEarsVisible is false it will render with vanilla
-            // The double check ensure we only render ears if they're visible
-            playerRenderState.showExtraEars = playerRenderState.showExtraEars || (playerHandler.isHasEars() && MinecraftCapesConfig.isEarsVisible());
-            
-            extendedRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
-            extendedRenderState.minecraftcapes$setGapeGlint(playerHandler.getHasCapeGlint());
-            extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
-            extendedRenderState.minecraftcapes$setEarsTexture(playerHandler.getEarLocation());
-        }
+        playerHandler.extractRenderState(playerRenderState);
     }
 }

@@ -7,9 +7,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.Avatar;
-import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
-import net.minecraftcapes.player.ExtendedRenderState;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,26 +22,12 @@ public abstract class MixinAvatarRenderer<AvatarlikeEntity extends Avatar & Clie
     }
     
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V", at = @At(value = "TAIL"))
-    public void minecraftcapes$extractRenderState(AvatarlikeEntity avatarlikeEntity, AvatarRenderState avatarRenderState, float partialTicks, CallbackInfo ci) {
-        ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
-        PlayerHandler playerHandler = PlayerHandler.get(avatarlikeEntity.getProfile().partialProfile().id());
-        
-        if(playerHandler.getHasInfo()) {
-            avatarRenderState.skin = playerHandler.getSkin(avatarRenderState.skin);
-            
-            avatarRenderState.isUpsideDown = playerHandler.isUpsideDown();
-            
-            // We do a double check here because of the @WrapCondition
-            // if isHasEars is true but isEarsVisible is false it will render with vanilla
-            // The double check ensure we only render ears if they're visible
-            avatarRenderState.showExtraEars = avatarRenderState.showExtraEars || (playerHandler.isHasEars() && MinecraftCapesConfig.isEarsVisible());
-            
-            extendedRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
-            extendedRenderState.minecraftcapes$setGapeGlint(playerHandler.getHasCapeGlint());
-            extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
-            extendedRenderState.minecraftcapes$setEarsTexture(playerHandler.getEarLocation());
-        } else {
+    public void minecraftcapes$extractRenderState(AvatarlikeEntity entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
+        PlayerHandler playerHandler = PlayerHandler.get(entity.getProfile().partialProfile().id());
+        if(!playerHandler.getHasInfo()) {
             DownloadManager.prepareDownload(playerHandler);
         }
+        
+        playerHandler.extractRenderState(state);
     }
 }

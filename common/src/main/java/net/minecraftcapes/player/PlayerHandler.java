@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
@@ -251,5 +252,25 @@ public class PlayerHandler {
                 capeTexture, elytraTexture,
                 original.model(), original.secure()
         );
+    }
+    
+    public void extractRenderState(AvatarRenderState playerRenderState) {
+        ExtendedRenderState extendedRenderState = (ExtendedRenderState) playerRenderState;
+        
+        if(this.getHasInfo()) {
+            playerRenderState.skin = this.getSkin(playerRenderState.skin);
+            
+            playerRenderState.isUpsideDown = this.isUpsideDown();
+            
+            // We do a double check here because of the @WrapCondition
+            // if isHasEars is true but isEarsVisible is false it will render with vanilla
+            // The double check ensure we only render ears if they're visible
+            playerRenderState.showExtraEars = playerRenderState.showExtraEars || (this.isHasEars() && MinecraftCapesConfig.isEarsVisible());
+            
+            extendedRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
+            extendedRenderState.minecraftcapes$setGapeGlint(this.getHasCapeGlint());
+            extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
+            extendedRenderState.minecraftcapes$setEarsTexture(this.getEarLocation());
+        }
     }
 }

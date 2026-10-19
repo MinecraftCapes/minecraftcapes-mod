@@ -201,26 +201,7 @@ public class DownloadManager {
             }
         }
     }
-
-    public static void clearCache() {
-        Path capes = MinecraftCapes.getConfigDir().resolve("capes");
-        Path ears = MinecraftCapes.getConfigDir().resolve("ears");
-
-        try {
-            FileUtils.deleteDirectory(capes.toFile());
-        } catch(IOException e) {
-            MinecraftCapes.getLogger().error("Couldn't clear cache: capes");
-            e.printStackTrace();
-        }
-
-        try {
-            FileUtils.deleteDirectory(ears.toFile());
-        } catch(IOException e) {
-            MinecraftCapes.getLogger().error("Couldn't clear cache: ears");
-            e.printStackTrace();
-        }
-    }
-
+    
     private static class ProfileResult {
         private boolean capeGlint = false;
         private boolean upsideDown = false;

@@ -25,28 +25,24 @@ public abstract class MixinClientMannequin extends Mannequin implements ClientAv
     @Inject(method = "updateSkin", at = @At("RETURN"))
     public void minecraftcapes$updateSkin(CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(this.getProfile().partialProfile().id());
+        playerHandler.setName(this.getProfile().partialProfile().name());
         
         //Check player handler is loaded
         if(!playerHandler.getHasInfo()) {
-            this.minecraftcapes$loadProfile(playerHandler);
+            DownloadManager.prepareDownload(playerHandler);
         }
     }
     
     @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
     public void minecraftcapes$getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
         PlayerHandler playerHandler = PlayerHandler.get(this.getProfile().partialProfile().id());
+        playerHandler.setName(this.getProfile().partialProfile().name());
         
         //Check player handler is loaded
         if(playerHandler.getHasInfo()) {
             cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
         } else {
-            this.minecraftcapes$loadProfile(playerHandler);
+            DownloadManager.prepareDownload(playerHandler);
         }
-    }
-    
-    @Unique
-    private void minecraftcapes$loadProfile(PlayerHandler playerHandler) {
-        playerHandler.setName(this.getProfile().partialProfile().name());
-        DownloadManager.prepareDownload(playerHandler);
     }
 }
