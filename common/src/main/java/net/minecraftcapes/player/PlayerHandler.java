@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.config.MinecraftCapesConfig;

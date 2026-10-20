@@ -76,8 +76,8 @@ public class MenuScreen extends Screen {
     }
     
     @Override
-    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        super.extractRenderState(graphics, mouseX, mouseY, a);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics) {
+        super.extractRenderState(graphics);
         this.renderEntity(
                 graphics,
                 this.width / 2,

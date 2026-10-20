@@ -5,10 +5,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.friends.FriendsListActions;
 import net.minecraft.client.gui.screens.social.PlayerOptionsScreen;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.world.entity.Avatar;
-import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
-import net.minecraftcapes.player.ExtendedRenderState;
 import net.minecraftcapes.player.PlayerHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +13,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -44,7 +40,7 @@ public abstract class MixinPlayerOptionsScreen {
     }
     
     @Inject(method = "extractRenderState", at = @At(value = "RETURN"))
-    public void minecraftcapes$extractRenderState(GuiGraphicsExtractor graphics, int xm, int ym, float a, CallbackInfo ci) {
+    public void minecraftcapes$extractRenderState(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(playerId);
         playerHandler.extractRenderState(playerRenderState);
     }
