@@ -1,12 +1,12 @@
 package net.minecraftcapes.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.render.entity.MobRenderer;
-import net.minecraft.client.render.entity.PlayerRenderer;
-import net.minecraft.client.render.model.Model;
-import net.minecraft.client.render.model.entity.HumanoidModel;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.player.PlayerEntity;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
@@ -20,23 +20,23 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PlayerRenderer.class)
-public class PlayerRendererMixin extends MobRenderer {
+@Mixin(PlayerEntityRenderer.class)
+public class PlayerRendererMixin extends LivingEntityRenderer {
 
     @Shadow
-    private HumanoidModel player;
+    private BipedEntityModel bipedModel;
 
     @Unique
     private PlayerHandler playerHandler;
 
-    public PlayerRendererMixin(Model model, float shadowSize) {
-        super(model, shadowSize);
+    public PlayerRendererMixin(EntityModel entityModel, float shadowRadius) {
+        super(entityModel, shadowRadius);
     }
 
     /**
      * Gets the first playerhandler instance
      */
-    @Inject(method = "render(Lnet/minecraft/entity/mob/player/PlayerEntity;DDDFF)V", at = @At(value = "TAIL"))
+    @Inject(method = "render(Lnet/minecraft/entity/player/PlayerEntity;DDDFF)V", at = @At(value = "TAIL"))
     public void minecraftcapes$getPlayerHandler(PlayerEntity entity, double dx, double dy, double dz, float yaw, float tickDelta, CallbackInfo ci) {
         playerHandler = PlayerHandler.get(entity.name);
         DownloadManager.prepareDownload(entity.name, false);
@@ -49,14 +49,14 @@ public class PlayerRendererMixin extends MobRenderer {
      * @param backup Backup URL
      * @return
      */
-    @Redirect(method = "renderMore(Lnet/minecraft/entity/mob/player/PlayerEntity;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/PlayerRenderer;bindHttpTexture(Ljava/lang/String;Ljava/lang/String;)Z"))
-    public boolean minecraftcapes$renderCape(PlayerRenderer instance, String url, String backup, @Local(argsOnly = true) PlayerEntity entity) {
-        if(entity.capeTexture.equals(url)) {
+    @Redirect(method = "renderMore(Lnet/minecraft/entity/player/PlayerEntity;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/PlayerEntityRenderer;bindDownloadedTexture(Ljava/lang/String;Ljava/lang/String;)Z"))
+    public boolean minecraftcapes$renderCape(PlayerEntityRenderer instance, String url, String backup, @Local(argsOnly = true) PlayerEntity entity) {
+        if(entity.capeUrl.equals(url)) {
             if (MinecraftCapesConfig.isCapeVisible() && playerHandler != null && playerHandler.getCapeLocation() >= 0) {
                 return false;
             }
         }
-        return this.bindHttpTexture(url, backup);
+        return this.bindDownloadedTexture(url, backup);
     }
 
     /**
@@ -65,17 +65,17 @@ public class PlayerRendererMixin extends MobRenderer {
      * @param tickDelta Delta
      * @param ci Callback
      */
-    @Inject(method = "renderMore(Lnet/minecraft/entity/mob/player/PlayerEntity;F)V", at = @At(value = "TAIL"))
+    @Inject(method = "renderMore(Lnet/minecraft/entity/player/PlayerEntity;F)V", at = @At(value = "TAIL"))
     public void minecraftcapes$renderEars(PlayerEntity entity, float tickDelta, CallbackInfo ci) {
         if(MinecraftCapesConfig.isEarsVisible() && playerHandler != null && playerHandler.getEarLocation() >= 0) {
-            this.dispatcher.textureManager.bind(playerHandler.getEarLocation());
+            this.dispatcher.textureManager.bindTexture(playerHandler.getEarLocation());
             GL11.glPushMatrix();
             float f2 = 1.3333334F;
             GL11.glScalef(f2, f2, f2);
             if(entity.isSneaking()) {
                 GL11.glTranslatef(0.0F, 0.1F, 0.0F);
             }
-            player.renderDeadmau5Ears(0.0625F);
+            bipedModel.renderEars(0.0625F);
             GL11.glPopMatrix();
         }
     }
@@ -86,15 +86,15 @@ public class PlayerRendererMixin extends MobRenderer {
      * @param tickDelta Delta
      * @param ci Callback
      */
-    @Inject(method = "renderMore(Lnet/minecraft/entity/mob/player/PlayerEntity;F)V", at = @At(value = "TAIL"))
+    @Inject(method = "renderMore(Lnet/minecraft/entity/player/PlayerEntity;F)V", at = @At(value = "TAIL"))
     public void minecraftcapes$renderCape(PlayerEntity entity, float tickDelta, CallbackInfo ci) {
         if(MinecraftCapesConfig.isCapeVisible() && playerHandler != null && playerHandler.getCapeLocation() >= 0) {
-            this.dispatcher.textureManager.bind(playerHandler.getCapeLocation());
+            this.dispatcher.textureManager.bindTexture(playerHandler.getCapeLocation());
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0F, 0.0F, 0.125F);
-            double d = entity.lastCapeX + (entity.capeX - entity.lastCapeX) * (double)tickDelta - (entity.lastX + (entity.x - entity.lastX) * (double)tickDelta);
-            double e = entity.lastCapeY + (entity.capeY - entity.lastCapeY) * (double)tickDelta - (entity.lastY + (entity.y - entity.lastY) * (double)tickDelta);
-            double f15 = entity.lastCapeZ + (entity.capeZ - entity.lastCapeZ) * (double)tickDelta - (entity.lastZ + (entity.z - entity.lastZ) * (double)tickDelta);
+            double d = entity.prevCapeX + (entity.capeX - entity.prevCapeX) * (double)tickDelta - (entity.lastTickX + (entity.x - entity.lastTickX) * (double)tickDelta);
+            double e = entity.prevCapeY + (entity.capeY - entity.prevCapeY) * (double)tickDelta - (entity.lastTickY + (entity.y - entity.lastTickY) * (double)tickDelta);
+            double f15 = entity.prevCapeZ + (entity.capeZ - entity.prevCapeZ) * (double)tickDelta - (entity.lastTickZ + (entity.z - entity.lastTickZ) * (double)tickDelta);
             float m = entity.lastBodyYaw + (entity.bodyYaw - entity.lastBodyYaw) * tickDelta;
             double g17 = MathHelper.sin(m * (float)Math.PI / 180.0F);
             double h18 = -MathHelper.cos(m * (float)Math.PI / 180.0F);
@@ -113,8 +113,8 @@ public class PlayerRendererMixin extends MobRenderer {
                 o = 0.0F;
             }
 
-            float q = entity.lastBob + (entity.bob - entity.lastBob) * tickDelta;
-            n += MathHelper.sin((entity.lastWalkDistance + (entity.walkDistance - entity.lastWalkDistance) * tickDelta) * 6.0F) * 32.0F * q;
+            float var18 = entity.prevStepBobbingAmount + (entity.stepBobbingAmount - entity.prevStepBobbingAmount) * tickDelta;
+            n += MathHelper.sin((entity.prevHorizontalSpeed + (entity.horizontalSpeed - entity.prevHorizontalSpeed) * tickDelta) * 6.0F) * 32.0F * var18;
             if (entity.isSneaking()) {
                 n += 25.0F;
             }
@@ -123,7 +123,7 @@ public class PlayerRendererMixin extends MobRenderer {
             GL11.glRotatef(p / 2.0F, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(-p / 2.0F, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-            this.player.renderCape(0.0625F);
+            this.bipedModel.renderCape(0.0625F);
 
             if(playerHandler.getHasCapeGlint()) {
                 this.minecraftcapes$renderEnchantmentGlint(entity, tickDelta);
@@ -137,19 +137,19 @@ public class PlayerRendererMixin extends MobRenderer {
      * Rotate the player
      * @param instance MobRenderer instance of the redirect
      * @param entity The entity to rotate
-     * @param bob The entity bob
+     * @param headBob The entity bob
      * @param bodyYaw The entity body yaw
      * @param tickDelta The entity tick delta
      */
-    @Redirect(method = "applyRotation(Lnet/minecraft/entity/mob/player/PlayerEntity;FFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/MobRenderer;applyRotation(Lnet/minecraft/entity/mob/MobEntity;FFF)V"))
-    public void minecraftcapes$renderDinnerbone(MobRenderer instance, MobEntity entity, float bob, float bodyYaw, float tickDelta) {
+    @Redirect(method = "applyTranslation(Lnet/minecraft/entity/player/PlayerEntity;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;applyTranslation(Lnet/minecraft/entity/LivingEntity;DDD)V"))
+    public void minecraftcapes$renderDinnerbone(LivingEntityRenderer instance, LivingEntity entity, double headBob, double bodyYaw, double tickDelta) {
         if(playerHandler != null && playerHandler.isUpsideDown()) {
             GL11.glTranslatef(0.0F, entity.height + 0.1F, 0.0F);
             GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(180.0F + bodyYaw, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(180.0F + bodyYaw, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef((float) (180.0F + bodyYaw), 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef((float) (180.0F + bodyYaw), 0.0F, 1.0F, 0.0F);
         }
-        super.applyRotation(entity, bob, bodyYaw, tickDelta);
+        super.applyTranslation(entity, headBob, bodyYaw, tickDelta);
     }
 
     /**
@@ -157,7 +157,7 @@ public class PlayerRendererMixin extends MobRenderer {
      */
     @Unique
     private void minecraftcapes$renderEnchantmentGlint(PlayerEntity entity, float partialTicks) {
-        float f8 = (float) entity.ticks + partialTicks;
+        float f8 = (float) entity.age + partialTicks;
         this.bindTexture("/assets/minecraftcapes/glint.png");
         GL11.glEnable(GL11.GL_BLEND);
         float f9 = 0.5F;
@@ -179,7 +179,7 @@ public class PlayerRendererMixin extends MobRenderer {
             GL11.glRotatef(30.0F - (float)k * 60.0F, 0.0F, 0.0F, 1.0F);
             GL11.glTranslatef(0.0F, f11, 0.0F);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
-            this.player.renderCape(0.0625F);
+            this.bipedModel.renderCape(0.0625F);
         }
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

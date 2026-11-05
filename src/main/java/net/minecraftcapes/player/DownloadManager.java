@@ -1,16 +1,13 @@
 package net.minecraftcapes.player;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-import java.awt.image.BufferedImage;
-import net.minecraftcapes.helpers.ImageHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
-import org.apache.commons.io.IOUtils;
+import net.minecraftcapes.helpers.ImageHandler;
+import org.lwjgl.Sys;
+import org.spongepowered.include.com.google.gson.Gson;
+import org.spongepowered.include.com.google.gson.JsonParseException;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -18,10 +15,9 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
@@ -69,7 +65,7 @@ public class DownloadManager {
             String json = new String(playerDataBytes, StandardCharsets.UTF_8);
             ProfileResult profileResult;
             try {
-                profileResult = GSON.fromJson(json, ProfileResult.class);
+                profileResult = GSON.fromJson(new StringReader(json), ProfileResult.class);
             } catch (JsonParseException e) {
                 MinecraftCapes.getLogger().warn("Invalid profile response for {}", username, e);
                 return;
@@ -83,24 +79,24 @@ public class DownloadManager {
             if (profileResult.cape_url != null) {
                 BufferedImage capeImage = downloadOrLoad(profileResult.cape_url, "capes");
                 if (capeImage != null) {
-                    MinecraftCapes.runLater(() -> playerHandler.applyCape(capeImage));
+                    MinecraftCapes.getScheduledTasks().add(() -> playerHandler.applyCape(capeImage));
                 } else {
-                    MinecraftCapes.runLater(playerHandler::removeCape);
+                    MinecraftCapes.getScheduledTasks().add(playerHandler::removeCape);
                 }
             } else {
-                MinecraftCapes.runLater(playerHandler::removeCape);
+                MinecraftCapes.getScheduledTasks().add(playerHandler::removeCape);
             }
 
             // Download ears image if available
             if (profileResult.ear_url != null) {
                 BufferedImage earsImage = downloadOrLoad(profileResult.ear_url, "ears");
                 if (earsImage != null) {
-                    MinecraftCapes.runLater(() -> playerHandler.applyEars(earsImage));
+                    MinecraftCapes.getScheduledTasks().add(() -> playerHandler.applyEars(earsImage));
                 } else {
-                    MinecraftCapes.runLater(playerHandler::removeEars);
+                    MinecraftCapes.getScheduledTasks().add(playerHandler::removeEars);
                 }
             } else {
-                MinecraftCapes.runLater(playerHandler::removeEars);
+                MinecraftCapes.getScheduledTasks().add(playerHandler::removeEars);
             }
         });
 
@@ -180,8 +176,17 @@ public class DownloadManager {
 
             int status = conn.getResponseCode();
             if (status / 100 == 2) {
-                try (InputStream inputStream = conn.getInputStream()) {
-                    return IOUtils.toByteArray(inputStream); // Read fully before closing
+                try (InputStream inputStream = conn.getInputStream();
+                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+
+                    return outputStream.toByteArray();
                 }
             } else {
                 MinecraftCapes.getLogger().warn("Download {} returned HTTP {}", url, status);

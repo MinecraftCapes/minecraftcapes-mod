@@ -1,8 +1,8 @@
 package net.minecraftcapes.config;
 
-import com.google.gson.Gson;
 import lombok.Getter;
 import net.minecraftcapes.MinecraftCapes;
+import org.spongepowered.include.com.google.gson.Gson;
 
 import java.io.*;
 import java.nio.file.Files;

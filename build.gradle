@@ -1,25 +1,35 @@
 plugins {
 	id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
-	id 'fabric-loom' version '1.17-SNAPSHOT'
-	id 'ploceus' version '1.17-SNAPSHOT'
+	id 'fabric-loom' version '1.17.20'
+	id 'babric-loom-extension' version '1.17.4'
 	id 'io.freefair.lombok' version "9.2.0"
 }
 
 base {
-	archivesName = "${mod_name} Ornithe ${minecraft_version}"
+	archivesName = "${mod_name} Babric ${minecraft_version}"
 }
 
-ploceus {
-	setIntermediaryGeneration(2)
+repositories {
+	maven {
+		url = "https://maven.glass-launcher.net/snapshots/"
+	}
+	maven {
+		url = "https://maven.glass-launcher.net/releases/"
+	}
+	maven {
+		url = "https://maven.glass-launcher.net/babric"
+	}
 }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.glasslauncher:biny:b1.7.3+e0778a3:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	mappings ploceus.featherMappings(project.feather_build)
+	implementation("org.apache.logging.log4j:log4j-core:2.17.2")
 
-	ploceus.dependOsl(project.osl_version)
+	implementation("org.slf4j:slf4j-api:1.8.0-beta4")
+	implementation("org.apache.logging.log4j:log4j-slf4j18-impl:2.17.1")
 }
 
 loom {
@@ -49,8 +59,8 @@ processResources {
 }
 
 java {
-	toolchain.languageVersion = JavaLanguageVersion.of(8)
-	sourceCompatibility = targetCompatibility = 8
+	//toolchain.languageVersion = JavaLanguageVersion.of(8)
+	sourceCompatibility = targetCompatibility = 17
 }
 
 def releaseType = providers.environmentVariable('RELEASE_TYPE').getOrElse('ALPHA')

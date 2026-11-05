@@ -1,6 +1,5 @@
 package net.minecraftcapes.player;
 
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
@@ -9,6 +8,8 @@ import net.minecraftcapes.MinecraftCapes;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PlayerHandler {
@@ -23,7 +24,7 @@ public class PlayerHandler {
     @Getter @Setter private Boolean hasInfo = false;
     @Getter private String username;
 
-    private Int2IntArrayMap animatedCape;
+    private HashMap<Integer, Integer> animatedCape;
     private int cape;
     private int ears;
 
@@ -55,7 +56,7 @@ public class PlayerHandler {
     public void applyCape(BufferedImage capeImage) {
         //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
         if(capeImage.getHeight() != capeImage.getWidth() / 2) {
-            Int2IntArrayMap animatedCape = new Int2IntArrayMap();
+            HashMap<Integer, Integer> animatedCape = new HashMap<>();
             int totalFrames = capeImage.getHeight() / (capeImage.getWidth() / 2);
             for(int currentFrame = 0; currentFrame < totalFrames; currentFrame++) {
                 BufferedImage frame = new BufferedImage(capeImage.getWidth(), capeImage.getWidth() / 2, BufferedImage.TYPE_INT_ARGB);
@@ -141,7 +142,7 @@ public class PlayerHandler {
      * Sets the animated cape textures and loads all resources to memory
      * @param animatedCape
      */
-    public void setAnimatedCape(Int2IntArrayMap animatedCape) {
+    public void setAnimatedCape(HashMap<Integer, Integer> animatedCape) {
         MinecraftCapes.getLogger().debug("Setting animated cape for {}", username);
         this.animatedCape = animatedCape;
         this.setHasStaticCape(false);
@@ -197,6 +198,6 @@ public class PlayerHandler {
      */
     private void removeTexture(int id) {
         Minecraft gameInstance = (Minecraft) FabricLoaderImpl.INSTANCE.getGameInstance();
-        gameInstance.textureManager.release(id);
+        gameInstance.textureManager.delete(id);
     }
 }

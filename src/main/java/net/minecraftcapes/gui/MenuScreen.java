@@ -2,11 +2,9 @@ package net.minecraftcapes.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.locale.I18n;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.DownloadManager;
-
-import java.util.UUID;
 
 public class MenuScreen extends Screen {
 
@@ -64,7 +62,7 @@ public class MenuScreen extends Screen {
                         this.height / 6 + 24 * (i >> 1),
                         200,
                         20,
-                        I18n.translate("gui.done")
+                        I18n.getTranslation("gui.done")
                 )
         );
     }
@@ -74,14 +72,14 @@ public class MenuScreen extends Screen {
         if(button.active) {
             if(button.id == 0) {
                 MinecraftCapesConfig.setCapeVisible(!MinecraftCapesConfig.isCapeVisible());
-                button.message = getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible());
+                button.text = getButtonString("Custom Capes", MinecraftCapesConfig.isCapeVisible());
             } else if(button.id == 1) {
                 MinecraftCapesConfig.setEarsVisible(!MinecraftCapesConfig.isEarsVisible());
-                button.message = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
+                button.text = getButtonString("Custom Ears", MinecraftCapesConfig.isEarsVisible());
             } else if(button.id == 3) {
                 DownloadManager.prepareDownload(this.minecraft.player.name, true);
             } else if(button.id == 4) {
-                this.minecraft.openScreen(null);
+                this.minecraft.setScreen(null);
             }
         }
     }
@@ -89,16 +87,16 @@ public class MenuScreen extends Screen {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         this.renderBackground();
-        this.drawCenteredString(this.textRenderer, "MinecraftCApes", this.width / 2, 20, 16777215);
+        this.drawCenteredTextWithShadow(this.textRenderer, "MinecraftCApes", this.width / 2, 20, 16777215);
         super.render(mouseX, mouseY, partialTicks);
     }
 
     private String getButtonString(String buttonText, boolean value) {
         String onOff;
         if(value) {
-            onOff = I18n.translate("options.on");
+            onOff = I18n.getTranslation("options.on");
         } else {
-            onOff = I18n.translate("options.off");
+            onOff = I18n.getTranslation("options.off");
         }
 
         return buttonText + ": " + onOff;
