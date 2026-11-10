@@ -16,7 +16,7 @@ dependencies {
     compileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
 
     // ASM for building
-    compileOnly("org.ow2.asm:asm-tree:9.9")
+    compileOnly("org.ow2.asm:asm-tree:9.10.1")
 }
 
 configurations {

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.texture.ExternalTextureProvider;
 import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
@@ -123,6 +124,7 @@ public class PlayerHandler {
     public void applyEars(NativeImage earImage) {
         applyTexture(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + uuid), earImage);
         this.setHasEars(true);
+        MinecraftCapes.getLogger().debug("Ears loaded for {}", uuid);
     }
 
     /**
@@ -224,9 +226,11 @@ public class PlayerHandler {
      * @param nativeImage
      */
     private void applyTexture(Identifier identifier, NativeImage nativeImage) {
-        ClientAsset.ResourceTexture texture = new ClientAsset.ResourceTexture(identifier);
-        Minecraft.getInstance().execute(() ->
-                Minecraft.getInstance().getTextureManager().register(identifier, TextureResources.from2dImage(texture.texturePath()::toString, nativeImage)));
+        ClientAsset.DownloadedTexture textureId = new ClientAsset.DownloadedTexture(identifier,"minecraftcapes");
+        Minecraft.getInstance().execute(() -> {
+            TextureResources texture = TextureResources.from2dImage(textureId.texturePath()::toString, nativeImage);
+            Minecraft.getInstance().getTextureManager().registerProvider(textureId.texturePath(), new ExternalTextureProvider(texture));
+        });
     }
 
     /**
@@ -241,7 +245,7 @@ public class PlayerHandler {
 
         //If we have a cape, lets load it
         if(MinecraftCapesConfig.isCapeVisible() && getCapeLocation() != null) {
-            capeTexture = new ClientAsset.ResourceTexture(getCapeLocation(), getCapeLocation());
+            capeTexture = new ClientAsset.DownloadedTexture(getCapeLocation(), "minecraftcapes");
             elytraTexture = capeTexture;
         }
 
