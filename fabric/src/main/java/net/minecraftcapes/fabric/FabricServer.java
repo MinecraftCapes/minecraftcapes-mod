@@ -6,7 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class FabricServer implements DedicatedServerModInitializer {
-    
+
+    /** Warns server operators that this mod only needs to be installed on clients. */
     @Override
     public void onInitializeServer() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {

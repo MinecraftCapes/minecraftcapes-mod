@@ -11,6 +11,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 @EventBusSubscriber(modid = MinecraftCapes.MOD_ID, value = Dist.CLIENT)
 public class KeyHandlerEvent {
 
+    /** Opens the MinecraftCapes menu when the configured key is consumed. */
     @SubscribeEvent
     public static void onKeyPress(ClientTickEvent.Post event) {
         if (MinecraftCapes.KEY_MAPPING.consumeClick()) {

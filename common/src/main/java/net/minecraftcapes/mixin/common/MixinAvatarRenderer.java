@@ -16,18 +16,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AvatarRenderer.class)
 public abstract class MixinAvatarRenderer<AvatarlikeEntity extends Avatar & ClientAvatarEntity> extends LivingEntityRenderer<AvatarlikeEntity, AvatarRenderState, PlayerModel> {
-    
+
+    /** Passes the renderer context, player model and shadow size to vanilla. */
     public MixinAvatarRenderer(EntityRendererProvider.Context context, PlayerModel model, float shadow) {
         super(context, model, shadow);
     }
-    
+
+    /** Applies the profile cosmetics to the avatar render state. */
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V", at = @At(value = "TAIL"))
     public void minecraftcapes$extractRenderState(AvatarlikeEntity entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
-        PlayerHandler playerHandler = PlayerHandler.get(entity.getProfile().partialProfile().id());
+        PlayerHandler playerHandler = PlayerHandler.get(
+                entity.getProfile().partialProfile().id(),
+                entity.getProfile().partialProfile().name()
+        );
+
         if(!playerHandler.getHasInfo()) {
             DownloadManager.prepareDownload(playerHandler);
         }
-        
+
         playerHandler.extractRenderState(state);
     }
 }

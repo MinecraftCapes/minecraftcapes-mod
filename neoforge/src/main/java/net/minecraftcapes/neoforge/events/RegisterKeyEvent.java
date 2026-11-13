@@ -8,10 +8,10 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 
 @EventBusSubscriber(modid = MinecraftCapes.MOD_ID, value = Dist.CLIENT)
 public class RegisterKeyEvent {
-    
+
     /**
      * Register the keybinds
-     * @param event
+     * @param event Loader lifecycle or key-registration event.
      */
     @SubscribeEvent
     public static void registerKeyBinding(RegisterKeyMappingsEvent event) {

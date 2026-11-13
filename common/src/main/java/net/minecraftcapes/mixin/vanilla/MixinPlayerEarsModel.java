@@ -17,11 +17,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEarsModel.class)
 public abstract class MixinPlayerEarsModel extends PlayerModel {
-    
+
+    /** Initializes the vanilla player model used by the ear mixin. */
     public MixinPlayerEarsModel(ModelPart root, boolean slim) {
         super(root, slim);
     }
-    
+
+    /** Replaces the ear geometry and texture dimensions with the MinecraftCapes layout. */
     @Inject(method = "createEarsLayer", at = @At(value = "RETURN"), cancellable = true)
     private static void minecraftcapes$createEars(CallbackInfoReturnable<LayerDefinition> cir, @Local(name = "mesh") MeshDefinition mesh, @Local(name = "head") PartDefinition head) {
         cir.cancel();

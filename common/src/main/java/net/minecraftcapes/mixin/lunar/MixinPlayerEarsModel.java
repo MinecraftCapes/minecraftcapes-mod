@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(PlayerEarsModel.class)
 public class MixinPlayerEarsModel {
-    
+
     /**
      * @return The MCC ears
      * @author james090500 - MinecraftCapes
@@ -29,5 +29,5 @@ public class MixinPlayerEarsModel {
         partdefinition1.addOrReplaceChild("right_ear", cubelistbuilder, PartPose.offset(6.0F, -6.0F, 0.0F));
         return LayerDefinition.create(meshdefinition, 14, 7);
     }
-    
+
 }

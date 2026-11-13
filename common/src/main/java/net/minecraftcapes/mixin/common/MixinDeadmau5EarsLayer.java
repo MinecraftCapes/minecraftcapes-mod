@@ -18,11 +18,13 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Deadmau5EarsLayer.class)
 public abstract class MixinDeadmau5EarsLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
-    
+
+    /** Attaches the ear layer to its parent renderer. */
     public MixinDeadmau5EarsLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
         super(renderer);
     }
-    
+
+    /** Submits the custom ear texture when enabled, otherwise retains vanilla rendering. */
     @WrapWithCondition(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;III)V"))
     public boolean minecraftcapes$submitEars(SubmitNodeCollector instance, Model model, Object state, PoseStack poseStack, RenderType renderType, int lightCoords, int overlayCoords, int outlineColor, @Local(argsOnly = true) AvatarRenderState avatarRenderState) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;

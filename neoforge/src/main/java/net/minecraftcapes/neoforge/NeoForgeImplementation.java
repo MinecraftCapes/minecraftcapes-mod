@@ -13,31 +13,32 @@ import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class NeoForgeImplementation {
-    
+
     private final IEventBus modEventBus;
-    
+
+    /** Registers the NeoForge client and dedicated server setup listeners. */
     public NeoForgeImplementation(IEventBus modEventBus) {
         this.modEventBus = modEventBus;
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::serverSetup);
     }
-    
+
     /**
      * This client setup event
      */
     @SubscribeEvent
     public void clientSetup(FMLClientSetupEvent event) {
         MinecraftCapes.onEnable(FMLPaths.CONFIGDIR.get());
-        
+
         //Register the events
         NeoForge.EVENT_BUS.register(KeyHandlerEvent.class);
         this.modEventBus.register(RegisterKeyEvent.class);
-        
+
     }
-    
+
     /**
      * This is the server setup event
-     * @param event
+     * @param event Loader lifecycle or key-registration event.
      */
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
         MinecraftCapes.getLogger().error("=============================================");

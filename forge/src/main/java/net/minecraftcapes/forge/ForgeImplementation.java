@@ -10,26 +10,27 @@ import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(MinecraftCapes.MOD_ID)
 public class ForgeImplementation {
-    
+
     private final BusGroup busGroup;
-    
+
+    /** Registers the Forge client and dedicated server setup listeners. */
     public ForgeImplementation(FMLJavaModLoadingContext context) {
         busGroup = context.getModBusGroup();
         FMLClientSetupEvent.getBus(busGroup).addListener(this::clientSetup);
         FMLDedicatedServerSetupEvent.getBus(busGroup).addListener(this::serverSetup);
     }
-    
+
     /**
      * This client setup event
-     * @param event
+     * @param event Loader lifecycle or key-registration event.
      */
     public void clientSetup(FMLClientSetupEvent event) {
         MinecraftCapes.onEnable(FMLPaths.CONFIGDIR.get());
     }
-    
+
     /**
      * This is the server setup event
-     * @param event
+     * @param event Loader lifecycle or key-registration event.
      */
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
         MinecraftCapes.getLogger().error("=============================================");
@@ -38,5 +39,5 @@ public class ForgeImplementation {
         MinecraftCapes.getLogger().error("     Please remove this from your server!");
         MinecraftCapes.getLogger().error("=============================================");
     }
-    
+
 }

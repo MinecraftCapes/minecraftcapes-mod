@@ -16,27 +16,34 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientMannequin.class)
 public abstract class MixinClientMannequin extends Mannequin implements ClientAvatarEntity {
-    
+
+    /** Initializes the vanilla mannequin base used by this mixin. */
     public MixinClientMannequin(EntityType<Mannequin> type, Level level) {
         super(type, level);
     }
-    
+
+    /** Starts the cosmetic download when a mannequin profile is updated. */
     @Inject(method = "updateSkin", at = @At("RETURN"))
     public void minecraftcapes$updateSkin(CallbackInfo ci) {
-        PlayerHandler playerHandler = PlayerHandler.get(this.getProfile().partialProfile().id());
-        playerHandler.setName(this.getProfile().partialProfile().name());
-        
+        PlayerHandler playerHandler = PlayerHandler.get(
+                this.getProfile().partialProfile().id(),
+                this.getProfile().partialProfile().name()
+        );
+
         //Check player handler is loaded
         if(!playerHandler.getHasInfo()) {
             DownloadManager.prepareDownload(playerHandler);
         }
     }
-    
+
+    /** Adds loaded cosmetics to the mannequin skin, or starts its download. */
     @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
     public void minecraftcapes$getSkin(CallbackInfoReturnable<PlayerSkin> cir) {
-        PlayerHandler playerHandler = PlayerHandler.get(this.getProfile().partialProfile().id());
-        playerHandler.setName(this.getProfile().partialProfile().name());
-        
+        PlayerHandler playerHandler = PlayerHandler.get(
+                this.getProfile().partialProfile().id(),
+                this.getProfile().partialProfile().name()
+        );
+
         //Check player handler is loaded
         if(playerHandler.getHasInfo()) {
             cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));

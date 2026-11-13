@@ -1,279 +1,144 @@
 package net.minecraftcapes.player;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.texture.ExternalTextureProvider;
-import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
-import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+/** Client-thread profile state; texture ownership belongs to DownloadManager for the whole session. */
 public class PlayerHandler {
-
-    private static final HashMap<UUID, PlayerHandler> instances = new HashMap<>();
-
-    @Setter private boolean hasStaticCape = false;
-    @Setter @Getter private boolean hasEars = false;
-    @Setter private boolean hasAnimatedCape = false;
-    @Getter @Setter private Boolean hasCapeGlint = false;
-    @Getter @Setter private boolean upsideDown = false;
-    @Getter @Setter private Boolean hasInfo = false;
-    @Getter private final UUID uuid;
-    @Setter @Getter private String name;
-
+    private static final Map<UUID, PlayerHandler> INSTANCES = new HashMap<>();
+    /**
+     * -- GETTER --
+     * Returns the UUID used to identify this profile.
+     */
     @Getter
-    private Int2ObjectMap<NativeImage> animatedCape;
+    private final UUID uuid;
+    /**
+     * -- GETTER --
+     * Returns the username used for non-v4 profile lookups.
+     */
+    @Getter
+    private final String username;
 
-    //Animated Cape Settings
-    private long lastFrameTime = 0;
-    private int lastFrame = 0;
-    
-    public PlayerHandler(UUID uuid) {
+    private boolean downloadStarted;
+    private boolean capeGlint;
+    private boolean upsideDown;
+    private SharedTexture cape;
+    private Identifier ears;
+    private long lastFrameTime;
+    private int lastFrame;
+    private PlayerSkin originalSkin;
+    private PlayerSkin customSkin;
+    private ClientAsset.Texture skinCape;
+
+    /** Creates a profile without allocating any textures. */
+    private PlayerHandler(UUID uuid, String username) {
         this.uuid = uuid;
-        PlayerHandler.instances.put(uuid, this);
+        this.username = username;
     }
 
-    /**
-     * Tries to get the PlayerHandler instance from a player
-     * @param uuid The player profile UUID
-     * @return The player handler
-     */
-    public static PlayerHandler get(UUID uuid) {
-        PlayerHandler playerHandler = PlayerHandler.instances.get(uuid);
-        return playerHandler == null ? new PlayerHandler(uuid) : playerHandler;
+    /** Returns the handler for a profile UUID, creating it on the client thread if necessary. */
+    public static PlayerHandler get(UUID uuid, String username) {
+        return INSTANCES.computeIfAbsent(uuid, key -> new PlayerHandler(key, username));
     }
 
-    /**
-     * Remove a player
-     * @param uuid The player profile UUID
-     */
+    /** Removes profile state without releasing textures used by other players. */
     public static void remove(UUID uuid) {
-        PlayerHandler playerHandler = instances.get(uuid);
-        playerHandler.removeCape();
-        playerHandler.removeEars();
-        instances.remove(uuid);
+        INSTANCES.remove(uuid);
     }
-    
-    /**
-     * Remove all instances to force a refresh
-     */
+
+    /** Forces profile refreshes while retaining the session's shared textures. */
     public static void clearAll() {
-        for(PlayerHandler playerHandler : instances.values()) {
-            playerHandler.removeCape();
-            playerHandler.removeEars();
-        }
-        
-        instances.clear();
+        INSTANCES.clear();
     }
-    
-    /**
-     * Gets the cape texture and resizes or splits it accordingly
-     * @param capeImage
-     */
-    public void applyCape(NativeImage capeImage) {
-        //If the height is not 1/2 the width (32 == 64/2) then its an animated cape
-        if(capeImage.getHeight() != capeImage.getWidth() / 2) {
-            Int2ObjectMap<NativeImage> animatedCapeFrames = new Int2ObjectOpenHashMap<>();
-            int totalFrames = capeImage.getHeight() / (capeImage.getWidth() / 2);
-            for(int currentFrame = 0; currentFrame < totalFrames; currentFrame++) {
-                NativeImage frame = new NativeImage(capeImage.getWidth(), capeImage.getWidth() / 2, true);
-                for (int x = 0; x < frame.getWidth(); x++) {
-                    for (int y = 0; y < frame.getHeight(); y++) {
-                        frame.setPixel(x, y, capeImage.getPixel(x, y + (currentFrame * (capeImage.getWidth() / 2))));
-                    }
-                }
-                animatedCapeFrames.put(currentFrame, frame);
+
+    /** Checks on the client thread whether a download still belongs to the active handler. */
+    boolean isCurrent() {
+        return INSTANCES.get(uuid) == this;
+    }
+
+    /** Reports whether a download has been attempted, preserving the render mixins' existing contract. */
+    public boolean getHasInfo() {
+        return downloadStarted;
+    }
+
+    /** Marks the profile as attempted once; failed profiles wait for a manual refresh. */
+    boolean beginDownload() {
+        if (downloadStarted || !isCurrent()) return false;
+        downloadStarted = true;
+        return true;
+    }
+
+    /** Applies profile flags on the client thread if this handler has not been removed. */
+    void applyProfile(boolean capeGlint, boolean upsideDown) {
+        if (!isCurrent()) return;
+        this.capeGlint = capeGlint;
+        this.upsideDown = upsideDown;
+    }
+
+    /** References a registered shared cape without taking ownership of its GPU resources. */
+    void applyCape(SharedTexture cape) {
+        if (!isCurrent()) return;
+        this.cape = cape;
+        lastFrame = 0;
+        lastFrameTime = 0;
+        originalSkin = null;
+        customSkin = null;
+        skinCape = null;
+    }
+
+    /** References one static ear texture without taking ownership of its GPU resources. */
+    void applyEars(Identifier ears) {
+        if (isCurrent()) this.ears = ears;
+    }
+
+    /** Selects this player's animation frame using the existing 100 ms frame interval. */
+    private ClientAsset.Texture getCapeTexture() {
+        if (cape == null) return null;
+        if (cape.frameCount() > 1) {
+            long time = System.currentTimeMillis();
+            if (time > lastFrameTime + 100) {
+                lastFrame = (lastFrame + 1) % cape.frameCount();
+                lastFrameTime = time;
             }
-            this.setAnimatedCape(animatedCapeFrames);
-            MinecraftCapes.getLogger().debug("Animated cape loaded for {}", uuid);
-        } else {
-            int imageWidth = 64;
-            int imageHeight = 32;
-
-            for (int srcWidth = capeImage.getWidth(), srcHeight = capeImage.getHeight(); imageWidth < srcWidth || imageHeight < srcHeight; imageWidth *= 2, imageHeight *= 2) {}
-
-            final NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
-            for (int x = 0; x < capeImage.getWidth(); x++) {
-                for (int y = 0; y < capeImage.getHeight(); y++) {
-                    imgNew.setPixel(x, y, capeImage.getPixel(x, y));
-                }
-            }
-
-            capeImage.close();
-            this.applyTexture(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + uuid), imgNew);
-            this.setHasStaticCape(true);
-            this.setHasAnimatedCape(false);
-            MinecraftCapes.getLogger().debug("Static cape loaded for {}", uuid);
         }
+        return cape.frame(lastFrame);
     }
 
-    /**
-     * Load the ears to the profile
-     * @param earImage
-     */
-    public void applyEars(NativeImage earImage) {
-        applyTexture(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + uuid), earImage);
-        this.setHasEars(true);
-        MinecraftCapes.getLogger().debug("Ears loaded for {}", uuid);
-    }
-
-    /**
-     * Unregister the cape
-     */
-    public void removeCape() {
-        if(!hasStaticCape && !hasAnimatedCape) return;
-
-        MinecraftCapes.getLogger().debug("Removing cape for {}", uuid);
-
-        this.setHasAnimatedCape(false);
-        this.setHasStaticCape(false);
-
-        Minecraft.getInstance().execute(() -> {
-            Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + uuid));
-
-            if(animatedCape != null) {
-                for(int i = 0; i < animatedCape.size() - 1; i++) {
-                    Minecraft.getInstance()
-                            .getTextureManager()
-                            .release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, i)));
-                }
-            }
-        });
-    }
-
-    /**
-     * Unregister the ears
-     */
-    public void removeEars() {
-        if(!hasEars) return;
-
-        MinecraftCapes.getLogger().debug("Removing ears for {}", uuid);
-
-        this.setHasEars(false);
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().getTextureManager().release(Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + uuid)));
-    }
-
-    /**
-     * Sets the animated cape textures and loads all resources to memory
-     * @param animatedCape
-     */
-    public void setAnimatedCape(Int2ObjectMap<NativeImage> animatedCape) {
-        MinecraftCapes.getLogger().debug("Setting animated cape for {}", uuid);
-        this.animatedCape = animatedCape;
-        this.setHasStaticCape(false);
-        this.setHasAnimatedCape(true);
-        this.loadFramesToResource();
-    }
-
-    /**
-     * Load all NativeImages into a Identifier
-     */
-    private void loadFramesToResource() {
-        MinecraftCapes.getLogger().debug("Loading resources to memory for {}", uuid);
-        animatedCape.forEach((integer, nativeImage) -> {
-            Identifier currentResource = Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, integer));
-            applyTexture(currentResource, nativeImage);
-        });
-    }
-
-    /**
-     * Gets the current frame for the player
-     * @return Identifier
-     */
-    private Identifier getFrame() {
-        final long time = System.currentTimeMillis();
-        int capeInterval = 100;
-        if(time > lastFrameTime + capeInterval) {
-            int currentFrameNo = (lastFrame + 1 > getAnimatedCape().size() - 1) ? 0 : lastFrame + 1;
-
-            lastFrame = currentFrameNo;
-            lastFrameTime = time;
-
-            return Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, currentFrameNo));
-        }
-        return Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, String.format("capes/%s/%d", uuid, lastFrame));
-    }
-
-    /**
-     * Returns the player current cape resource
-     * @return
-     */
-    public Identifier getCapeLocation() {
-        return hasStaticCape ? Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "capes/" + uuid) : hasAnimatedCape ? getFrame() : null;
-    }
-
-    /**
-     * Returns the players ear resource
-     * @return
-     */
+    /** Returns the shared ear texture identifier, or null when the profile has no ears. */
     public Identifier getEarLocation() {
-        return hasEars ? Identifier.fromNamespaceAndPath(MinecraftCapes.MOD_ID, "ears/" + uuid) : null;
+        return ears;
     }
 
-    /**
-     * Applys a texture on the render thread
-     * @param identifier
-     * @param nativeImage
-     */
-    private void applyTexture(Identifier identifier, NativeImage nativeImage) {
-        ClientAsset.DownloadedTexture textureId = new ClientAsset.DownloadedTexture(identifier,"minecraftcapes");
-        Minecraft.getInstance().execute(() -> {
-            TextureResources texture = TextureResources.from2dImage(textureId.texturePath()::toString, nativeImage);
-            Minecraft.getInstance().getTextureManager().registerProvider(textureId.texturePath(), new ExternalTextureProvider(texture));
-        });
-    }
-
-    /**
-     * Create a player skin for with MinecraftCapes
-     * @param original
-     * @return
-     */
+    /** Reuses a skin wrapper until its original skin or selected shared cape frame changes. */
     public PlayerSkin getSkin(PlayerSkin original) {
-        //Set initial values
-        ClientAsset.Texture capeTexture = original.cape();
-        ClientAsset.Texture elytraTexture = original.elytra();
-
-        //If we have a cape, lets load it
-        if(MinecraftCapesConfig.isCapeVisible() && getCapeLocation() != null) {
-            capeTexture = new ClientAsset.DownloadedTexture(getCapeLocation(), "minecraftcapes");
-            elytraTexture = capeTexture;
+        ClientAsset.Texture texture = MinecraftCapesConfig.isCapeVisible() ? getCapeTexture() : null;
+        if (texture == null) return original;
+        if ((originalSkin != original && customSkin != original) || skinCape != texture) {
+            originalSkin = original;
+            skinCape = texture;
+            customSkin = new PlayerSkin(original.body(), texture, texture, original.model(), original.secure());
         }
-
-        //Return new player skin
-        return new PlayerSkin(
-                original.body(),
-                capeTexture, elytraTexture,
-                original.model(), original.secure()
-        );
+        return customSkin;
     }
-    
-    public void extractRenderState(AvatarRenderState playerRenderState) {
-        ExtendedRenderState extendedRenderState = (ExtendedRenderState) playerRenderState;
-        
-        if(this.getHasInfo()) {
-            playerRenderState.skin = this.getSkin(playerRenderState.skin);
-            
-            playerRenderState.isUpsideDown = this.isUpsideDown();
-            
-            // We do a double check here because of the @WrapCondition
-            // if isHasEars is true but isEarsVisible is false it will render with vanilla
-            // The double check ensure we only render ears if they're visible
-            playerRenderState.showExtraEars = playerRenderState.showExtraEars || (this.isHasEars() && MinecraftCapesConfig.isEarsVisible());
-            
-            extendedRenderState.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
-            extendedRenderState.minecraftcapes$setGapeGlint(this.getHasCapeGlint());
-            extendedRenderState.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
-            extendedRenderState.minecraftcapes$setEarsTexture(this.getEarLocation());
-        }
+
+    /** Copies cosmetics into the avatar state while preserving the existing visibility rules. */
+    public void extractRenderState(AvatarRenderState state) {
+        if (!downloadStarted) return;
+        ExtendedRenderState extended = (ExtendedRenderState) state;
+        state.skin = getSkin(state.skin);
+        state.isUpsideDown = upsideDown;
+        state.showExtraEars = state.showExtraEars || (ears != null && MinecraftCapesConfig.isEarsVisible());
+        extended.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
+        extended.minecraftcapes$setGapeGlint(capeGlint);
+        extended.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());
+        extended.minecraftcapes$setEarsTexture(getEarLocation());
     }
 }

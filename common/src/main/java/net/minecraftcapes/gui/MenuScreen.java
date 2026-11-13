@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.Unique;
 import java.net.URI;
 
 public class MenuScreen extends Screen {
-    
+
     private static final Component TITLE = Component.translatable("gui.minecraftcapes.title");
     private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
     private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
@@ -39,11 +39,13 @@ public class MenuScreen extends Screen {
     private final Component GENERAL_TAB = Component.translatable("gui.minecraftcapes.tab.general");
     private final Component OPTIONS_TAB = Component.translatable("gui.minecraftcapes.tab.options");
     private final Component LINKS_TAB = Component.translatable("gui.minecraftcapes.tab.links");
-    
+
+    /** Creates the MinecraftCapes settings screen. */
     public MenuScreen() {
         super(TITLE);
     }
-    
+
+    /** Builds the tabs and footer controls, then arranges the screen. */
     @Override
     protected void init() {
         this.tabNavigationBar = MenuTabBar.builder(this.tabManager, this.width)
@@ -59,10 +61,11 @@ public class MenuScreen extends Screen {
             this.addRenderableWidget(button);
         });
         this.tabNavigationBar.selectTab(0, false);
-        
+
         this.repositionElements();
     }
 
+    /** Fits the selected tab and footer to the current screen dimensions. */
     @Override
     protected void repositionElements() {
         if (this.tabNavigationBar != null) {
@@ -74,7 +77,8 @@ public class MenuScreen extends Screen {
             this.layout.arrangeElements();
         }
     }
-    
+
+    /** Extracts the settings screen and the local player preview. */
     @Override
     public void extractRenderState(@NonNull GuiGraphicsExtractor graphics) {
         super.extractRenderState(graphics);
@@ -86,6 +90,7 @@ public class MenuScreen extends Screen {
         );
     }
 
+    /** Submits the player preview with a fixed pose and scale. */
     @Unique
     private void renderEntity(GuiGraphicsExtractor guiGraphics, int x, int y, LivingEntity entity) {
         Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
@@ -104,6 +109,7 @@ public class MenuScreen extends Screen {
         guiGraphics.entity(entityrenderstate, 60f, vector3f, quaternionf, null, 0, 0, x, y);
     }
 
+    /** Extracts the player preview without shadows or outlines. */
     @Unique
     private EntityRenderState extractRenderState(LivingEntity livingEntity) {
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
@@ -113,100 +119,103 @@ public class MenuScreen extends Screen {
         entityrenderstate.outlineColor = 0;
         return entityrenderstate;
     }
-    
+
     private class GeneralTab extends GridLayoutTab {
+        /** Builds the website and profile refresh controls. */
         public GeneralTab() {
             this.layout.defaultCellSetting().padding(100, 4, 4, 0);
             GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
-            
+
             // Open MinecraftCapes
             Button openMinecraftCapes = Button.builder(
                     Component.translatable("button.minecraftcapes.minecraftcapes"),
                     ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://minecraftcapes.net"))
             )
             .build();
-            
+
             // Reload Profile
             Button reloadProfile = Button.builder(
                     Component.translatable("button.minecraftcapes.reload"),
                     _ -> PlayerHandler.remove(MenuScreen.this.minecraft.player.getUUID())
             )
             .build();
-            
+
             Button reloadAllProfiles = Button.builder(
                     Component.translatable("button.minecraftcapes.reload_all"),
                     _ -> PlayerHandler.clearAll()
             )
             .build();
-            
+
             // Tool Tips
             openMinecraftCapes.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.minecraftcapes.tooltip")));
             reloadProfile.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.reload.tooltip")));
             reloadAllProfiles.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.reload_all.tooltip")));
-            
+
             // Add Buttons
             helper.addChild(openMinecraftCapes);
             helper.addChild(reloadProfile);
             helper.addChild(reloadAllProfiles);
         }
     }
-    
+
     private static class OptionsTab extends GridLayoutTab {
+        /** Builds the cape and ear visibility controls from the current configuration. */
         public OptionsTab() {
             this.layout.defaultCellSetting().padding(100, 4, 4, 0);
             GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
-            
+
             CycleButton<Boolean> customCapes = CycleButton.onOffBuilder(MinecraftCapesConfig.isCapeVisible())
             .create(
                 Component.translatable("button.minecraftcapes.custom_capes"),
                 (_, value) -> MinecraftCapesConfig.setCapeVisible(value)
             );
-            
+
             CycleButton<Boolean> customEars = CycleButton.onOffBuilder(MinecraftCapesConfig.isEarsVisible())
             .create(
                 Component.translatable("button.minecraftcapes.custom_ears"),
                 (_, value) -> MinecraftCapesConfig.setEarsVisible(value)
             );
-            
+
             // Tool Tips
             customCapes.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.custom_capes.tooltip")));
             customEars.setTooltip(Tooltip.create(Component.translatable("button.minecraftcapes.custom_ears.tooltip")));
-            
+
             // Add Buttons
             helper.addChild(customCapes);
             helper.addChild(customEars);
         }
     }
-    
+
     private class LinksTab extends GridLayoutTab {
+        /** Builds the community links with Minecraft link confirmation. */
         public LinksTab() {
             this.layout.defaultCellSetting().padding(100, 4, 4, 0);
             GridLayout.RowHelper helper = this.layout.rowSpacing(8).createRowHelper(1);
-            
+
             // MinecraftCapes
             Button openMinecraftCapes = Button.builder(
                     Component.translatable("button.minecraftcapes.minecraftcapes"),
                     ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://minecraftcapes.net"))
             )
             .build();
-            
+
             Button openDiscord = Button.builder(
                     Component.translatable("button.minecraftcapes.discord"),
                     ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://discord.gg/minecraftcapes"))
             )
             .build();
-            
+
             Button openGitHub = Button.builder(
                     Component.translatable("button.minecraftcapes.github"),
                     ConfirmLinkScreen.confirmLink(MenuScreen.this, URI.create("https://github.com/minecraftcapes"))
             )
             .build();
-            
+
             // Add Buttons
             helper.addChild(openMinecraftCapes);
             helper.addChild(openDiscord);
             helper.addChild(openGitHub);
         }
     }
-    
+
 }

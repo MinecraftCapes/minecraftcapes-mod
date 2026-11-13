@@ -14,6 +14,8 @@ import java.nio.file.Path;
 
 public class MinecraftCapesConfig {
 
+    private static final Gson GSON = new Gson();
+
     //File locations
     private static final Path configFile = MinecraftCapes.getConfigDir().resolve("minecraftcapes.json");
 
@@ -30,7 +32,7 @@ public class MinecraftCapesConfig {
 
     /**
      * Change cape visibility
-     * @param enabled
+     * @param enabled Whether the cosmetic should be visible.
      */
     public static void setCapeVisible(boolean enabled) {
         config.capeVisible = enabled;
@@ -39,7 +41,7 @@ public class MinecraftCapesConfig {
 
     /**
      * Change ears visibility
-     * @param enabled
+     * @param enabled Whether the cosmetic should be visible.
      */
     public static void setEarsVisible(boolean enabled) {
         config.earsVisible = enabled;
@@ -74,9 +76,9 @@ public class MinecraftCapesConfig {
                 saveConfig();
             }
 
-            Reader reader = new FileReader(configFile.toFile());
-            config = new Gson().fromJson(reader, ConfigValues.class);
-            reader.close();
+            try (Reader reader = new FileReader(configFile.toFile())) {
+                config = GSON.fromJson(reader, ConfigValues.class);
+            }
         } catch(IOException e) {
             if(configFile.toFile().delete()) {
                 loadConfig();
@@ -88,11 +90,8 @@ public class MinecraftCapesConfig {
      * Save the config
      */
     private static void saveConfig() {
-        try {
-            Writer writer = new FileWriter(configFile.toFile());
-            new Gson().toJson(config, writer);
-            writer.flush();
-            writer.close();
+        try (Writer writer = new FileWriter(configFile.toFile())) {
+            GSON.toJson(config, writer);
         } catch(IOException e) {
             e.printStackTrace();
         }

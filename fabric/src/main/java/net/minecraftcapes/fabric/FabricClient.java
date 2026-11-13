@@ -11,7 +11,8 @@ import net.minecraftcapes.gui.MenuScreen;
 
 public class FabricClient extends MinecraftCapes implements ClientModInitializer {
 	private static KeyMapping keyBinding;
-	
+
+	/** Loads the configuration and registers the menu key and client tick handler. */
 	@Override
 	public void onInitializeClient() {
         MinecraftCapes.onEnable(FabricLoaderImpl.INSTANCE.getConfigDir());

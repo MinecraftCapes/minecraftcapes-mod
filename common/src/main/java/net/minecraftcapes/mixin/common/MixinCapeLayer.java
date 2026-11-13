@@ -19,11 +19,13 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = CapeLayer.class, priority = 0)
 public abstract class MixinCapeLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
-    
+
+    /** Attaches the cape layer to its parent renderer. */
     public MixinCapeLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
         super(renderer);
     }
-    
+
+    /** Submits the cape with optional glint, or retains the vanilla submission. */
     @WrapWithCondition(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;III)V"))
     private boolean minecraftcapes$submitCape(SubmitNodeCollector instance, Model model, Object state, PoseStack poseStack, RenderType oldRenderType, int lightCoords, int overlayCoords, int outlineColor, @Local(argsOnly = true) AvatarRenderState avatarRenderState) {
         ExtendedRenderState extendedRenderState = (ExtendedRenderState) avatarRenderState;
