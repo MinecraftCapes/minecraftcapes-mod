@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraftcapes.MinecraftCapes;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 
 import java.util.HashMap;
@@ -51,11 +52,13 @@ public class PlayerHandler {
 
     /** Removes profile state without releasing textures used by other players. */
     public static void remove(UUID uuid) {
+        MinecraftCapes.getLogger().debug("Removing PlayerHandler for {}", uuid);
         INSTANCES.remove(uuid);
     }
 
     /** Forces profile refreshes while retaining the session's shared textures. */
     public static void clearAll() {
+        MinecraftCapes.getLogger().debug("Clearing all PlayerHandlers");
         INSTANCES.clear();
     }
 
@@ -124,13 +127,16 @@ public class PlayerHandler {
         return customSkin;
     }
 
-    /** Copies cosmetics into the avatar state while preserving the existing visibility rules. */
+    /**
+     * Copies cosmetics into the avatar state while preserving the existing visibility rules.
+     * Deadmau5 ears are included on the mod page just for ease
+    */
     public void extractRenderState(AvatarRenderState state) {
         if (!downloadStarted) return;
         ExtendedRenderState extended = (ExtendedRenderState) state;
         state.skin = getSkin(state.skin);
-        state.isUpsideDown = upsideDown;
-        state.showExtraEars = state.showExtraEars || (ears != null && MinecraftCapesConfig.isEarsVisible());
+        state.isUpsideDown = state.isUpsideDown || upsideDown;
+        state.showExtraEars = (ears != null && MinecraftCapesConfig.isEarsVisible());
         extended.minecraftcapes$setCapeEnabled(MinecraftCapesConfig.isCapeVisible());
         extended.minecraftcapes$setGapeGlint(capeGlint);
         extended.minecraftcapes$setEarsEnabled(MinecraftCapesConfig.isEarsVisible());

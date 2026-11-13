@@ -5,13 +5,13 @@
   "plugin": "net.minecraftcapes.mixin.MinecraftCapesMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "common.MixinMinecraft",
     "common.MixinAvatarRenderer",
     "common.MixinAvatarRenderState",
     "common.MixinCapeLayer",
     "common.MixinClientMannequin",
     "common.MixinClientPacketListener",
     "common.MixinDeadmau5EarsLayer",
+    "common.MixinMinecraft",
     "common.MixinPlayerOptionsScreen",
     "lunar.MixinPlayerEarsModel",
     "vanilla.MixinPlayerEarsModel"

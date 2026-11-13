@@ -79,7 +79,7 @@ public class MinecraftCapesConfig {
             try (Reader reader = new FileReader(configFile.toFile())) {
                 config = GSON.fromJson(reader, ConfigValues.class);
             }
-        } catch(IOException e) {
+        } catch(Exception e) {
             if(configFile.toFile().delete()) {
                 loadConfig();
             }

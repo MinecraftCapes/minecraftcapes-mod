@@ -13,6 +13,12 @@ import java.util.UUID;
 @Mixin(ClientPacketListener.class)
 public class MixinClientPacketListener {
 
+    /** Clears disconnected profile state without unloading the session's shared textures. */
+    @Inject(method = "close", at = @At("TAIL"))
+    private void minecraftcapes$close(CallbackInfo ci) {
+        PlayerHandler.clearAll();
+    }
+
     /** Removes profile handlers while retaining shared textures for the rest of the session. */
     @Inject(method = "handlePlayerInfoRemove", at = @At("TAIL"))
     public void minecraftcapes$handlePlayerInfoRemove(ClientboundPlayerInfoRemovePacket packet, CallbackInfo ci) {

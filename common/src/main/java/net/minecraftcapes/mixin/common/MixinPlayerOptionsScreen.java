@@ -1,8 +1,6 @@
 package net.minecraftcapes.mixin.common;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.friends.FriendsListActions;
 import net.minecraft.client.gui.screens.social.PlayerOptionsScreen;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraftcapes.player.DownloadManager;
@@ -15,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @Mixin(PlayerOptionsScreen.class)
 public abstract class MixinPlayerOptionsScreen {
@@ -32,21 +29,11 @@ public abstract class MixinPlayerOptionsScreen {
     @Final
     private String playerName;
 
-    /** Starts downloading the selected profile before its preview is rendered. */
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void minecraftcapes$init(Screen lastScreen, UUID playerId, String playerName, FriendsListActions friendsListActions, Supplier skinGetter, boolean skinReportable, boolean chatReportable, boolean hasRecentMessages, CallbackInfo ci) {
-        PlayerHandler playerHandler = PlayerHandler.get(
-                playerId,
-                playerName
-        );
-
-        DownloadManager.prepareDownload(playerHandler);
-    }
-
-    /** Applies the profile cosmetics to the avatar render state. */
+    /** Starts any replacement handler's download and applies its cosmetics to the preview. */
     @Inject(method = "extractRenderState", at = @At(value = "RETURN"))
     public void minecraftcapes$extractRenderState(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         PlayerHandler playerHandler = PlayerHandler.get(playerId, playerName);
+        DownloadManager.prepareDownload(playerHandler);
         playerHandler.extractRenderState(playerRenderState);
     }
 }
