@@ -13,7 +13,7 @@ import java.util.UUID;
 @Mixin(ClientPacketListener.class)
 public class MixinClientPacketListener {
 
-    /** Releases cached cosmetic resources for profiles removed by the server. */
+    /** Removes profile handlers while retaining shared textures for the rest of the session. */
     @Inject(method = "handlePlayerInfoRemove", at = @At("TAIL"))
     public void minecraftcapes$handlePlayerInfoRemove(ClientboundPlayerInfoRemovePacket packet, CallbackInfo ci) {
         for (UUID profileId : packet.profileIds()) {

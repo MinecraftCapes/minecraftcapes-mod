@@ -30,9 +30,7 @@ public abstract class MixinAvatarRenderer<AvatarlikeEntity extends Avatar & Clie
                 entity.getProfile().partialProfile().name()
         );
 
-        if(!playerHandler.getHasInfo()) {
-            DownloadManager.prepareDownload(playerHandler);
-        }
+        DownloadManager.prepareDownload(playerHandler);
 
         playerHandler.extractRenderState(state);
     }

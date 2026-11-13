@@ -64,11 +64,6 @@ public class PlayerHandler {
         return INSTANCES.get(uuid) == this;
     }
 
-    /** Reports whether a download has been attempted, preserving the render mixins' existing contract. */
-    public boolean getHasInfo() {
-        return downloadStarted;
-    }
-
     /** Marks the profile as attempted once; failed profiles wait for a manual refresh. */
     boolean beginDownload() {
         if (downloadStarted || !isCurrent()) return false;

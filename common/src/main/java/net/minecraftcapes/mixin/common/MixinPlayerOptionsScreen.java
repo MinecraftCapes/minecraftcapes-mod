@@ -40,10 +40,7 @@ public abstract class MixinPlayerOptionsScreen {
                 playerName
         );
 
-        // Force a download before we extract
-        if(!playerHandler.getHasInfo()) {
-            DownloadManager.prepareDownload(playerHandler);
-        }
+        DownloadManager.prepareDownload(playerHandler);
     }
 
     /** Applies the profile cosmetics to the avatar render state. */

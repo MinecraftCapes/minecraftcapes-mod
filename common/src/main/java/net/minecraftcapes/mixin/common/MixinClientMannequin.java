@@ -30,10 +30,7 @@ public abstract class MixinClientMannequin extends Mannequin implements ClientAv
                 this.getProfile().partialProfile().name()
         );
 
-        //Check player handler is loaded
-        if(!playerHandler.getHasInfo()) {
-            DownloadManager.prepareDownload(playerHandler);
-        }
+        DownloadManager.prepareDownload(playerHandler);
     }
 
     /** Adds loaded cosmetics to the mannequin skin, or starts its download. */
@@ -44,11 +41,7 @@ public abstract class MixinClientMannequin extends Mannequin implements ClientAv
                 this.getProfile().partialProfile().name()
         );
 
-        //Check player handler is loaded
-        if(playerHandler.getHasInfo()) {
-            cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
-        } else {
-            DownloadManager.prepareDownload(playerHandler);
-        }
+        DownloadManager.prepareDownload(playerHandler);
+        cir.setReturnValue(playerHandler.getSkin(cir.getReturnValue()));
     }
 }
