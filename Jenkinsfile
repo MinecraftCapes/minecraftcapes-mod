@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'Agent' }
+    agent { label 'java25-build' }
 
     environment {
         JAVA_HOME = '/opt/jdks/25'
