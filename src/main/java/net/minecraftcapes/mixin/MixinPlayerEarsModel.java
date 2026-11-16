@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ModelPlayer.class)
 public class MixinPlayerEarsModel {
 
-    @Shadow
+    @Shadow(aliases = {"field_178736_x"})
     private ModelRenderer bipedDeadmau5Head;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
