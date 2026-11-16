@@ -4,10 +4,10 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerCape;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftcapes.config.MinecraftCapesConfig;
 import net.minecraftcapes.player.PlayerHandler;
+import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,38 +43,50 @@ public class MixinCapeLayer {
     }
 
     @Unique
-    private void minecraftcapes$renderEchantmentGlint(EntityLivingBase entitylivingbaseIn, float p_177183_5_) {
-        float f = (float)entitylivingbaseIn.ticksExisted + p_177183_5_;
-        this.playerRenderer.bindTexture(minecraftcapes$ENCHANTED_ITEM_GLINT_RES);
-        GlStateManager.enableBlend();
-        GlStateManager.depthFunc(514);
-        GlStateManager.depthMask(false);
-        float f1 = 0.5F;
-        GlStateManager.color(f1, f1, f1, 1.0F);
+    private void minecraftcapes$renderEchantmentGlint(AbstractClientPlayer player, float partialTicks) {
+        float f = (float) player.ticksExisted + partialTicks;
 
-        for (int i = 0; i < 2; ++i)
-        {
+        this.playerRenderer.bindTexture(minecraftcapes$ENCHANTED_ITEM_GLINT_RES);
+
+        GlStateManager.enableBlend();
+        GlStateManager.depthFunc(GL11.GL_EQUAL);
+        GlStateManager.depthMask(false);
+        GlStateManager.color(0.5F, 0.5F, 0.5F, 1.0F);
+
+        for (int i = 0; i < 2; ++i) {
             GlStateManager.disableLighting();
-            GlStateManager.blendFunc(768, 1);
+            GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+
             float f2 = 0.76F;
             GlStateManager.color(0.5F * f2, 0.25F * f2, 0.8F * f2, 1.0F);
-            GlStateManager.matrixMode(5890);
+
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.loadIdentity();
+
             float f3 = 0.33333334F;
             GlStateManager.scale(f3, f3, f3);
-            GlStateManager.rotate(30.0F - (float)i * 60.0F, 0.0F, 0.0F, 1.0F);
-            GlStateManager.translate(0.0F, f * (0.001F + (float)i * 0.003F) * 20.0F, 0.0F);
-            GlStateManager.matrixMode(5888);
+            GlStateManager.rotate(30.0F - i * 60.0F, 0.0F, 0.0F, 1.0F);
+            GlStateManager.translate(0.0F, f * (0.001F + i * 0.003F) * 20.0F, 0.0F);
+
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
             this.playerRenderer.getMainModel().renderCape(0.0625F);
         }
 
-        GlStateManager.matrixMode(5890);
+        GlStateManager.matrixMode(GL11.GL_TEXTURE);
         GlStateManager.loadIdentity();
-        GlStateManager.matrixMode(5888);
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+
         GlStateManager.enableLighting();
         GlStateManager.depthMask(true);
-        GlStateManager.depthFunc(515);
+        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+
+        // Restore standard rendering state
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.disableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        // Restore player texture
+        this.playerRenderer.bindTexture(player.getLocationSkin());
     }
 
 }

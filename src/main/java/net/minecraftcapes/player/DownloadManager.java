@@ -2,12 +2,12 @@ package net.minecraftcapes.player;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import java.awt.image.BufferedImage;
-import net.minecraftcapes.helpers.ImageHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftcapes.MinecraftCapes;
+import net.minecraftcapes.helpers.ImageHandler;
 import org.apache.commons.io.IOUtils;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,9 +19,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import static net.minecraftcapes.MinecraftCapes.MINECRAFT_VERSION;
 
