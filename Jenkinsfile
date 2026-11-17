@@ -1,10 +1,10 @@
 pipeline {
-    agent { label 'Agent' }
-    environment {
-        JAVA_HOME = '/opt/jdks/21'
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-        GRADLE_USER_HOME = '/home/jenkins/.gradle'
-    }
+    agent { label 'java21-build' }
+    //environment {
+    //    JAVA_HOME = '/opt/jdks/21'
+    //    PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    //    GRADLE_USER_HOME = '/home/jenkins/.gradle'
+    //}
     options {
         disableConcurrentBuilds()
         timestamps()
